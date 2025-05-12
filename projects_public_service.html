@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Public-Service Analytics Projects{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Public-Service&nbsp;Analytics</h1>
+
+<h2 class="section-title">Survey & Operational-Data Projects</h2>
+<ul class="proj-list">
+  {% for p in surveys %}
+    <li class="proj-item">
+      <div class="proj-body">
+        <h3>{{ p.title }}</h3>
+        <p class="meta">{{ p.role }} · {{ p.period }}</p>
+      </div>
+    </li>
+  {% endfor %}
+</ul>
+
+<h2 class="section-title">Consulting & Methodology Engagements</h2>
+<ul class="proj-list">
+  {% for p in consults %}
+    <li class="proj-item">
+      <div class="proj-body">
+        <h3>{{ p.title }}</h3>
+        <p class="meta">{{ p.role }} · {{ p.period }}</p>
+      </div>
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}

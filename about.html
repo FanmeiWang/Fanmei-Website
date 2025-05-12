@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>About — Fanmei Wang, PhD</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    /* 统一宽度 */
+    .container{max-width:1100px;margin:0 auto;padding:0 1rem;}
+
+    /* Profile card = 2 列网格 + 徽章占整行 */
+    .profile-card{display:grid;grid-template-columns:260px 1fr;gap:2rem;background:#fff;border-radius:12px;padding:2.5rem 3rem;box-shadow:0 6px 18px rgba(0,0,0,.06);}
+    .profile-card>.badge-wall{grid-column:1/-1;margin-top:1.5rem;}
+    @media(max-width:900px){.profile-card{grid-template-columns:1fr}.profile-photo img{margin:0 auto}}
+
+    .profile-photo img{width:100%;height:auto;border-radius:8px;object-fit:cover;box-shadow:0 4px 12px rgba(0,0,0,.12);}
+    .profile-name{margin:0 0 1rem;font-size:2.6rem;color:var(--brand-teal, #004F59);}
+    .profile-social a{margin-right:1rem;font-size:1.3rem;color:var(--brand-teal, #004F59);transition:opacity .2s;}
+    .profile-social a:hover{opacity:.7}
+
+    /* 徽章：自适应换行 */
+    .badge-wall{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:1rem;align-items:center;}
+    .badge-wall img{height:38px;width:auto;object-fit:contain;}
+
+    /* 合作 LOGO：两排自适应，整体与简介同宽 */
+    .logo-wall{
+      list-style:none;
+      margin:2rem 0 0;
+      padding:0;
+      display:flex;
+      flex-wrap:wrap;              /* 允许换行 */
+      gap:1.5rem 2rem;            /* 行 1.5、列 2 rem 间距 */
+      justify-content:center;     /* 居中 */
+      align-items:center;
+    }
+    .logo-wall img{ max-height:80px; flex:0 0 auto; }
+  </style>
+</head>
+<body>
+  {% include "navbar.html" %}
+
+  <main class="profile-wrapper container">
+    <section class="profile-card animate">
+      <div class="profile-photo">
+        <img src="{{ url_for('static', filename='img/about/profile1.png') }}" alt="Fanmei Wang photo">
+      </div>
+
+      <div class="profile-text">
+        <h1 class="profile-name">Fanmei&nbsp;Wang, PhD</h1>
+
+        <p>Engaging and creative data analyst, and a Certified Human Resources Professional, currently working for the Government of Canada. Prior to this role, I accumulated over 15&nbsp;years of experience teaching and conducting research in HRM at universities and world-renowned research institutions. In addition to my subject-matter expertise, I have taught both quantitative and qualitative methods at the graduate level. My research focuses on diversity and cultural sensitivity; ethnic and racial minority experiences in HRM fields; and related policies.</p>
+        <p>Now, I am dedicated to AI applications across various HR domains, leveraging my extensive expertise in HRM alongside machine learning, deep learning, NLP, and conversational AI to enhance data-driven insights, support policy development, and improve employee engagement through interactive feedback tools.</p>
+        <p>As the 2024‑2025 Brand Ambassador for CRA, I am honored to represent and promote our brand both internally and externally.</p>
+
+        <p class="profile-handle">@reallygreatsite</p>
+        <div class="profile-social">
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#"><i class="fab fa-github"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+
+      <!-- 徽章整行放在卡片底部 -->
+      <ul class="badge-wall">
+        <li><img src="{{ url_for('static', filename='img/badges/python.png') }}" alt="Python"></li>
+        <li><img src="{{ url_for('static', filename='img/badges/flask.png') }}" alt="Flask"></li>
+        <li><img src="{{ url_for('static', filename='img/badges/dl.png') }}" alt="Deep Learning"></li>
+        <li><img src="{{ url_for('static', filename='img/badges/ml.png') }}" alt="Machine Learning"></li>
+        <li><img src="{{ url_for('static', filename='img/badges/Generative_AI.png') }}" alt="Generative AI"></li>
+        <li><img src="{{ url_for('static', filename='img/badges/sas.png') }}" alt="SAS"></li>
+        <li><img src="{{ url_for('static', filename='img/badges/spss.png') }}" alt="SPSS"></li>
+        <li><img src="{{ url_for('static', filename='img/badges/nvivo.png') }}" alt="NVivo"></li>
+        <li><img src="{{ url_for('static', filename='img/badges/sql.jpg') }}" alt="SQL"></li>
+        <li><img src="{{ url_for('static', filename='img/badges/powerbi.png') }}" alt="Power BI"></li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- 合作 LOGO -->
+  <div class="container">
+    <ul class="logo-wall">
+      <li><img src="{{ url_for('static', filename='img/logos/pku.png') }}"        alt="Peking University calligraphy"></li>
+      <li><img src="{{ url_for('static', filename='img/logos/ustb.png') }}"       alt="USTB"></li>
+      <li><img src="{{ url_for('static', filename='img/logos/georgian.png') }}"   alt="Georgian"></li>
+      <li><img src="{{ url_for('static', filename='img/logos/laurentian.png') }}" alt="Laurentian"></li>
+      <li><img src="{{ url_for('static', filename='img/logos/fairbank.png') }}"   alt="Fairbank"></li>
+      <li><img src="{{ url_for('static', filename='img/logos/hrpa.png') }}"       alt="HRPA"></li>
+      <li><img src="{{ url_for('static', filename='img/logos/psdata.png') }}"     alt="PS DATA"></li>
+    </ul>
+  </div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="page-title">Corporate Training</h1>
+<p class="lead">
+  A snapshot of bespoke in-house workshops delivered for state-owned enterprises
+  and multinationals on performance management, corporate culture, and HR
+  analytics.
+</p>
+
+<ul class="timeline">
+  {% for item in training_contract %}
+    <li>{{ item }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}

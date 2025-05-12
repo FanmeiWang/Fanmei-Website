@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Fanmei Wang, PhD | Home</title>
+  <!-- 引入全站样式 -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <!-- ─── 顶部导航栏 ───────────────────────────────────────── -->
+  <nav>
+    <span class="brand">Fanmei Wang, PhD</span>
+
+
+    <ul class="nav-links">
+      <li><a href="{{ url_for('about') }}">About</a></li>
+      <li><a href="{{ url_for('education') }}">Education</a></li>
+      <li><a href="{{ url_for('teaching_overview') }}">Teaching</a></li>
+      <li><a href="{{ url_for('projects') }}">Projects</a></li>
+      <li><a href="{{ url_for('publications') }}">Publications</a></li>
+      <li><a href="#blog">Research&nbsp;Blog</a></li>
+    </ul>
+  </nav>
+
+  <!-- ─── 主页 Hero ───────────────────────────────────────── -->
+  <main class="hero">
+    <img
+      class="avatar"
+      src="{{ url_for('static', filename='img/profile.jpg') }}"
+      alt="Fanmei Wang profile photo"
+    >
+
+    <h1>Hello, Fanmei!</h1>
+    <p>Your Flask app is now using a template.</p>
+  </main>
+</body>
+</html>
