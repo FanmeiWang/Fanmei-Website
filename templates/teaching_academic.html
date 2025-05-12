@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="page-title">Academic Courses</h1>
+<p class="lead">
+  Explore the undergraduate, graduate, and executive-MBA syllabi I have designed
+  and delivered, spanning human-resource management, organisational behaviour,
+  research methods, and China-focused seminars.
+</p>
+<a href="{{ url_for('teaching_academic') }}" class="module-card">
+  <h2 class="mod-title"><i class="fa-solid fa-book-open"></i> Academic Courses</h2>
+  <p class="mod-desc">Undergraduate, MBA &amp; EMBA syllabi I designed and delivered.</p>
+  <p class="mod-sub">6 subjects · 2010 – 2017</p>
+</a>
+
+{% for subgroup, items in academic.items() %}
+  <h2 class="subhead">{{ subgroup }}</h2>
+  <ul class="course-list">
+    {% for c in items %}
+      <li>{{ c.course }} — {{ c.level }}</li>
+    {% endfor %}
+  </ul>
+{% endfor %}
+{% endblock %}
