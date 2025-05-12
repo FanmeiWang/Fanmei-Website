@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template 
 app = Flask(__name__)
 
 @app.route("/")
@@ -355,7 +355,7 @@ def projects_ai():
 def projects_public_service():
     return render_template("projects_public_service.html",
                            surveys=gov_survey_projects,
-                           consults=gov_consulting_projects)@app.route("/projects/ai")
+                           consults=gov_consulting_projects)
 teaching_photos = [
     "teaching1.png", "teaching2.png", "teaching3.png",
     "teaching4.png", "teaching5.png", "teaching6.png",
