@@ -3,7 +3,8 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return render_template("index.html")  
+    return render_template("index.html", edu_list=education_data)
+
 
 @app.route("/about")                
 def about():
