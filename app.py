@@ -367,7 +367,7 @@ teaching_photos = [
 def teaching_overview():
     return render_template(
         "teaching_overview.html",
-        photos=teaching_photos        # ← 关键
+        photos=teaching_photos        
     )
 @app.route("/teaching/scroll")
 def teaching_scroll():
@@ -408,7 +408,7 @@ presentation_data = [
         "venue": "Harvard University Fairbank Center",
         "date":  "2023-11-18",
         "type":  "Keynote",
-        "link":  "https://fairbank.fas.harvard.edu/event/ai-hr-analytics/",   # 视频或网页
+        "link":  "https://fairbank.fas.harvard.edu/event/ai-hr-analytics/",   
         "cover": "harvard_ai_talk.jpg"   # static/images/harvard_ai_talk.jpg
     },
     {
@@ -424,8 +424,8 @@ presentation_data = [
         "venue": "Treasury Board of Canada",
         "date":  "2024-05-02",
         "type":  "Internal Webinar",
-        "link":  "",          # 只有列表，没有公开视频
-        "cover": ""           # 没有图片
+        "link":  "",          
+        "cover": ""           
     },
     # ……其余条目……
 ]
