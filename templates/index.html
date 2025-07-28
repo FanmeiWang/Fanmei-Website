@@ -55,6 +55,21 @@
       {% endfor %}
     </div>
   </section>
+<!-- ─── 技能徽章 ─────────────────────────── -->
+<section class="py-4">
+  <div class="container d-flex flex-wrap justify-content-center">
+    {% set badges = [
+      'python.png', 'flask.png', 'deep_learning.png',
+      'machine_learning.png', 'generative_ai.png',
+      'sas.png', 'spss.png', 'nvivo.png', 'sql.png', 'power_bi.png'
+    ] %}
+    {% for b in badges %}
+      <img src="{{ url_for('static', filename='img/badges/' ~ b) }}"
+           alt="{{ b.rsplit('.',1)[0] }}"
+           class="partner-logo">
+    {% endfor %}
+  </div>
+</section>
 
   <!-- Bootstrap JS（可选） -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
