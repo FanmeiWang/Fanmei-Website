@@ -3,12 +3,15 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return render_template("index.html", edu_list=education_data)
+    return redirect(url_for("about"))
 
 
-@app.route("/about")                
+@app.route("/about")
 def about():
-    return render_template("about.html")
+    return render_template(
+        "about.html",
+        edu_list=education_data    
+    )
 
 education_data = [
     {
@@ -443,4 +446,5 @@ def presentations():
                            talks=presentation_data)
 if __name__ == "__main__":
     app.run(debug=True)
+
 
