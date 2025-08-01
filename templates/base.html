@@ -6,18 +6,16 @@
   <!-- 页面 <title>，子模板可覆盖 -->
   <title>{% block title %}Fanmei Wang, PhD{% endblock %}</title>
 
-  <li class="nav-item"><a class="nav-link" href="{{ url_for('education') }}">Education</a></li>
-
-
-  <!-- ▸ 全站公共样式：base.css  -->
+  <!-- ▸ 全站公共样式 -->
   <link rel="stylesheet"
         href="{{ url_for('static', filename='css/base.css') }}">
 
-  <!-- ▸ 子页面额外样式／脚本占位 -->
+  <!-- ▸ 子页面额外样式 / 脚本占位 -->
   {% block extra_css %}{% endblock %}
 </head>
 <body>
 
+  {# 导航栏统一放在外部文件，避免重复 #}
   {% include "navbar.html" %}
 
   <!-- ▸ 子页面真正内容 -->
@@ -26,4 +24,6 @@
   <footer>© {{ current_year }} Fanmei Wang</footer>
 </body>
 </html>
+
+
 
