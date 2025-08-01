@@ -112,4 +112,42 @@ footer{
   background:var(--amber,#F4B400);color:#fff;font-size:.8rem;
   border-radius:4px;padding:0 6px;margin-left:.35rem;
 }
+/* ===== Navigation bar ===== */
+.site-nav{
+  background:#3C4246;          /* 深灰底 */
+  color:#fff;
+  font-family:system-ui,sans-serif;
+}
+.nav-container{
+  max-width:1200px;
+  margin:0 auto;
+  padding:.9rem 1.4rem;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.brand{
+  font-weight:700;
+  font-size:1.35rem;
+  color:#fff;
+  text-decoration:none;
+}
+.nav-links{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:flex;
+  gap:2rem;
+}
+.nav-links a{
+  color:#C99A5B;               /* 铜金文字 */
+  font-weight:600;
+  text-decoration:none;
+  transition:opacity .2s;
+}
+.nav-links a:hover,
+.nav-links a:focus-visible{
+  opacity:.8;
+  text-decoration:underline;
+}
 
