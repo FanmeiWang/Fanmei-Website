@@ -10,8 +10,9 @@ def home():
 def about():
     return render_template(
         "about.html",
-        edu_list=education_data    
+        edu_list=education_data   
     )
+
 
 education_data = [
     {
@@ -446,5 +447,6 @@ def presentations():
                            talks=presentation_data)
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
