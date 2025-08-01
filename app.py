@@ -368,8 +368,14 @@ teaching_photos = [
 def teaching_overview():
     return render_template(
         "teaching_overview.html",
-        photos=teaching_photos        
+        photos=teaching_photos,          
+        academic=teaching_data,          
+        thesis=thesis_stats,             
+        training_contract=training_contract,  
+        trainer_summary=trainer_summary,      
+        awards=awards_data               
     )
+
 @app.route("/teaching/scroll")
 def teaching_scroll():
     return render_template("teaching.html",
@@ -398,6 +404,7 @@ def teaching_awards():
 def teaching_thesis():
     return render_template("teaching_thesis.html",
                            thesis=thesis_stats)
+
 
 # 放在所有路由定义之后
 from flask import redirect, url_for
@@ -436,3 +443,4 @@ def presentations():
                            talks=presentation_data)
 if __name__ == "__main__":
     app.run(debug=True)
+
