@@ -1,94 +1,163 @@
-{% extends "base.html" %}
-{% block title %}Teaching &amp; Training{% endblock %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Teaching — Fanmei Wang, PhD</title>
+  <!-- 全站样式 -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
-{% block head_extra %}
-<style>
-/* ─── 站点主色 ───────────────────────────── */
-:root{
-  --deep-teal:#004f59;       /* 标题 / 字体 / 圆点 */
-  --mint-1:#DAF6F0;          /* 卡片①底色 */
-  --mint-grad:#4ac0b0;       /* 卡片①渐变 */
-  --sun-1:#FFF9E3;           /* 卡片②底色 */
-  --sun-grad:#FFD86A;        /* 卡片②渐变 */
-  --sky-1:#E6F2FF;           /* 卡片③底色 */
-  --sky-grad:#77B7FF;        /* 卡片③渐变 */
-  --lav-1:#F2ECFF;           /* 卡片④底色 */
-  --lav-grad:#B28BFF;        /* 卡片④渐变 */
-  --shadow:0 8px 26px rgba(0,0,0,.07);
-}
+  <!-- 页面专用样式 -->
+  <style>
+  :root{
+    --deep-teal:#004F59;
+    --amber:#FFD066;
+    --mint:#4FB39E;
+    --sun:#FFECB3;
+    --shadow:0 6px 18px rgba(0,0,0,.08);
+  }
+  body{margin:0;background:#FAF9F4;font-family:'Poppins',sans-serif;}
+  .container{max-width:1300px;margin:0 auto;padding:0 1rem;}
+  h1.page-title{color:var(--deep-teal);font-size:2.7rem;text-align:center;margin:60px 0 40px;}
 
-/* ─── 布局 ──────────────────────────────── */
-section.stack{display:grid;gap:2.2rem;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  margin-top:3.6rem}
-.card{position:relative;border-radius:18px;padding:2.4rem 1.9rem 2.9rem;
-  box-shadow:var(--shadow);background:var(--mint-1);overflow:hidden;transition:transform .25s}
-.card:hover{transform:translateY(-4px)}
-.card h3{margin:0 0 .7rem;font-size:1.35rem;color:var(--deep-teal)}
-.card p{margin:0;font-size:.94rem;line-height:1.35}
+  /* ---- 卡片网格 ---- */
+  .card-grid{
+    display:grid;gap:2.2rem;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  }
 
-/* ─── 彩色弧形角 ─────────────────────────── */
-.card::before{content:"";position:absolute;top:-42%;right:-42%;width:220%;
-  height:220%;border-radius:50%;transform:rotate(25deg);
-  background:linear-gradient(145deg,var(--mint-grad),var(--deep-teal,.92));
-  z-index:0;transition:opacity .3s}
-.card:nth-of-type(2){background:var(--sun-1)}
-.card:nth-of-type(2)::before{background:linear-gradient(145deg,var(--sun-grad),#FFB34F)}
-.card:nth-of-type(3){background:var(--sky-1)}
-.card:nth-of-type(3)::before{background:linear-gradient(145deg,var(--sky-grad),#3A8DFF)}
-.card:nth-of-type(4){background:var(--lav-1)}
-.card:nth-of-type(4)::before{background:linear-gradient(145deg,var(--lav-grad),#7D63FF)}
+  .teach-card{
+    background:#fff;border-radius:22px;overflow:hidden;
+    box-shadow:var(--shadow);transition:transform .25s, box-shadow .25s;
+    display:flex;flex-direction:column;cursor:pointer;
+  }
+  .teach-card:hover{transform:translateY(-6px);box-shadow:0 10px 26px rgba(0,0,0,.12);}
 
-/* 提升内容层级 */
-.card>*{position:relative;z-index:1}
+  /* 顶部渐变色块，可放图标 */
+  .card-banner{
+    height:140px;position:relative;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .card-banner svg{width:64px;height:64px;opacity:.9;fill:#fff;}
 
-/* ─── Responsive 微调 ───────────────────── */
-@media(max-width:860px){section.stack{grid-template-columns:1fr}}
-</style>
-{% endblock %}
+  /* 按序替换渐变色 */
+  .teach-card:nth-of-type(1) .card-banner{background:linear-gradient(130deg,var(--amber),#FFE9A8);}
+  .teach-card:nth-of-type(2) .card-banner{background:linear-gradient(130deg,var(--mint),#B5F1E4);}
+  .teach-card:nth-of-type(3) .card-banner{background:linear-gradient(130deg,#FFB549,#FFE8C1);}
+  .teach-card:nth-of-type(4) .card-banner{background:linear-gradient(130deg,#50A5C1,#CDF0FF);}
 
-{% block content %}
-<h1 style="text-align:center;color:var(--deep-teal);margin-top:2rem;font-size:2.6rem">
-  Teaching&nbsp;&amp;&nbsp;Training
-</h1>
+  /* 文字区 */
+  .card-body{padding:1.6rem 1.9rem;flex:1;display:flex;flex-direction:column;}
+  .card-title{margin:0 0 .7rem;font-size:1.45rem;color:var(--deep-teal);}
+  .card-desc{margin:0;color:#444;font-size:.96rem;line-height:1.35;}
 
-<section class="stack">
+  /* 详情列表 & 时间线 ↓↓↓ -------------------- */
+  details{margin-top:1.1rem;}
+  details[open] summary{margin-bottom:.8rem}
+  summary{list-style:none;cursor:pointer;font-weight:600;color:var(--deep-teal);}
+  summary::-webkit-details-marker{display:none;}
 
-  <!-- ① Academic Courses -->
-  <div class="card">
-    <h3>Academic&nbsp;Courses</h3>
-    <p>
-      Undergraduate / MBA&nbsp;&amp; EMBA syllabi I designed&nbsp;and delivered –
-      from Human Resources Management to Quantitative&nbsp;Methods.
-    </p>
-  </div>
+  ul.bullet,ul.timeline{margin:0;padding:0;list-style:none;font-size:.93rem;line-height:1.35;}
+  ul.bullet li{margin:.25rem 0;}
+  ul.bullet li::before{content:"• ";color:var(--deep-teal);font-weight:700;}
 
-  <!-- ② Corporate Training -->
-  <div class="card">
-    <h3>Corporate&nbsp;Training</h3>
-    <p>
-      In-house workshops for HBIS, Sinopec, BBMG and others on HR analytics,
-      performance evaluation and corporate culture.
-    </p>
-  </div>
+  ul.timeline{border-left:2px solid var(--deep-teal);padding-left:.85rem;}
+  ul.timeline li{position:relative;margin:0 0 .6rem;}
+  ul.timeline li::before{content:"";position:absolute;left:-.73rem;top:.4rem;width:.45rem;height:.45rem;border-radius:50%;background:var(--deep-teal);}
+  </style>
+</head>
+<body>
+  {% include "navbar.html" %}
 
-  <!-- ③ Teaching Awards -->
-  <div class="card">
-    <h3>Teaching Awards</h3>
-    <p>
-      Excellence in Teaching Award (USTB 2021) &nbsp;|&nbsp;
-      Outstanding Graduate Instructor (2015).
-    </p>
-  </div>
+  <main class="container">
+    <h1 class="page-title">Teaching &amp; Training</h1>
 
-  <!-- ④ Thesis Supervision -->
-  <div class="card">
-    <h3>Thesis Supervision</h3>
-    <p>
-      Guided <strong>50 +</strong> bachelor’s and <strong>30 +</strong> master’s
-      dissertations covering HRM, diversity and organisational behaviour.
-    </p>
-  </div>
+    <div class="card-grid">
 
-</section>
-{% endblock %}
+      <!-- 1) Academic Courses -->
+      <div class="teach-card">
+        <div class="card-banner">
+          <!-- 可替换为 SVG 图标；示例为简易书本形状 -->
+          <svg viewBox="0 0 24 24"><path d="M3 5a2 2 0 0 1 2-2h13a3 3 0 0 1 3 3v13.5a1.5 1.5 0 0 1-2.25 1.32L15 19.13l-5.75 1.69A1.5 1.5 0 0 1 7 19.37V6a1 1 0 0 0-1-1H3z"/></svg>
+        </div>
+        <div class="card-body">
+          <h2 class="card-title">Academic Courses</h2>
+          <p class="card-desc">Undergraduate, MBA &amp; EMBA syllabi I designed and delivered.</p>
+
+          <details>
+            <summary>Course list</summary>
+            {% for subgroup, items in academic.items() %}
+              <strong>{{ subgroup }}</strong>
+              <ul class="bullet">
+                {% for c in items %}
+                  <li>{{ c.course }} — {{ c.level }}</li>
+                {% endfor %}
+              </ul>
+            {% endfor %}
+          </details>
+        </div>
+      </div>
+
+      <!-- 2) Corporate Training -->
+      <div class="teach-card">
+        <div class="card-banner">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16v2H4zm2 4h12v2H6zm-2 4h16v2H4zm2 4h12v2H6z"/></svg>
+        </div>
+        <div class="card-body">
+          <h2 class="card-title">Corporate Training</h2>
+          <p class="card-desc">Enterprise workshops on HR analytics, culture and performance.</p>
+
+          <details>
+            <summary>Contracts</summary>
+            <ul class="timeline">
+              {% for t in training_contract %}
+                <li>{{ t }}</li>
+              {% endfor %}
+            </ul>
+          </details>
+        </div>
+      </div>
+
+      <!-- 3) Teaching Awards -->
+      <div class="teach-card">
+        <div class="card-banner">
+          <svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5zm0 20 6-3.27V10L12 13l-6-3v8.73z"/></svg>
+        </div>
+        <div class="card-body">
+          <h2 class="card-title">Teaching Awards</h2>
+          <p class="card-desc">Institutional accolades recognising instructional excellence.</p>
+
+          <details>
+            <summary>Awards timeline</summary>
+            <ul class="timeline">
+              {% for a in awards %}
+                <li><strong>{{ a.award }}</strong> — {{ a.institution }} · {{ a.year }}</li>
+              {% endfor %}
+            </ul>
+          </details>
+        </div>
+      </div>
+
+      <!-- 4) Thesis Supervision -->
+      <div class="teach-card">
+        <div class="card-banner">
+          <svg viewBox="0 0 24 24"><path d="M5 4h14v2H5zm0 4h10v2H5zm0 4h14v2H5zm0 4h10v2H5z"/></svg>
+        </div>
+        <div class="card-body">
+          <h2 class="card-title">Thesis Supervision</h2>
+          <p class="card-desc">Guidance provided to 50-plus bachelor’s &amp; master’s dissertations.</p>
+
+          <details>
+            <summary>At-a-glance</summary>
+            <ul class="bullet">
+              <li>Bachelor’s papers — {{ thesis.bachelor }}</li>
+              <li>Master’s theses — {{ thesis.master }}</li>
+            </ul>
+          </details>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
