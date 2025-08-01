@@ -98,4 +98,18 @@ footer{
 .edu-logo-strip img:hover{
   transform:scale(1.06);
 }
+/* ===== Education 列表 ===== */
+.edu-item{
+  display:flex;align-items:center;gap:1.2rem;margin-bottom:1.4rem;
+  background:#fff;padding:1rem 1.3rem;border-radius:12px;
+  box-shadow:0 4px 14px rgba(0,0,0,.06);
+}
+.edu-logo{
+  width:70px;height:70px;border-radius:50%;object-fit:contain;flex-shrink:0;
+}
+.edu-text h3{margin:0 0 .3rem;font-size:1.25rem;color:var(--brand-teal,#004F59);}
+.tag{
+  background:var(--amber,#F4B400);color:#fff;font-size:.8rem;
+  border-radius:4px;padding:0 6px;margin-left:.35rem;
+}
 
