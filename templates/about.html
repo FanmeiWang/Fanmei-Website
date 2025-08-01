@@ -38,7 +38,27 @@
       align-items:center;
     }
     .logo-wall img{ max-height:80px; flex:0 0 auto; }
-  </style>
+  <!-- ===== Education ===== -->
+<section class="container mt-5">
+  <h2 class="section-title">Education</h2>
+
+  {% for edu in edu_list %}
+    <div class="edu-item">
+      <img class="edu-logo"
+           src="{{ url_for('static', filename='img/logos/' ~ edu.logo) }}"
+           alt="{{ edu.school }} logo">
+
+      <div class="edu-text">
+        <h3>{{ edu.school }}
+          {% if edu.status %}<span class="tag">{{ edu.status }}</span>{% endif %}
+        </h3>
+        <p><strong>{{ edu.degree }}</strong>
+           {% if edu.detail %}&nbsp;— {{ edu.detail }}{% endif %}</p>
+      </div>
+    </div>
+  {% endfor %}
+</section>
+</style>
 </head>
 <body>
   {% include "navbar.html" %}
@@ -100,3 +120,4 @@
   </div>
 </body>
 </html>
+
