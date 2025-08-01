@@ -2,22 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+
+  <!-- 页面 <title>，子模板可覆盖 -->
   <title>{% block title %}Fanmei Wang, PhD{% endblock %}</title>
 
-  <!-- 通用样式与脚本 -->
+  <!-- ▸ 全站公共样式：base.css  -->
   <link rel="stylesheet"
-        href="{{ url_for('static', filename='css/main.css') }}">
+        href="{{ url_for('static', filename='css/base.css') }}">
 
-  <!--▼ 页面专属内联 CSS 放这里 -->
+  <!-- ▸ 子页面额外样式／脚本占位 -->
   {% block extra_css %}{% endblock %}
 </head>
 <body>
 
   {% include "navbar.html" %}
 
-  <!--▼ 各子页面真正的内容 -->
+  <!-- ▸ 子页面真正内容 -->
   {% block content %}{% endblock %}
 
   <footer>© {{ current_year }} Fanmei Wang</footer>
 </body>
 </html>
+
