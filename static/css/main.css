@@ -1216,4 +1216,155 @@ body{padding:0 130px;}             /* 120px rail + 10px 缓冲 */
   box-shadow:0 12px 30px rgba(0,0,0,.12);
 }
 .mod-title{font-size:1.7rem;margin:0 0 .6rem}
+/* ─────────── 主题颜色 & 全局字体 ─────────── */
+:root{
+  --green:#004E4A;          /* 深墨绿 */
+  --gold:#CFAF2A;           /* 金色强调 */
+  --gold-light:#FFF7E0;     /* 金色渐变末端 */
+  --gray-bg:#F7F8F6;        /* 全页浅灰/米色背景 */
+  --shadow:0 4px 14px rgba(0,0,0,.06);  /* 统一阴影 */
+}
+
+body{
+  margin:0;
+  background:var(--gray-bg);
+  font-family:'Inter','Noto Sans SC',sans-serif;
+  color:#233;
+}
+h1,h2,h3{
+  font-family:'Merriweather','Noto Serif SC',serif;
+  color:var(--green);
+}
+
+/* ─────────── 默认容器 ─────────── */
+.container{
+  max-width:1280px;
+  margin:auto;
+  padding:0 1rem;
+}
+
+/* ─────────── 卡片栅格布局 ─────────── */
+.card-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:2rem;
+  padding-bottom:4rem;
+}
+.teach-card{
+  background:#fff;
+  border-radius:20px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  transition:transform .25s;
+}
+.teach-card:hover{
+  transform:translateY(-4px);
+}
+
+/* ─────────── 顶部渐变条（图标区域） ─────────── */
+.card-banner{
+  height:120px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.card-banner svg{
+  width:60px;
+  height:60px;
+  fill:#fff;
+  opacity:.92;
+}
+/* odd / even 交替墨绿↔金色渐变 */
+.teach-card:nth-child(odd)  .card-banner{
+  background:linear-gradient(135deg,var(--green),var(--gold));
+}
+.teach-card:nth-child(even) .card-banner{
+  background:linear-gradient(135deg,var(--gold),var(--gold-light));
+}
+
+/* ─────────── 卡片正文 ─────────── */
+.card-body{
+  padding:1.6rem 1.8rem;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+.card-title{
+  margin:0 0 .6rem;
+  font-size:1.55rem;
+  line-height:1.2;
+}
+.card-desc{
+  margin:0 0 1.1rem;
+  font-size:.97rem;
+  line-height:1.45;
+  color:#445;
+}
+
+/* ─────────── details / summary 下拉 ─────────── */
+summary{
+  cursor:pointer;
+  list-style:none;
+  font-weight:600;
+  margin-bottom:.6rem;
+  color:var(--green);
+}
+summary::-webkit-details-marker{display:none;}
+
+/* 子弹列表 */
+ul.bullet{
+  padding:0;
+  margin:0;
+  list-style:none;
+  font-size:.9rem;
+  line-height:1.4;
+}
+ul.bullet li{
+  position:relative;
+  padding-left:.8rem;
+  margin:.2rem 0;
+}
+ul.bullet li::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:.55rem;
+  width:.42rem;
+  height:.42rem;
+  border-radius:50%;
+  background:var(--gold);
+}
+
+/* 时间线列表 */
+ul.timeline{
+  border-left:2px solid var(--green);
+  padding-left:1rem;
+  margin:0;
+  list-style:none;
+  font-size:.9rem;
+  line-height:1.4;
+}
+ul.timeline li{
+  position:relative;
+  margin:.4rem 0;
+}
+ul.timeline li::before{
+  content:'';
+  position:absolute;
+  left:-.87rem;
+  top:.45rem;
+  width:.5rem;
+  height:.5rem;
+  border-radius:50%;
+  background:var(--gold);
+}
+
+/* ─────────── 响应式微调 ─────────── */
+@media (max-width:600px){
+  h1{font-size:1.9rem;}
+  .card-title{font-size:1.35rem;}
+  .card-grid{gap:1.4rem;}
+}
 
