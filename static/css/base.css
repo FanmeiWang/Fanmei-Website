@@ -1,1 +1,72 @@
+/* ---------- Google Fonts ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Noto+Sans+SC:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Noto+Serif+SC:wght@700&display=swap');
 
+/* ---------- 1. 基础变量 ---------- */
+:root{
+  /* 主题色 */
+  --brand-teal : #004F59;   /* 深青主色 */
+  --amber      : #F4B400;   /* 琥珀强调 */
+  --sand       : #F4E4C5;   /* 沙色背景 */
+  /* 组件公用 */
+  --card-radius : 14px;
+  --shadow      : 0 4px 14px rgba(0,0,0,.06);
+  --shadow-hov  : 0 8px 24px rgba(0,0,0,.10);
+}
+
+/* ---------- 2. 全局重置 ---------- */
+html,body{
+  margin:0; height:100%;
+  font-family:'Inter','Noto Sans SC',sans-serif;
+  background:var(--sand);
+  color:var(--brand-teal);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- 3. 通用排版 ---------- */
+h1,h2,h3{font-family:'Merriweather','Noto Serif SC',serif;color:var(--brand-teal);}
+a{color:var(--amber);text-decoration:none;transition:opacity .2s}
+a:hover{opacity:.8}
+
+/* ---------- 4. 栅格/容器 ---------- */
+.container{max-width:1260px;margin:0 auto;padding:0 1rem;}
+.section-title{font-size:2rem;margin:0 0 2rem;}
+@media(max-width:640px){.section-title{font-size:1.7rem;}}
+
+/* ---------- 5. 按钮 ---------- */
+.btn{
+  display:inline-block;padding:.65rem 1.3rem;border:0;border-radius:6px;
+  font-weight:600;background:var(--amber);color:#fff;cursor:pointer;
+  transition:filter .2s,transform .2s;
+}
+.btn:hover{filter:brightness(1.1);transform:translateY(-2px)}
+
+/* ---------- 6. 卡片基础 ---------- */
+.card{
+  background:#fff;border-radius:var(--card-radius);box-shadow:var(--shadow);
+  padding:1.4rem 1.8rem;transition:transform .25s,box-shadow .25s;
+}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-hov);}
+
+/* ---------- 7. 导航栏 ---------- */
+nav{
+  display:flex;justify-content:space-between;align-items:center;
+  background:var(--brand-teal);color:#fff;padding:.85rem 1.4rem;
+}
+nav .brand{font-size:1.35rem;font-weight:700}
+nav ul{list-style:none;margin:0;padding:0;display:flex;gap:1.8rem}
+nav a{color:var(--amber);font-size:1.1rem}
+nav a:hover{text-decoration:underline;opacity:.9}
+
+/* ---------- 8. 页脚 ---------- */
+footer{
+  background:var(--brand-teal);color:#fff;text-align:center;
+  padding:2rem 1.2rem;font-size:.9rem;
+}
+
+/* ---------- 9. 动画 ---------- */
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+
+/* ---------- 10. 小工具类 ---------- */
+.text-center{text-align:center}
+.mt-0{margin-top:0}.mb-0{margin-bottom:0}
