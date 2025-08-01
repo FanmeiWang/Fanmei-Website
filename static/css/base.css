@@ -70,3 +70,32 @@ footer{
 /* ---------- 10. 小工具类 ---------- */
 .text-center{text-align:center}
 .mt-0{margin-top:0}.mb-0{margin-bottom:0}
+
+/* ---------- 首页头像 ---------- */
+.hero .avatar{
+  width:160px;          /* 调整小一点 */
+  height:160px;
+  border-radius:50%;
+  object-fit:cover;
+  box-shadow:0 4px 14px rgba(0,0,0,.10);
+  margin-bottom:2rem;
+}
+
+/* ---------- Education logo 横向排版 ---------- */
+.edu-logo-strip{                 /* 给包裹 logo 的 <div> 或 <section> 加这个类 */
+  display:flex;
+  flex-wrap:wrap;               /* 超宽自动换行 */
+  gap:2.5rem;                   /* logo 之间空隙 */
+  justify-content:center;       /* 水平居中 */
+  margin:3rem 0;
+}
+.edu-logo-strip img{
+  max-height:80px;              /* 统一高度 */
+  object-fit:contain;
+  filter:grayscale(.1);         /* 淡一点可读 */
+  transition:transform .25s;
+}
+.edu-logo-strip img:hover{
+  transform:scale(1.06);
+}
+
