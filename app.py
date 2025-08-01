@@ -6,12 +6,15 @@ def home():
     return redirect(url_for("about"))
 
 
+# ---------- About ----------
 @app.route("/about")
 def about():
     return render_template(
         "about.html",
-        edu_list=education_data   
+        edu_list=education_data,   
+        current_year=datetime.now().year
     )
+
 
 
 education_data = [
@@ -447,6 +450,7 @@ def presentations():
                            talks=presentation_data)
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
