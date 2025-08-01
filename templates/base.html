@@ -6,6 +6,9 @@
   <!-- 页面 <title>，子模板可覆盖 -->
   <title>{% block title %}Fanmei Wang, PhD{% endblock %}</title>
 
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('education') }}">Education</a></li>
+
+
   <!-- ▸ 全站公共样式：base.css  -->
   <link rel="stylesheet"
         href="{{ url_for('static', filename='css/base.css') }}">
