@@ -10,20 +10,57 @@
   <link rel="stylesheet"
         href="{{ url_for('static', filename='css/base.css') }}">
 
+  <!-- ▸ 导航栏局部样式（放这里，其他页面也能继承） -->
+  <style>
+    /* =========== 顶栏导航 =========== */
+    header.site-header{
+      background:#363d43;           /* 深灰底，与截图一致 */
+      padding:0.9rem 2.2rem;
+    }
+    .nav{                            /* Flex 左右分布 */
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      max-width:1200px;
+      margin:0 auto;
+    }
+    .nav .brand{
+      font-weight:700;
+      font-size:1.15rem;
+      letter-spacing:.2px;
+      color:#cfae2a;                /* 金色 */
+      text-decoration:none;
+      white-space:nowrap;
+    }
+    .nav-list{
+      display:flex;
+      gap:2.3rem;
+      list-style:none;
+      margin:0;
+      padding:0;
+    }
+    .nav-list a{
+      color:#ffe4b3;                /* 淡金/白 */
+      font-weight:500;
+      text-decoration:none;
+      transition:opacity .2s;
+    }
+    .nav-list a:hover{opacity:.85;color:#fff}
+    /* 亮起当前页面（可选） */
+    .nav-list .active{color:#fff}
+  </style>
+
   <!-- ▸ 子页面额外样式 / 脚本占位 -->
   {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-  {# 导航栏统一放在外部文件，避免重复 #}
+  {# 顶部导航 #}
   {% include "navbar.html" %}
 
   <!-- ▸ 子页面真正内容 -->
   {% block content %}{% endblock %}
 
-  <footer>© {{ current_year }} Fanmei Wang</footer>
+  <footer>© {{ current_year }}  Fanmei Wang</footer>
 </body>
 </html>
-
-
-
