@@ -366,11 +366,6 @@ gov_consulting_projects = [
 def projects():          # ← endpoint = "projects"
     return render_template("projects.html")
 
-@app.route("/projects/academic")
-def projects_academic():
-    return render_template("projects_academic.html",
-                           projects=academic_projects)
-
 @app.route("/projects/consulting")
 def projects_consulting():
     return render_template("projects_consulting.html",
@@ -518,6 +513,7 @@ def presentations():
                            talks=presentation_data)
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
