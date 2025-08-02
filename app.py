@@ -444,33 +444,16 @@ def teaching_awards():
 def teaching_thesis():
     return render_template("teaching_thesis.html",
                            thesis=thesis_stats)
-@app.route("/academic-research")
-def academic_research():
-    entries = [
-        # 按时间倒序写即可
-        {"year": "2017–18",
-         "org": "Harvard University",
-         "project": "Cultural Sensitivity & Policy Implementation",
-         "summary": "Conducted qualitative research on cultural sensitivity and policy implementation within diverse organizations.",
-         "featured": True},
-        {"year": "2015",
-         "org": "SSHRC",
-         "project": "Ethnic Diversity & HRM in Multinational Enterprises",
-         "summary": "Examined the impact of ethnic diversity in shaping HR policies across international branches.",
-         "featured": False},
-        {"year": "2013",
-         "org": "China’s National Social Science Fund",
-         "project": "Employment Discrimination & Counter-measures",
-         "summary": "Explored systematic barriers and policy responses toward employment discrimination.",
-         "featured": False},
-    ]
-    return render_template(
-        "academic_research.html",
-        entries=entries
-    )
 # ────────────────────────────────────────────────
 #  Academic-Research projects  ⭢ 时间线用的数据
 # ────────────────────────────────────────────────
+# ⭐ Academic-research timeline
+@app.route("/projects/academic")
+def academic_research():          # 注意：函数名随便，但路由固定
+    return render_template(
+        "academic_research.html",  # 你的时间线模板
+        entries=academic_projects  # 7 条完整数据
+    )
 academic_projects = [
     {
         "year": "2020 – present",
@@ -520,17 +503,6 @@ academic_projects = [
 # ────────────────────────────────────────────────
 #  /projects/academic 路由 —— **只渲染一个模板**
 # ────────────────────────────────────────────────
-@app.route("/projects/academic")
-def projects_academic():
-    """
-    Academic-research timeline page.
-    Template: templates/academic_research.html
-    Context var: entries → academic_projects list
-    """
-    return render_template(
-        "academic_research.html",   # 模板文件名
-        entries=academic_projects   # 传给 {% for e in entries %} …
-    )
 
 
 # 放在所有路由定义之后
@@ -570,6 +542,7 @@ def presentations():
                            talks=presentation_data)
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
