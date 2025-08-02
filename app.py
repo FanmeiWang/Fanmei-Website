@@ -428,7 +428,30 @@ def teaching_awards():
 def teaching_thesis():
     return render_template("teaching_thesis.html",
                            thesis=thesis_stats)
-
+@app.route("/academic-research")
+def academic_research():
+    entries = [
+        # 按时间倒序写即可
+        {"year": "2017–18",
+         "org": "Harvard University",
+         "project": "Cultural Sensitivity & Policy Implementation",
+         "summary": "Conducted qualitative research on cultural sensitivity and policy implementation within diverse organizations.",
+         "featured": True},
+        {"year": "2015",
+         "org": "SSHRC",
+         "project": "Ethnic Diversity & HRM in Multinational Enterprises",
+         "summary": "Examined the impact of ethnic diversity in shaping HR policies across international branches.",
+         "featured": False},
+        {"year": "2013",
+         "org": "China’s National Social Science Fund",
+         "project": "Employment Discrimination & Counter-measures",
+         "summary": "Explored systematic barriers and policy responses toward employment discrimination.",
+         "featured": False},
+    ]
+    return render_template(
+        "academic_research.html",
+        entries=entries
+    )
 
 # 放在所有路由定义之后
 from flask import redirect, url_for
@@ -467,6 +490,7 @@ def presentations():
                            talks=presentation_data)
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
