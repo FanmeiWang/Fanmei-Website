@@ -1,97 +1,65 @@
-{# templates/projects.html #}
+{# ---------------- Projects index page ---------------- #}
 {% extends "base.html" %}
 {% block title %}Projects — Fanmei Wang, PhD{% endblock %}
 
 {% block extra_css %}
-  <!-- 仅此页的样式（也可放到 main.css 最后） -->
-  <style>
-    .projects-wrapper{
-      max-width:1100px;
-      margin:60px auto 100px;
-      padding:0 1rem;
-      text-align:center;
-    }
-    .projects-title{
-      font-size:2.6rem;
-      margin:0 0 2.5rem;
-      color:var(--brand-teal,#004F59);
-      font-family:"Merriweather","Noto Serif SC",serif;
-    }
+<style>
+/* 页面整体 */
+.projects-wrapper{
+  max-width:900px;margin:60px auto 100px;padding:0 1rem;text-align:center}
+.projects-title{
+  font-size:2.6rem;margin:0 0 2.8rem;color:var(--brand-teal,#004F59);
+  font-family:"Merriweather","Noto Serif SC",serif}
 
-    /* ─── 网格容器 ─── */
-    .proj-menu{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-      gap:2rem;
-      place-items:center;
-    }
+/* ▸ 网格容器 —— 2×2 固定 */
+.proj-menu{
+  display:grid;grid-template-columns:repeat(2,minmax(240px,1fr));
+  gap:2.2rem;justify-content:center}
+/* 小屏降为 1 列 */
+@media(max-width:700px){
+  .proj-menu{grid-template-columns:1fr;max-width:420px;margin-inline:auto}}
 
-    /* ─── 单张卡片 ─── */
-    .proj-card{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      height:180px;
-      padding:1.2rem;
-      border-radius:18px;
-      color:#fff;
-      font-size:1.55rem;
-      font-weight:600;
-      line-height:1.25;
-      text-decoration:none;
-      text-align:center;
-      box-shadow:0 6px 22px rgba(0,0,0,.08);
-      transition:transform .25s,box-shadow .25s;
-    }
-    .proj-card:hover{
-      transform:translateY(-8px);
-      box-shadow:0 12px 32px rgba(0,0,0,.12);
-    }
+/* ▸ 单张卡片 */
+.proj-card{
+  display:flex;align-items:center;justify-content:center;
+  height:200px;padding:1.4rem;border-radius:22px;
+  color:#fff;font-size:1.55rem;font-weight:600;line-height:1.28;
+  text-decoration:none;text-align:center;box-shadow:0 6px 22px rgba(0,0,0,.10);
+  transition:transform .25s,box-shadow .25s}
+.proj-card:hover{transform:translateY(-8px);box-shadow:0 14px 32px rgba(0,0,0,.14)}
 
-    /* ① AI & ML —— 绿松渐变 */
-    .card-ai{
-      background:linear-gradient(135deg,#01c9b1 0%,#7dfec9 100%);
-    }
-    /* ② Public-Service —— 天蓝渐变 */
-    .card-public{
-      background:linear-gradient(135deg,#4a90e2 0%,#8bd5ff 100%);
-    }
-    /* ③ Academic —— 琥珀渐变 */
-    .card-academic{
-      background:linear-gradient(135deg,#f5af19 0%,#fad961 100%);
-    }
-    /* ④ Corporate —— 洋红渐变 */
-    .card-consult{
-      background:linear-gradient(135deg,#ec008c 0%,#fc6767 100%);
-    }
+/* 4 张卡片 —— 深浅不同的绿色渐变 */
+.card-1{background:linear-gradient(135deg,#028a65 0%,#1ad98f 100%)}
+.card-2{background:linear-gradient(135deg,#019264 0%,#2df5a1 100%)}
+.card-3{background:linear-gradient(135deg,#009c67 0%,#4bffb0 100%)}
+.card-4{background:linear-gradient(135deg,#00a46a 0%,#66ffc0 100%)}
 
-    /* 手机端自适应：更矮、更小字 */
-    @media(max-width:640px){
-      .proj-card{height:140px;font-size:1.25rem;}
-    }
-  </style>
+/* 小屏卡片尺寸微调 */
+@media(max-width:700px){
+  .proj-card{height:160px;font-size:1.35rem}}
+</style>
 {% endblock %}
 
 {% block content %}
-  <main class="projects-wrapper">
-    <h1 class="projects-title">Projects</h1>
+<main class="projects-wrapper">
+  <h1 class="projects-title">Projects</h1>
 
-    <!-- 顺序：AI&ML + Public-Service ➜ Academic + Consulting -->
-    <div class="proj-menu">
-      <a href="{{ url_for('projects_ai') }}"
-         class="proj-card card-ai">AI &amp; ML<br>Projects</a>
+  <div class="proj-menu">
+    <a href="{{ url_for('projects_ai') }}"
+       class="proj-card card-1">AI &amp; ML<br>Projects</a>
 
-      <a href="{{ url_for('projects_public_service') }}"
-         class="proj-card card-public">Public-Service<br>Analytics</a>
+    <a href="{{ url_for('projects_public_service') }}"
+       class="proj-card card-2">Public-Service<br>Analytics</a>
 
-      <a href="{{ url_for('academic_research') }}"
-         class="proj-card card-academic">Academic<br>Research</a>
+    <a href="{{ url_for('academic_research') }}"
+       class="proj-card card-3">Academic<br>Research</a>
 
-      <a href="{{ url_for('projects_consulting') }}"
-         class="proj-card card-consult">Corporate<br>Consulting</a>
-    </div>
-  </main>
+    <a href="{{ url_for('projects_consulting') }}"
+       class="proj-card card-4">Corporate<br>Consulting</a>
+  </div>
+</main>
 {% endblock %}
+
 
 
 
