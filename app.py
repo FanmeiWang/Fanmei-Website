@@ -19,7 +19,6 @@ def about():
 
 @app.errorhandler(TemplateNotFound)
 def handle_missing_template(e):
-    # 日志里仍然能看到 WARNING，但浏览器不会炸成 500
     app.logger.warning("Template not found: %s", e)
     return f"Template '{e.name}' not found.", 404
 
@@ -517,6 +516,7 @@ def presentations():
                            talks=presentation_data)
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
