@@ -3,47 +3,51 @@
 <head>
   <meta charset="utf-8">
   <title>Publications — Fanmei Wang, PhD</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- 站点公共样式 -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 <body>
   {% include "navbar.html" %}
 
-  <!-- 改横幅：高度 200px，滤镜更轻 -->
+  <!-- 顶部浅色横幅（200px，高度可调） -->
   <header class="pub-hero"></header>
 
-  <!-- 双栏网格 -->
+  <!--────────────  双栏主内容  ────────────-->
   <main class="pub-grid">
-    <!-- ── 左列：Books ───────────────── -->
+
+    <!--── 左：Books ──────────────────────-->
     <section>
       <h2 class="section-title">Books</h2>
-      <div class="book-list">
-        {% for b in books %}
-        <article class="book-item" style="animation-delay: {{ loop.index0 * 0.08 }}s;">
-          <img class="book-cover"
-               src="{{ url_for('static', filename='img/books/' + b.cover) }}"
-               alt="{{ b.title }} cover">
-          <div class="book-text">
-            <span class="book-role">{{ b.role }}</span>
-            <p class="book-cite">{{ b.cite }}</p>
-          </div>
-        </article>
-        {% endfor %}
-      </div>
+
+      {% for b in books %}
+      <article class="book-card" style="animation-delay: {{ loop.index0 * .08 }}s;">
+        <img class="book-cover"
+             src="{{ url_for('static', filename='img/books/' ~ b.cover) }}"
+             alt="{{ b.title }} cover">
+        <p class="book-cite">{{ b.cite }}</p>
+      </article>
+      {% endfor %}
     </section>
 
-    <!-- ── 右列：Journal Articles ───────── -->
+    <!--── 右：Journal Articles ───────────-->
     <section>
-      <h2 class="section-title">Journal Articles</h2>
-      <div class="pub-list">
+      <h2 class="section-title">Journal&nbsp;Articles</h2>
+
+      <ul class="article-timeline">
         {% for p in articles %}
-        <article class="pub-item" style="animation-delay: {{ loop.index0 * 0.08 }}s;">
-          <span class="pub-type">{{ p.type }}</span>
-          <p class="pub-cite">{{ p.cite }}</p>
-        </article>
+        <li style="animation-delay: {{ loop.index0 * .08 }}s;">
+          <article class="article-card">
+            <span class="article-tag">{{ p.type }}</span>
+            <p class="article-cite">{{ p.cite }}</p>
+          </article>
+        </li>
         {% endfor %}
-      </div>
+      </ul>
     </section>
+
   </main>
 </body>
 </html>
+
