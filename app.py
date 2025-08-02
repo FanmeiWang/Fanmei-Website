@@ -398,32 +398,26 @@ def teaching_thesis():
 # ────────────────────────────────────────────────
 #  Academic-Research projects  ⭢ 时间线用的数据
 # ────────────────────────────────────────────────
-# ⭐ Academic-research timeline
-@app.route("/projects/academic")
-def academic_research():          # 注意：函数名随便，但路由固定
-    return render_template(
-        "academic_research.html",  # 你的时间线模板
-        entries=academic_projects  # 7 条完整数据
-    )
+# ===== Academic-research timeline =====
 academic_projects = [
     {
         "year": "2020 – present",
         "org":  "IAS · Zhejiang University",
-        "title": "Mutual Embeddedness of Social Structures in Multi-ethnic Countries",
+        "title": "The Development of Mutual Embeddedness of Social Structures in Multi-ethnic Countries",
         "desc":  "Grant under Prof. Zhixiang Jian exploring inter-ethnic integration in multi-ethnic societies."
     },
     {
         "year": "2019",
         "org":  "IAS · Zhejiang University",
-        "title": "Ethnicity & HRM Practice in China’s Minority-inhabited Regions",
-        "desc":  "CAD 17 000 fellowship analysing HRM practices and policy adaptation across minority regions."
+        "title": "Ethnicity & Human Resources Management Practice in Chinese Minority-inhabited Regions",
+        "desc":  "Fellowship grant (CAD 17 000) analysing HRM practices and policy adaptation across minority regions."
     },
     {
         "year": "2017-18",
         "org":  "Harvard Univ. · Fairbank Center",
         "title": "Career Development for Ethnic-minority Employees in Chinese Organizations",
-        "desc":  "CAD 25 920 CSC-funded visiting-scholar project on cultural sensitivity & policy implementation.",
-        "featured": True          # ← 深红高亮条
+        "desc":  "CSC-funded visiting-scholar project (CAD 25 920) on cultural sensitivity & policy implementation.",
+        "featured": True          # 深红高亮
     },
     {
         "year": "2015-16",
@@ -434,7 +428,7 @@ academic_projects = [
     {
         "year": "2013-14",
         "org":  "State Ethnic Affairs Commission of China",
-        "title": "Career Development of Minority Employees in Tibet Autonomous Region",
+        "title": "Career Development of Minority Ethnic Group Members in Tibet Autonomous Region",
         "desc":  "Investigated barriers and advancement pathways for Tibetan employees (CAD 4 000 grant)."
     },
     {
@@ -450,6 +444,14 @@ academic_projects = [
         "desc":  "Explored market expansion and HR training needs in the traditional Thangka art sector (PI Danzeng-Lunzhu)."
     }
 ]
+
+@app.route("/projects/academic")
+def academic_research():                # 路由不变
+    return render_template(
+        "academic_research.html",
+        entries=academic_projects        # 把 7 条数据传给模板
+    )
+
 
 # ────────────────────────────────────────────────
 #  /projects/academic 路由 —— **只渲染一个模板**
@@ -493,6 +495,7 @@ def presentations():
                            talks=presentation_data)
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
