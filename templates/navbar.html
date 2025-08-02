@@ -1,15 +1,20 @@
+{# 统一导航栏 /templates/navbar.html #}
 <header class="site-header">
   <nav class="nav">
-    <!-- 左侧金色品牌 -->
-    <a class="brand" href="{{ url_for('about') }}">Fanmei Wang, PhD</a>
 
-    <!-- 右侧导航链接 -->
+    <!-- 品牌（左侧） -->
+    <a class="brand" href="{{ url_for('about') }}">Fanmei&nbsp;Wang, PhD</a>
+
+    <!-- 菜单（右侧） -->
     <ul class="nav-list">
       <li><a href="{{ url_for('about') }}"
              class="{% if request.endpoint=='about' %}active{% endif %}">About</a></li>
 
+      <li><a href="{{ url_for('education') }}"
+             class="{% if request.endpoint=='education' %}active{% endif %}">Education</a></li>
+
       <li><a href="{{ url_for('publications') }}"
-             class="{% if request.endpoint.startswith('publications') %}active{% endif %}">Publications</a></li>
+             class="{% if request.endpoint=='publications' %}active{% endif %}">Publications</a></li>
 
       <li><a href="{{ url_for('projects') }}"
              class="{% if request.endpoint.startswith('projects') %}active{% endif %}">Projects</a></li>
@@ -18,7 +23,7 @@
              class="{% if request.endpoint.startswith('teaching') %}active{% endif %}">Teaching</a></li>
 
       <li><a href="{{ url_for('presentations') }}"
-             class="{% if request.endpoint=='presentations' %}active{% endif %}">Research Blog</a></li>
+             class="{% if request.endpoint=='presentations' %}active{% endif %}">Research&nbsp;Blog</a></li>
     </ul>
   </nav>
 </header>
