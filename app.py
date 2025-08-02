@@ -40,7 +40,7 @@ education_data = [
     },
     {
         "school": "Laurentian University",
-        "degree": "M.A. in Sociology",
+        "degree": "M.A. in Applied Social Research",
         "status": "",
         "detail": "",
         "logo": "laurentian.png"
@@ -495,6 +495,7 @@ def presentations():
                            talks=presentation_data)
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
