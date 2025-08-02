@@ -241,36 +241,53 @@ awards_data = [
 # ───────────────────────────
 
 # 1) Academic Research  (学术项目)
+# ─── Academic-research projects (Harvard highlighted only) ─────────
 academic_projects = [
     {
-        "title": "Mutual Embeddedness of Social Structure of Ethnic Groups",
-        "funding": "IAS, Zhejiang University",
-        "period":  "2020 – present",
-        "amount":  "—",
-        "cover":   "tibet.jpg"
+        "year": "2020 – present",
+        "org": "IAS · Zhejiang University",
+        "title": "Mutual Embeddedness of Social Structures in Multi-ethnic Countries",
+        "desc": "Grant under Prof. Zhixiang Jian exploring inter-ethnic integration in multi-ethnic societies."
     },
     {
-        "title": "Ethnicity & HRM Practice in Minority Regions",
-        "funding": "IAS, Zhejiang University",
-        "period":  "2019",
-        "amount":  "$17 000 CAD",
-        "cover":   "minority_hrm.jpg"
+        "year": "2019",
+        "org": "IAS · Zhejiang University",
+        "title": "Ethnicity & HRM Practice in China’s Minority-inhabited Regions",
+        "desc": "CAD 17 000 fellowship analysing HRM practices and policy adaptation across minority regions."
     },
     {
-        "title": "Career Development for Minority Employees (TAR)",
-        "funding": "Fairbank Center, Harvard University",
-        "period":  "2017 – 2018",
-        "amount":  "$25 920 CAD",
-        "cover":   "tar_career.jpg"
+        "year": "2017-18",
+        "org": "Harvard Univ. · Fairbank Center",
+        "title": "Career Development for Ethnic-minority Employees in Chinese Organizations",
+        "desc": "CAD 25 920 CSC-funded visiting-scholar project on cultural sensitivity & policy implementation.",
+        "featured": True          # ← 只有这条深红高亮
     },
     {
-        "title": "Georgia & the New Silk Road Economic Belt",
-        "funding": "China ODRC, CUFE",
-        "period":  "2015 – 2016",
-        "amount":  "$4 000 CAD",
-        "cover":   "silkroad.jpg"
+        "year": "2015-16",
+        "org": "China Overseas Development Research Center",
+        "title": "Georgia in the Context of the New Silk Road Economic Belt",
+        "desc": "CAD 4 000 study of Georgia’s economic development and HR implications along the Belt & Road."
+    },
+    {
+        "year": "2013-14",
+        "org": "State Ethnic Affairs Commission of China",
+        "title": "Career Development of Minority Employees in Tibet Autonomous Region",
+        "desc": "Investigated barriers and advancement pathways for Tibetan employees (CAD 4 000 grant)."
+    },
+    {
+        "year": "2013",
+        "org": "China Tibetology Research Center",
+        "title": "Development & Financial Support for Tibetan Industries with Local Advantages",
+        "desc": "Project led by Prof. Shiding Liu; assessed policy support for region-specific industrial clusters."
+    },
+    {
+        "year": "2012",
+        "org": "China Tibetology Research Center",
+        "title": "Tibetan Thangka Industry Development Research",
+        "desc": "Explored market expansion and HR training needs in the traditional Thangka art sector (PI Danzeng-Lunzhu)."
     }
 ]
+
 
 # 2) Corporate Consulting  (企业咨询 / 调研)
 consulting_projects = [
@@ -513,6 +530,7 @@ def presentations():
                            talks=presentation_data)
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
