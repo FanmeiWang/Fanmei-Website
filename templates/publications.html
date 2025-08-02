@@ -1,53 +1,117 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Publications — Fanmei Wang, PhD</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+{# 继承全站 base.html，复用统一的 nav / footer #}
+{% extends "base.html" %}
 
-  <!-- 站点公共样式 -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-</head>
-<body>
-  {% include "navbar.html" %}
+{% block title %}Publications — Fanmei Wang, PhD{% endblock %}
 
-  <!-- 顶部浅色横幅（200px，高度可调） -->
-  <header class="pub-hero"></header>
+{# ─── 页面专属 CSS ─── #}
+{% block extra_css %}
+<style>
+/* 双栏父网格  ─────────────────────── */
+.pub-grid{
+  display:grid;
+  gap:2rem;
+  max-width:1180px;
+  margin:60px auto 80px;
+  padding:0 1rem;
+}
+@media(min-width:960px){
+  .pub-grid{grid-template-columns:1fr 1.2fr;}   /* 左书籍(窄) 右文章(宽) */
+}
 
-  <!--────────────  双栏主内容  ────────────-->
-  <main class="pub-grid">
+/* 书籍卡片  ───────────────────────── */
+.book-item{
+  display:flex; gap:1.25rem;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:0 4px 14px rgba(0,0,0,.06);
+  padding:1.2rem 1.4rem;
+  margin-bottom:1.6rem;
+  opacity:0; transform:translateY(20px);
+  animation:fadeUp .6s ease forwards;
+}
+.book-cover{
+  width:110px; height:150px; object-fit:cover;
+  border-radius:6px; flex-shrink:0;
+  box-shadow:0 0 4px rgba(0,0,0,.14);
+}
+.book-role{
+  display:inline-block;
+  background:var(--amber);
+  color:#fff; font-size:.8rem; font-weight:600;
+  border-radius:4px; padding:2px 6px; margin-bottom:.4rem;
+}
+.book-cite{margin:0; line-height:1.55;}
 
-    <!--── 左：Books ──────────────────────-->
-    <section>
-      <h2 class="section-title">Books</h2>
+/* 右侧文章时间线 ──────────────────── */
+.timeline-wrap{
+  position:relative;
+  padding-left:2.2rem;          /* 让左侧留出轨道 */
+}
+.timeline-wrap::before{         /* 竖线 */
+  content:""; position:absolute;
+  left:.8rem; top:0; bottom:0;
+  width:2px; background:var(--brand-teal);
+}
+.pub-item{
+  background:#fff;
+  padding:1.1rem 1.4rem;
+  margin-bottom:1.6rem;
+  border-radius:14px;
+  box-shadow:0 4px 14px rgba(0,0,0,.06);
+  position:relative;
+  opacity:0; transform:translateY(20px);
+  animation:fadeUp .6s ease forwards;
+}
+.pub-item::before{             /* 轨道圆点 */
+  content:""; position:absolute;
+  left:-1.25rem; top:1.3rem;
+  width:.8rem; height:.8rem;
+  border-radius:50%;
+  background:var(--brand-teal);
+}
+.pub-type{
+  display:inline-block;
+  background:var(--amber);
+  color:#fff; font-size:.8rem; font-weight:600;
+  border-radius:4px; padding:2px 6px; margin-bottom:.35rem;
+}
+.pub-cite{margin:0; line-height:1.55;}
+</style>
+{% endblock %}
 
-      {% for b in books %}
-      <article class="book-card" style="animation-delay: {{ loop.index0 * .08 }}s;">
-        <img class="book-cover"
-             src="{{ url_for('static', filename='img/books/' ~ b.cover) }}"
-             alt="{{ b.title }} cover">
-        <p class="book-cite">{{ b.cite }}</p>
+{% block content %}
+<header class="pub-hero"></header>
+
+<main class="pub-grid">
+  {# ───────── 左列 书籍 ───────── #}
+  <section>
+    <h2 class="section-title">Books</h2>
+    {% for b in books %}
+      <article class="book-item" style="animation-delay: {{ loop.index0 * 0.06 }}s;">
+        <img class="book-cover" src="{{ url_for('static', filename='img/books/' ~ b.cover) }}" alt="{{ b.title }} cover">
+        <div class="book-text">
+          <span class="book-role">{{ b.role }}</span>
+          <p class="book-cite">{{ b.cite }}</p>
+        </div>
       </article>
+    {% endfor %}
+  </section>
+
+  {# ───────── 右列 期刊/会议文章 ───────── #}
+  <section>
+    <h2 class="section-title">Journal&nbsp;Articles</h2>
+    <div class="timeline-wrap">
+      {% for p in articles %}
+        <article class="pub-item" style="animation-delay: {{ loop.index0 * 0.06 }}s;">
+          <span class="pub-type">{{ p.type }}</span>
+          <p class="pub-cite">{{ p.cite }}</p>
+        </article>
       {% endfor %}
-    </section>
+    </div>
+  </section>
+</main>
+{% endblock %}
 
-    <!--── 右：Journal Articles ───────────-->
-    <section>
-      <h2 class="section-title">Journal&nbsp;Articles</h2>
-
-      <ul class="article-timeline">
-        {% for p in articles %}
-        <li style="animation-delay: {{ loop.index0 * .08 }}s;">
-          <article class="article-card">
-            <span class="article-tag">{{ p.type }}</span>
-            <p class="article-cite">{{ p.cite }}</p>
-          </article>
-        </li>
-        {% endfor %}
-      </ul>
-    </section>
-
-  </main>
-</body>
 </html>
+
 
