@@ -468,29 +468,70 @@ def academic_research():
         "academic_research.html",
         entries=entries
     )
+# ────────────────────────────────────────────────
+#  Academic-Research projects  ⭢ 时间线用的数据
+# ────────────────────────────────────────────────
+academic_projects = [
+    {
+        "year": "2020 – present",
+        "org":  "IAS · Zhejiang University",
+        "title": "Mutual Embeddedness of Social Structures in Multi-ethnic Countries",
+        "desc":  "Grant under Prof. Zhixiang Jian exploring inter-ethnic integration in multi-ethnic societies."
+    },
+    {
+        "year": "2019",
+        "org":  "IAS · Zhejiang University",
+        "title": "Ethnicity & HRM Practice in China’s Minority-inhabited Regions",
+        "desc":  "CAD 17 000 fellowship analysing HRM practices and policy adaptation across minority regions."
+    },
+    {
+        "year": "2017-18",
+        "org":  "Harvard Univ. · Fairbank Center",
+        "title": "Career Development for Ethnic-minority Employees in Chinese Organizations",
+        "desc":  "CAD 25 920 CSC-funded visiting-scholar project on cultural sensitivity & policy implementation.",
+        "featured": True          # ← 深红高亮条
+    },
+    {
+        "year": "2015-16",
+        "org":  "China Overseas Development Research Center",
+        "title": "Georgia in the Context of the New Silk Road Economic Belt",
+        "desc":  "CAD 4 000 study of Georgia’s economic development and HR implications along the Belt & Road."
+    },
+    {
+        "year": "2013-14",
+        "org":  "State Ethnic Affairs Commission of China",
+        "title": "Career Development of Minority Employees in Tibet Autonomous Region",
+        "desc":  "Investigated barriers and advancement pathways for Tibetan employees (CAD 4 000 grant)."
+    },
+    {
+        "year": "2013",
+        "org":  "China Tibetology Research Center",
+        "title": "Development & Financial Support for Tibetan Industries with Local Advantages",
+        "desc":  "Project led by Prof. Shiding Liu; assessed policy support for region-specific industrial clusters."
+    },
+    {
+        "year": "2012",
+        "org":  "China Tibetology Research Center",
+        "title": "Tibetan Thangka Industry Development Research",
+        "desc":  "Explored market expansion and HR training needs in the traditional Thangka art sector (PI Danzeng-Lunzhu)."
+    }
+]
+
+# ────────────────────────────────────────────────
+#  /projects/academic 路由 —— **只渲染一个模板**
+# ────────────────────────────────────────────────
 @app.route("/projects/academic")
 def projects_academic():
-    research = [
-        {
-            "year":"2017-18",
-            "funder":"★ Harvard University",
-            "project":"Cultural Sensitivity & Policy Implementation",
-            "abstract":"Conducted qualitative research on cultural sensitivity in diverse organizations."
-        },
-        {
-            "year":"2015",
-            "funder":"SSHRC",
-            "project":"Ethnic Diversity & HRM in Multinational Enterprises",
-            "abstract":"Examined the impact of ethnic diversity on HR policies across branches."
-        },
-        {
-            "year":"2013",
-            "funder":"China National Social Science Fund",
-            "project":"Employment Discrimination & Countermeasures",
-            "abstract":"Explored systematic barriers and policy responses in minority employment."
-        }
-    ]
-    return render_template("projects_academic.html", research=research)
+    """
+    Academic-research timeline page.
+    Template: templates/academic_research.html
+    Context var: entries → academic_projects list
+    """
+    return render_template(
+        "academic_research.html",   # 模板文件名
+        entries=academic_projects   # 传给 {% for e in entries %} …
+    )
+
 
 # 放在所有路由定义之后
 from flask import redirect, url_for
@@ -529,6 +570,7 @@ def presentations():
                            talks=presentation_data)
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
