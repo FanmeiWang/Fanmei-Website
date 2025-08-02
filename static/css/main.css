@@ -1343,4 +1343,87 @@ ul.timeline li::before{
   .card-title{font-size:1.35rem;}
   .card-grid{gap:1.4rem;}
 }
+/* ───── Publications 双栏 & 卡片 ───── */
+.pub-grid{
+  display:grid;
+  gap:2.4rem;
+  max-width:1180px;
+  margin:60px auto 100px;
+  padding:0 1rem;
+}
+@media(min-width:960px){ .pub-grid{ grid-template-columns:1fr 1.3fr; } }
+
+/* 左列书籍卡片 */
+.book-card{
+  display:flex;
+  gap:1.2rem;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:0 4px 14px rgba(0,0,0,.06);
+  padding:1.2rem 1.4rem;
+  opacity:0; transform:translateY(22px);
+  animation:fadeUp .6s ease forwards;
+}
+.book-cover{
+  width:120px;              /* 封面宽度可调 */
+  height:auto;
+  flex-shrink:0;
+  object-fit:cover;
+  border-radius:6px;
+  box-shadow:0 0 4px rgba(0,0,0,.12);
+}
+.book-cite{ margin:0; line-height:1.55; }
+
+/* 右列文章时间线 */
+.article-timeline{
+  position:relative;
+  margin:0; padding:0 0 0 1.4rem;
+  list-style:none;
+}
+.article-timeline::before{          /* 垂直线 */
+  content:'';
+  position:absolute;
+  left:.45rem; top:0; bottom:0;
+  width:2px; background:var(--brand-teal,#004F59);
+}
+
+/* time-dot + 卡片 */
+.article-timeline li{
+  position:relative;
+  margin-bottom:1.8rem;
+  opacity:0; transform:translateY(22px);
+  animation:fadeUp .6s ease forwards;
+}
+.article-timeline li::before{      /* 圆点 */
+  content:'';
+  position:absolute;
+  left:-.72rem; top:.65rem;
+  width:.7rem; height:.7rem;
+  border-radius:50%;
+  background:var(--brand-teal,#004F59);
+}
+
+.article-card{
+  background:#fff;
+  border-radius:14px;
+  box-shadow:0 4px 14px rgba(0,0,0,.06);
+  padding:1rem 1.2rem;
+}
+.article-tag{
+  display:inline-block;
+  background:var(--amber,#F4B400);
+  color:#fff;
+  font-size:.8rem;
+  font-weight:600;
+  border-radius:4px;
+  padding:2px 6px;
+  margin-bottom:.4rem;
+}
+.article-cite{ margin:0; line-height:1.55; }
+
+/* 小屏：改为单列时间线 */
+@media(max-width:959px){
+  .pub-grid{ grid-template-columns:1fr; }
+  .article-timeline{ padding-left:1.1rem; margin-top:2.5rem; }
+}
 
