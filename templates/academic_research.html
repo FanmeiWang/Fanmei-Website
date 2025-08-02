@@ -1,4 +1,4 @@
-{# templates/academic_research.html #}
+{# ============ Academic-research timeline page ============ #}
 {% extends "base.html" %}
 {% block title %}Academic Research — Fanmei Wang, PhD{% endblock %}
 
@@ -6,79 +6,44 @@
 <style>
 /* ───────── Hero 拼板 ───────── */
 .research-hero{
-  height:240px;
-  position:relative;
-  background:url("{{ url_for('static', filename='img/bg/research-hero.jpg') }}")
-            center/cover no-repeat;
-  border-radius:14px;
-  overflow:hidden;
-  box-shadow:0 6px 18px rgba(0,0,0,.10);
-}
+  height:240px;position:relative;
+  background:url("{{ url_for('static', filename='img/bg/research-hero.jpg') }}") center/cover no-repeat;
+  border-radius:14px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.10)}
 .research-hero::after{content:"";position:absolute;inset:0;background:rgba(0,79,89,.55)}
-.research-hero .hero-text{
-  position:absolute;left:0;right:0;bottom:0;padding:2rem;
-  color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.35)
-}
+.research-hero .hero-text{position:absolute;left:0;right:0;bottom:0;padding:2rem;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.35)}
 .research-hero h1{margin:0 0 .4rem;font-size:2.4rem}
 .research-hero p{margin:0;font-size:1.05rem}
-.badge{
-  position:absolute;right:1.4rem;top:1.4rem;
-  background:#7b1136;color:#fff;font-size:.85rem;
-  padding:.35rem .65rem;border-radius:6px;font-weight:600;text-align:center
-}
+.badge{position:absolute;right:1.4rem;top:1.4rem;background:#7b1136;color:#fff;font-size:.82rem;padding:.35rem .65rem;border-radius:6px;font-weight:600;text-align:center}
 
-/* ───────── Timeline 整体 ───────── */
-.timeline{
-  max-width:900px;margin:60px auto 100px;padding:0 1rem;
-  position:relative;
-  display:grid;grid-template-columns:80px 1fr;
-  column-gap:1rem;                 /* ← 新增：左右两列留空隙 */
-}
-.timeline::before{
-  content:"";position:absolute;left:40px;top:0;bottom:0;
-  width:2px;background:var(--brand-teal)
-}
+/* ───────── Timeline 容器 ───────── */
+.timeline{max-width:900px;margin:60px auto 100px;padding:0 1rem;display:grid;grid-template-columns:80px 1fr;column-gap:8px;position:relative}
+.timeline::before{content:"";position:absolute;left:40px;top:0;bottom:0;width:2px;background:var(--brand-teal)}
 
 /* ───────── 单条条目 ───────── */
-.entry{
-  display:grid;grid-template-columns:80px 1fr;
-  margin-bottom:2.4rem;grid-column:1 / -1;position:relative
-}
-.entry-year{
-  font-weight:700;font-size:1.15rem;color:var(--brand-teal);
-  text-align:right;padding-right:1rem
-}
-.entry-card{
-  background:#fff;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.06);
-  padding:1.2rem 2rem 1.6rem 2rem;position:relative;line-height:1.55;
-  animation:fadeUp .6s ease forwards;opacity:0;transform:translateY(20px);
-  min-width:0              /* ← 新增：允许卡片收缩、文字自动换行 */
-}
-.entry-card::before{
-  content:"";position:absolute;left:-48px;top:1.2rem;
-  width:.9rem;height:.9rem;border-radius:50%;background:var(--brand-teal)
-}
-.entry-card .org{font-weight:700;color:var(--brand-teal)}
-.entry-card .title{margin:.2rem 0 .6rem;font-size:1.05rem;color:#004F59}
-.entry-card p{margin:0}
+.entry{display:grid;grid-template-columns:80px 1fr;column-gap:8px;margin-bottom:2.2rem;grid-column:1 / -1}
+.entry-year{font:700 1.1rem var(--font-sans,system-ui);color:var(--brand-teal);text-align:right;line-height:1.35;word-break:break-word}
+.entry-card{background:#fff;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.06);padding:1.2rem 1.6rem 1.6rem;position:relative;animation:fadeUp .6s ease forwards;opacity:0;transform:translateY(20px);line-height:1.55;min-width:0}
+.entry-card::before{content:"";position:absolute;left:-48px;top:1.35rem;width:.9rem;height:.9rem;border-radius:50%;background:var(--brand-teal)}
+/* 文字层次 */
+.entry-card .org{font-weight:700;color:var(--brand-teal);font-size:1rem}
+.entry-card .title{margin:.3rem 0 .7rem;font-size:1.05rem;color:#006d7a}
+.entry-card p{margin:0;font-size:.95rem}
 
-/* Featured 条目高亮 */
+/* Featured 高亮 */
 .entry-card.featured{background:#7b1136;color:#fff}
-.entry-card.featured .org,
-.entry-card.featured .title{color:#fff}
+.entry-card.featured .org,.entry-card.featured .title{color:#fff}
 .entry-card.featured::before{background:#cfae2a}
-.entry-card.featured .badge-featured{
-  position:absolute;right:1rem;top:.8rem;
-  color:#ffeb99;font-size:.8rem;font-style:italic
-}
+.entry-card.featured .badge-featured{position:absolute;right:1rem;top:.8rem;color:#ffeb99;font-size:.8rem;font-style:italic}
 .entry-card.featured .org::before{content:"★";margin-right:.25rem;color:#ffeb99}
 
 /* 小屏：单列 */
 @media(max-width:680px){
   .timeline,.entry{grid-template-columns:1fr}
   .timeline::before,.entry-card::before{display:none}
-  .entry-year{text-align:left;padding:0 0 .3rem}
+  .entry-year{text-align:left;padding-bottom:.3rem;font-size:1rem}
 }
+
+/* 入场动画 */
 @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
 </style>
 {% endblock %}
@@ -86,7 +51,7 @@
 {% block content %}
 <div class="container">
 
-  <!-- ───── Hero 区 ───── -->
+  <!-- ▸ Hero -->
   <section class="research-hero">
     <div class="badge">Visiting&nbsp;Scholar<br>· 2017 – 18</div>
     <div class="hero-text">
@@ -95,13 +60,12 @@
     </div>
   </section>
 
-  <!-- ───── Timeline ───── -->
+  <!-- ▸ Timeline -->
   <div class="timeline">
     {% for e in entries %}
       <article class="entry" style="animation-delay: {{ loop.index0*0.08 }}s;">
         <div class="entry-year">{{ e.year }}</div>
 
-        <!-- 卡片 -->
         <div class="entry-card{% if e.featured %} featured{% endif %}">
           <div class="org">{{ e.org }}</div>
           <div class="title">{{ e.title }}</div>
