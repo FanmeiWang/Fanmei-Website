@@ -4,43 +4,51 @@
 
 {% block extra_css %}
 <style>
-/* ───────── Hero 拼板 ───────── */
+/* ───────── Hero 拼图横幅 ───────── */
 .research-hero{
   height:240px;position:relative;
-  background:url("{{ url_for('static', filename='img/bg/research-hero.jpg') }}") center/cover no-repeat;
+  background:url("{{ url_for('static',filename='img/bg/research-hero.jpg') }}") center/cover no-repeat;
   border-radius:14px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.10)}
 .research-hero::after{content:"";position:absolute;inset:0;background:rgba(0,79,89,.55)}
 .research-hero .hero-text{position:absolute;left:0;right:0;bottom:0;padding:2rem;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.35)}
 .research-hero h1{margin:0 0 .4rem;font-size:2.4rem}
 .research-hero p{margin:0;font-size:1.05rem}
-.badge{position:absolute;right:1.4rem;top:1.4rem;background:#7b1136;color:#fff;font-size:.82rem;padding:.35rem .65rem;border-radius:6px;font-weight:600;text-align:center}
+.badge{position:absolute;right:1.4rem;top:1.4rem;background:#7b1136;color:#fff;font-size:.82rem;padding:.35rem .7rem;border-radius:6px;font-weight:600;text-align:center}
 
 /* ───────── Timeline 容器 ───────── */
-.timeline{max-width:900px;margin:60px auto 100px;padding:0 1rem;display:grid;grid-template-columns:80px 1fr;column-gap:8px;position:relative}
-.timeline::before{content:"";position:absolute;left:40px;top:0;bottom:0;width:2px;background:var(--brand-teal)}
+.timeline{max-width:900px;margin:60px auto 100px;padding:0 1rem;
+  display:grid;grid-template-columns:100px 1fr;column-gap:14px;position:relative}
+.timeline::before{content:"";position:absolute;left:50px;top:0;bottom:0;width:2px;background:var(--brand-teal)}
 
 /* ───────── 单条条目 ───────── */
-.entry{display:grid;grid-template-columns:80px 1fr;column-gap:8px;margin-bottom:2.2rem;grid-column:1 / -1}
-.entry-year{font:700 1.1rem var(--font-sans,system-ui);color:var(--brand-teal);text-align:right;line-height:1.35;word-break:break-word}
-.entry-card{background:#fff;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.06);padding:1.2rem 1.6rem 1.6rem;position:relative;animation:fadeUp .6s ease forwards;opacity:0;transform:translateY(20px);line-height:1.55;min-width:0}
-.entry-card::before{content:"";position:absolute;left:-48px;top:1.35rem;width:.9rem;height:.9rem;border-radius:50%;background:var(--brand-teal)}
-/* 文字层次 */
-.entry-card .org{font-weight:700;color:var(--brand-teal);font-size:1rem}
-.entry-card .title{margin:.3rem 0 .7rem;font-size:1.05rem;color:#006d7a}
-.entry-card p{margin:0;font-size:.95rem}
+.entry{display:grid;grid-template-columns:100px 1fr;column-gap:14px;
+  margin-bottom:2.4rem;grid-column:1 / -1;position:relative}
+.entry-year{font:700 1.15rem var(--font-sans,system-ui);color:var(--brand-teal);
+  text-align:right;line-height:1.35;word-break:break-word;min-width:0}
+.entry-card{background:#fff;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.06);
+  padding:1.35rem 1.8rem 1.7rem;line-height:1.55;position:relative;
+  animation:fadeUp .6s ease forwards;opacity:0;transform:translateY(20px)}
+.entry-card::before{content:"";position:absolute;left:-58px;top:1.4rem;
+  width:.90rem;height:.90rem;border-radius:50%;background:var(--brand-teal)}
+/* 文字层级 */
+.entry-card .org   {font-weight:700;color:var(--brand-teal);font-size:1.02rem}
+.entry-card .title {margin:.35rem 0 .75rem;font-size:1.07rem;color:#01555f}
+.entry-card p      {margin:0;font-size:.95rem}
 
 /* Featured 高亮 */
 .entry-card.featured{background:#7b1136;color:#fff}
-.entry-card.featured .org,.entry-card.featured .title{color:#fff}
+.entry-card.featured .org,
+.entry-card.featured .title{color:#fff}
 .entry-card.featured::before{background:#cfae2a}
-.entry-card.featured .badge-featured{position:absolute;right:1rem;top:.8rem;color:#ffeb99;font-size:.8rem;font-style:italic}
+.entry-card.featured .badge-featured{position:absolute;right:1.2rem;top:.9rem;
+  color:#ffeb99;font-size:.78rem;font-style:italic}
 .entry-card.featured .org::before{content:"★";margin-right:.25rem;color:#ffeb99}
 
 /* 小屏：单列 */
 @media(max-width:680px){
   .timeline,.entry{grid-template-columns:1fr}
   .timeline::before,.entry-card::before{display:none}
-  .entry-year{text-align:left;padding-bottom:.3rem;font-size:1rem}
+  .entry-year{text-align:left;padding-bottom:.35rem;font-size:1.05rem}
 }
 
 /* 入场动画 */
@@ -63,7 +71,7 @@
   <!-- ▸ Timeline -->
   <div class="timeline">
     {% for e in entries %}
-      <article class="entry" style="animation-delay: {{ loop.index0*0.08 }}s;">
+      <article class="entry" style="animation-delay: {{ loop.index0 * 0.08 }}s;">
         <div class="entry-year">{{ e.year }}</div>
 
         <div class="entry-card{% if e.featured %} featured{% endif %}">
