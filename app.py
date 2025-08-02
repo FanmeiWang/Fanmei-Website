@@ -146,9 +146,24 @@ article_list = [
 
 @app.route("/publications")
 def publications():
-    return render_template("publications.html",
-                           books=book_list,
-                           articles=article_list)
+    books = [
+        # 每本书：cover 图片文件、角色、引用格式（任意 html 块）
+        {"cover": "affirmative_action.jpg",
+         "role": "Author",
+         "cite": "Wang, F.M. (2015). <em>Affirmative&nbsp;Action – The Historical Development ...</em> ISBN 978750977966."},
+        {"cover": "social_conflict.jpg",
+         "role": "Translator",
+         "cite": "Pruitt, D.G. & Carnevale, P.J. (2021) <em>Social Conflict</em> (3rd ed.). Chinese translation by Fanmei Wang."},
+        # ...
+    ]
+
+    articles = [
+        {"type": "Journal Article",
+         "cite": "Wang, F.M. (2019). Career Advancement for Tibetan Employees in the Tibet Autonomous Region. <em>Qinghai Journal of Ethnology</em>, 176-171."},
+        # …
+    ]
+    return render_template("publications.html", books=books, articles=articles)
+
 
 # ---------- Academic teaching data ----------
 teaching_data = {
@@ -452,6 +467,7 @@ def presentations():
                            talks=presentation_data)
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
