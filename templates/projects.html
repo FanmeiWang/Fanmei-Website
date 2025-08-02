@@ -1,48 +1,94 @@
 {# templates/projects.html #}
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  {% block title %}Projects — Fanmei Wang, PhD{% endblock %}
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- 通用样式 -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-  <!-- Font Awesome（仅用到一个图标）-->
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
-  {# 站点统一导航 #}
-  {% include "navbar.html" %}
+{% extends "base.html" %}
+{% block title %}Projects — Fanmei Wang, PhD{% endblock %}
 
-  <main class="container" style="padding:3rem 0 2rem;">
-    <h1 class="page-title" style="text-align:center;">Projects</h1>
+{% block extra_css %}
+  <!-- 仅此页的样式（也可放到 main.css 最后） -->
+  <style>
+    .projects-wrapper{
+      max-width:1100px;
+      margin:60px auto 100px;
+      padding:0 1rem;
+      text-align:center;
+    }
+    .projects-title{
+      font-size:2.6rem;
+      margin:0 0 2.5rem;
+      color:var(--brand-teal,#004F59);
+      font-family:"Merriweather","Noto Serif SC",serif;
+    }
 
-    <!-- === 2 × 2 方块卡片 === -->
-    <div class="card-grid">
+    /* ─── 网格容器 ─── */
+    .proj-menu{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:2rem;
+      place-items:center;
+    }
 
-      <!-- ① AI & ML Projects -->
-      <a href="{{ url_for('projects_ai') }}" class="proj-tile ai">
-        <h3>AI &amp; ML<br>Projects</h3>
-      </a>
+    /* ─── 单张卡片 ─── */
+    .proj-card{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      height:180px;
+      padding:1.2rem;
+      border-radius:18px;
+      color:#fff;
+      font-size:1.55rem;
+      font-weight:600;
+      line-height:1.25;
+      text-decoration:none;
+      text-align:center;
+      box-shadow:0 6px 22px rgba(0,0,0,.08);
+      transition:transform .25s,box-shadow .25s;
+    }
+    .proj-card:hover{
+      transform:translateY(-8px);
+      box-shadow:0 12px 32px rgba(0,0,0,.12);
+    }
 
-      <!-- ② Public-Service Analytics -->
-      <a href="{{ url_for('projects_public_service') }}" class="proj-tile psa">
-        <i class="fa-solid fa-file-lines"></i>
-        <h3>Public-Service<br>Analytics</h3>
-      </a>
+    /* ① AI & ML —— 绿松渐变 */
+    .card-ai{
+      background:linear-gradient(135deg,#01c9b1 0%,#7dfec9 100%);
+    }
+    /* ② Public-Service —— 天蓝渐变 */
+    .card-public{
+      background:linear-gradient(135deg,#4a90e2 0%,#8bd5ff 100%);
+    }
+    /* ③ Academic —— 琥珀渐变 */
+    .card-academic{
+      background:linear-gradient(135deg,#f5af19 0%,#fad961 100%);
+    }
+    /* ④ Corporate —— 洋红渐变 */
+    .card-consult{
+      background:linear-gradient(135deg,#ec008c 0%,#fc6767 100%);
+    }
 
-      <!-- ③ Academic Research -->
-      <a href="{{ url_for('projects_academic') }}" class="proj-tile research">
-        <h3>Academic<br>Research</h3>
-      </a>
+    /* 手机端自适应：更矮、更小字 */
+    @media(max-width:640px){
+      .proj-card{height:140px;font-size:1.25rem;}
+    }
+  </style>
+{% endblock %}
 
-      <!-- ④ Corporate Consulting -->
-      <a href="{{ url_for('projects_consulting') }}" class="proj-tile corp">
-        <h3>Corporate<br>Consulting</h3>
-      </a>
+{% block content %}
+  <main class="projects-wrapper">
+    <h1 class="projects-title">Projects</h1>
 
+    <!-- 顺序：AI&ML + Public-Service ➜ Academic + Consulting -->
+    <div class="proj-menu">
+      <a href="{{ url_for('projects_ai') }}"
+         class="proj-card card-ai">AI &amp; ML<br>Projects</a>
+
+      <a href="{{ url_for('projects_public') }}"
+         class="proj-card card-public">Public-Service<br>Analytics</a>
+
+      <a href="{{ url_for('projects_academic') }}"
+         class="proj-card card-academic">Academic<br>Research</a>
+
+      <a href="{{ url_for('projects_corporate') }}"
+         class="proj-card card-consult">Corporate<br>Consulting</a>
     </div>
   </main>
-</body>
-</html>
+{% endblock %}
