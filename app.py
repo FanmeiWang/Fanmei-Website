@@ -1,6 +1,8 @@
 from datetime import datetime
 
-from flask import Flask, render_template 
+from flask import Flask, render_template
+from jinja2 import TemplateNotFound          
+
 app = Flask(__name__)
 
 @app.route("/")
@@ -516,6 +518,7 @@ def presentations():
                            talks=presentation_data)
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
