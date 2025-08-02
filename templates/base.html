@@ -2,31 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-
-  {# —— 子模板可覆盖 —— #}
   <title>{% block title %}Fanmei Wang, PhD{% endblock %}</title>
 
-  <!-- ▸ 全站公共样式 -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+  <!-- 全站公共样式 -->
+  <link rel="stylesheet"
+        href="{{ url_for('static', filename='css/base.css') }}">
 
-  <!-- ▸ 顶栏 / 金色配置（只需改 --gold 即可换深浅） -->
+  <!-- ── 导航栏配色（只改 --gold 即可换深浅） -->
   <style>
-    :root{ --gold:#d4a63c; }          /* ← 想更亮/更暗改这里 */
+    :root{ --gold:#d4a63c; }                /* 统一金色 */
 
     /* ======= 顶栏 ======= */
     header.site-header{
-      background:#363d43;             /* 深灰底 */
+      background:#363d43;                   /* 深灰底 */
       padding:0.9rem 2.2rem;
     }
-    .nav{
-      max-width:1200px;margin:0 auto;
-      display:flex;justify-content:space-between;align-items:center;
-    }
+    .nav{max-width:1200px;margin:0 auto;
+         display:flex;justify-content:space-between;align-items:center;}
+
     /* 左侧品牌 */
-    .nav .brand{
+    .brand{
       font:700 1.15rem/1 var(--font-sans,system-ui);
-      color:var(--gold);white-space:nowrap;text-decoration:none;
+      color:var(--gold);text-decoration:none;white-space:nowrap;
     }
+
     /* 右侧菜单 */
     .nav-list{list-style:none;margin:0;padding:0;
               display:flex;gap:2.3rem}
@@ -35,40 +34,49 @@
       transition:opacity .2s;
     }
     .nav-list a:hover{opacity:.85;color:#fff}
-    .nav-list .active{color:#fff}     /* 当前页高亮白色 */
+    .nav-list .active{color:#fff}           /* 当前页高亮白色 */
 
-    /* 窄屏时稍收紧间距 */
+    /* 小屏稍收紧间距 */
     @media(max-width:760px){
       .nav-list{gap:1.3rem;font-size:.95rem}
     }
   </style>
 
-  {# ▸ 子页面额外样式 / 脚本占位 #}
   {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-  <!-- ======= 导航栏 ======= -->
+  <!-- ======= 顶部导航 ======= -->
   <header class="site-header">
     <nav class="nav">
+
+      <!-- 品牌 (左侧) -->
       <a class="brand" href="{{ url_for('about') }}">Fanmei Wang, PhD</a>
 
+      <!-- 菜单 (右侧) -->
       <ul class="nav-list">
         <li><a href="{{ url_for('about') }}"
                class="{% if request.endpoint=='about' %}active{% endif %}">About</a></li>
+
+        <li><a href="{{ url_for('education') }}"
+               class="{% if request.endpoint=='education' %}active{% endif %}">Education</a></li>
+
         <li><a href="{{ url_for('publications') }}"
                class="{% if request.endpoint=='publications' %}active{% endif %}">Publications</a></li>
+
         <li><a href="{{ url_for('projects') }}"
                class="{% if request.endpoint=='projects' or request.endpoint.startswith('projects_') %}active{% endif %}">Projects</a></li>
+
         <li><a href="{{ url_for('teaching_overview') }}"
                class="{% if request.endpoint.startswith('teaching') %}active{% endif %}">Teaching</a></li>
+
         <li><a href="{{ url_for('presentations') }}"
                class="{% if request.endpoint=='presentations' %}active{% endif %}">Research&nbsp;Blog</a></li>
       </ul>
     </nav>
   </header>
 
-  <!-- ▸ 子页面真正内容 -->
+  <!-- 页面主体内容 -->
   {% block content %}{% endblock %}
 
   <footer>© {{ current_year }} Fanmei Wang</footer>
