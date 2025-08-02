@@ -452,6 +452,29 @@ def academic_research():
         "academic_research.html",
         entries=entries
     )
+@app.route("/projects/academic")
+def projects_academic():
+    research = [
+        {
+            "year":"2017-18",
+            "funder":"★ Harvard University",
+            "project":"Cultural Sensitivity & Policy Implementation",
+            "abstract":"Conducted qualitative research on cultural sensitivity in diverse organizations."
+        },
+        {
+            "year":"2015",
+            "funder":"SSHRC",
+            "project":"Ethnic Diversity & HRM in Multinational Enterprises",
+            "abstract":"Examined the impact of ethnic diversity on HR policies across branches."
+        },
+        {
+            "year":"2013",
+            "funder":"China National Social Science Fund",
+            "project":"Employment Discrimination & Countermeasures",
+            "abstract":"Explored systematic barriers and policy responses in minority employment."
+        }
+    ]
+    return render_template("projects_academic.html", research=research)
 
 # 放在所有路由定义之后
 from flask import redirect, url_for
@@ -490,6 +513,7 @@ def presentations():
                            talks=presentation_data)
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
