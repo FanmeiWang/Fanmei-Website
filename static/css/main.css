@@ -1426,4 +1426,15 @@ ul.timeline li::before{
   .pub-grid{ grid-template-columns:1fr; }
   .article-timeline{ padding-left:1.1rem; margin-top:2.5rem; }
 }
+/* === Projects landing – gradient cards === */
+.projects-wrapper{max-width:1100px;margin:60px auto 100px;padding:0 1rem;text-align:center}
+.projects-title{font-size:2.6rem;margin:0 0 2.5rem;color:var(--brand-teal,#004F59);font-family:"Merriweather","Noto Serif SC",serif}
+.proj-menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2rem;place-items:center}
+.proj-card{display:flex;align-items:center;justify-content:center;height:180px;padding:1.2rem;border-radius:18px;color:#fff;font-size:1.55rem;font-weight:600;line-height:1.25;text-decoration:none;text-align:center;box-shadow:0 6px 22px rgba(0,0,0,.08);transition:transform .25s,box-shadow .25s}
+.proj-card:hover{transform:translateY(-8px);box-shadow:0 12px 32px rgba(0,0,0,.12)}
+.card-ai{background:linear-gradient(135deg,#01c9b1 0%,#7dfec9 100%)}
+.card-public{background:linear-gradient(135deg,#4a90e2 0%,#8bd5ff 100%)}
+.card-academic{background:linear-gradient(135deg,#f5af19 0%,#fad961 100%)}
+.card-consult{background:linear-gradient(135deg,#ec008c 0%,#fc6767 100%)}
+@media(max-width:640px){.proj-card{height:140px;font-size:1.25rem}}
 
