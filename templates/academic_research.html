@@ -1,1 +1,131 @@
+{% extends "base.html" %}
+{% block title %}Academic Research — Fanmei Wang, PhD{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ───────── Hero 拼板 ───────── */
+.research-hero{
+  height:240px;
+  position:relative;
+  background:               /* 您自己做好的拼板图 */
+    url("{{ url_for('static', filename='img/bg/research-hero.jpg') }}")
+    center/cover no-repeat;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 6px 18px rgba(0,0,0,.10);
+}
+.research-hero::after{      /* 深青透明蒙版 */
+  content:""; position:absolute; inset:0;
+  background:rgba(0,79,89,.55);
+}
+.research-hero .hero-text{
+  position:absolute; left:0; right:0; bottom:0; padding:2rem;
+  color:#fff; text-shadow:0 2px 6px rgba(0,0,0,.35);
+}
+.research-hero h1{margin:0 0 .4rem;font-size:2.4rem}
+.research-hero p{margin:0;font-size:1.05rem}
+
+.badge{
+  position:absolute; right:1.4rem; top:1.4rem;
+  background:#7b1136; color:#fff; font-size:.85rem;
+  padding:.35rem .65rem; border-radius:6px;
+  font-weight:600; text-align:center;
+}
+
+/* ───────── Timeline 整体 ───────── */
+.timeline{
+  max-width:900px; margin:60px auto 100px; padding:0 1rem;
+  position:relative;
+  display:grid;             /* 两列：左年号 / 右卡片 */
+  grid-template-columns:80px 1fr;
+}
+.timeline::before{          /* 中线 */
+  content:""; position:absolute; left:40px;       /* 80/2 */
+  top:0; bottom:0; width:2px; background:var(--brand-teal);
+}
+
+/* ───────── 单条条目 ───────── */
+.entry{
+  display:grid; grid-template-columns:80px 1fr;  /* 同父网格宽度 */
+  margin-bottom:2.4rem;
+  position:relative;
+}
+.entry-year{
+  font-weight:700; font-size:1.15rem; color:var(--brand-teal);
+  text-align:right; padding-right:1rem;
+}
+.entry-card{
+  background:#fff; border-radius:12px; box-shadow:0 4px 14px rgba(0,0,0,.06);
+  padding:1.2rem 1.4rem; position:relative;
+  animation:fadeUp .6s ease forwards; opacity:0; transform:translateY(20px);
+}
+.entry-card::before{        /* 轨道圆点 */
+  content:""; position:absolute; left:-48px; top:1.2rem;
+  width:.9rem; height:.9rem; border-radius:50%; background:var(--brand-teal);
+}
+.entry-card .org{font-weight:700; color:var(--brand-teal);}
+.entry-card .title{margin:.2rem 0 .6rem; font-size:1.05rem; color:#004F59;}
+.entry-card p{margin:0; line-height:1.45;}
+
+/* Featured 条目高亮 */
+.entry-card.featured{
+  background:#7b1136; color:#fff;
+}
+.entry-card.featured .org,
+.entry-card.featured .title{color:#fff}
+.entry-card.featured::before{background:#cfae2a}
+.entry-card.featured .badge-featured{
+  position:absolute; right:1rem; top:.8rem;
+  color:#ffeb99; font-size:.8rem; font-style:italic;
+}
+/* 星形 */
+.entry-card.featured .org::before{
+  content:"★"; margin-right:.25rem; color:#ffeb99;
+}
+
+/* 小屏：单列 */
+@media(max-width:680px){
+  .timeline, .entry{grid-template-columns:1fr}
+  .timeline::before, .entry-card::before{display:none}
+  .entry-year{text-align:left;padding:0 0 .3rem}
+}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <!-- ───── Hero 区 ───── -->
+  <section class="research-hero">
+    <div class="badge">Visiting&nbsp;Scholar<br>· 2017 – 18</div>
+    <div class="hero-text">
+      <h1>Academic&nbsp;Research</h1>
+      <p>Published author specializing in HRM research<br>and diversity studies</p>
+    </div>
+  </section>
+
+  <!-- ───── Timeline ───── -->
+  <div class="timeline">
+
+    {% for e in entries %}
+      <article class="entry" style="animation-delay: {{ loop.index0*0.08 }}s;">
+        <div class="entry-year">{{ e.year }}</div>
+
+        {# ● 卡片 #}
+        <div class="entry-card{% if e.featured %} featured{% endif %}">
+          <div class="org">{{ e.org }}</div>
+          <div class="title">{{ e.project }}</div>
+          <p>{{ e.summary }}</p>
+
+          {% if e.featured %}
+            <span class="badge-featured">Featured</span>
+          {% endif %}
+        </div>
+      </article>
+    {% endfor %}
+
+  </div>
+</div>
+{% endblock %}
 
