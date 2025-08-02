@@ -1,71 +1,48 @@
-{% extends "base.html" %}
-{% block title %}Projects — Fanmei Wang{% endblock %}
+{# templates/projects.html #}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  {% block title %}Projects — Fanmei Wang, PhD{% endblock %}
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- 通用样式 -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <!-- Font Awesome（仅用到一个图标）-->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  {# 站点统一导航 #}
+  {% include "navbar.html" %}
 
-{% block extra_css %}
-<style>
-/* ------- 封面墙（可选） ------- */
-.proj-hero{padding:0;overflow:hidden;position:relative}
-.wall{column-count:3;column-gap:6px}
-@media(min-width:900px){.wall{column-count:5}}
-@media(min-width:1200px){.wall{column-count:7}}
-.wall img{width:100%;margin:0 0 6px;border-radius:4px;break-inside:avoid}
+  <main class="container" style="padding:3rem 0 2rem;">
+    <h1 class="page-title" style="text-align:center;">Projects</h1>
 
-/* ------- 4 卡片网格 ------- */
-.projects-grid{
-  max-width:1100px;margin:0 auto 100px;padding:0 1.2rem;
-  display:grid;gap:2.4rem;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-}
-.card{
-  display:block;text-decoration:none;color:#004F59;
-  border-radius:20px;overflow:hidden;
-  box-shadow:0 6px 22px rgba(0,0,0,.08);
-  transition:transform .25s,box-shadow .25s;
-}
-.card img{width:100%;height:160px;object-fit:cover}
-.card h2{margin:0;padding:1.4rem 1.6rem;font-size:1.4rem}
-.card:hover{transform:translateY(-10px);box-shadow:0 14px 32px rgba(0,0,0,.12)}
-</style>
-{% endblock %}
+    <!-- === 2 × 2 方块卡片 === -->
+    <div class="card-grid">
 
-{% block content %}
+      <!-- ① AI & ML Projects -->
+      <a href="{{ url_for('projects_ai') }}" class="proj-tile ai">
+        <h3>AI &amp; ML<br>Projects</h3>
+      </a>
 
-<header class="proj-hero">
-  <div class="wall">
-    {% for f in ['p1.jpg','p2.jpg','p3.jpg','p4.jpg','p5.jpg','p6.jpg','p7.jpg','p8.jpg'] %}
-      <img src="{{ url_for('static', filename='img/projects-wall/' ~ f) }}" alt="">
-    {% endfor %}
-  </div>
-</header>
+      <!-- ② Public-Service Analytics -->
+      <a href="{{ url_for('projects_public_service') }}" class="proj-tile psa">
+        <i class="fa-solid fa-file-lines"></i>
+        <h3>Public-Service<br>Analytics</h3>
+      </a>
 
-<main class="projects-wrapper">
-  <h1 class="page-title text-center">Projects</h1>
+      <!-- ③ Academic Research -->
+      <a href="{{ url_for('projects_academic') }}" class="proj-tile research">
+        <h3>Academic<br>Research</h3>
+      </a>
 
-  <div class="projects-grid">
-    <!-- Academic Research -->
-    <a href="{{ url_for('projects_academic') }}"   class="card">
-      <img src="{{ url_for('static', filename='img/cover/academic.jpg') }}" alt="">
-      <h2>Academic&nbsp;Research</h2>
-    </a>
+      <!-- ④ Corporate Consulting -->
+      <a href="{{ url_for('projects_consulting') }}" class="proj-tile corp">
+        <h3>Corporate<br>Consulting</h3>
+      </a>
 
-    <!-- Corporate Consulting -->
-    <a href="{{ url_for('projects_consulting') }}" class="card">
-      <img src="{{ url_for('static', filename='img/cover/consulting.jpg') }}" alt="">
-      <h2>Corporate&nbsp;Consulting</h2>
-    </a>
-
-    <!-- HR-AI Projects -->
-    <a href="{{ url_for('projects_ai') }}"         class="card">
-      <img src="{{ url_for('static', filename='img/cover/ai.jpg') }}" alt="">
-      <h2>HR + AI&nbsp;Projects</h2>
-    </a>
-
-    <!-- Public-Service Analytics -->
-    <a href="{{ url_for('projects_public_service') }}" class="card">
-      <img src="{{ url_for('static', filename='img/cover/federal.jpg') }}" alt="">
-      <h2>Public-Service&nbsp;Analytics</h2>
-    </a>
-  </div>
-</main>
-{% endblock %}
-
+    </div>
+  </main>
+</body>
+</html>
