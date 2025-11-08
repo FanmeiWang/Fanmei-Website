@@ -76,52 +76,74 @@ body{ background:var(--page); }
 .card--honey { --hero-top:var(--hero-honey-top); --hero-btm:var(--hero-honey-btm); }
 .card--sand  { --hero-top:var(--hero-sand-top);  --hero-btm:var(--hero-sand-btm); }
 
-/* ────────────────── Teaching Philosophy：一行/两列 + 大黄点 + 白字 ────────────────── */
-.philo{
-  max-width:1200px;
-  margin:28px auto 0;
-}
-.philo h2{
-  text-align:center; color:var(--ink); margin:0 0 12px;
-  font-weight:900; font-size:1.6rem; letter-spacing:.2px;
-}
+/* ────────────────── Teaching Philosophy：两列链接 + 大黄点，无白框 ────────────────── */
+.philo{ max-width:1200px; margin:28px auto 0; }
+.philo h2{ text-align:center; color:var(--ink); margin:0 0 12px; font-weight:900; font-size:1.6rem; letter-spacing:.2px; }
 
-/* 深色背景带，保证白字对比 */
 .philo-band{
   background: var(--philo-band);
   border-radius:10px;
   padding:14px 16px;
   box-shadow: 0 8px 24px rgba(0,0,0,.08) inset, 0 6px 18px rgba(0,0,0,.06);
 }
-
-/* 两列网格；点+文本 */
 .philo-list{
   display:grid;
   grid-template-columns: repeat(2, minmax(0,1fr));
   gap:10px 28px;        /* 行距/列距 */
 }
-@media (max-width: 720px){
-  .philo-list{ grid-template-columns: 1fr; }
-}
+@media (max-width: 720px){ .philo-list{ grid-template-columns: 1fr; } }
 
-/* 单个链接：无边框，仅文本，白字；不加粗 */
 .philo-item{
   display:flex; align-items:center; gap:.6rem;
   color:#fff; text-decoration:none;
   font-size:1.18rem; font-weight:500; line-height:1.35;
-  padding:8px 2px; /* 更紧凑 */
+  padding:8px 2px;
 }
 .philo-item:hover{ text-decoration: underline; }
 .philo-item:focus-visible{ outline:2px solid rgba(255,255,255,.6); outline-offset:2px; border-radius:4px; }
 
-/* 黄色圆点；更大更醒目 */
+/* 黄色圆点 */
 .philo-item::before{
   content:"";
-  width:16px; height:16px; 
-  border-radius:50%;
+  width:16px; height:16px; border-radius:50%;
   background: radial-gradient(circle at 35% 35%, #fff8cc 20%, #F2B300 60%, #D49600 100%);
   box-shadow: 0 2px 6px rgba(0,0,0,.25);
   flex:0 0 16px;
+}
+
+/* ────────────────── 横向滚动相册（加在哲学区下面） ────────────────── */
+.gallery-wrap{ margin:18px auto 0; max-width:1200px; position:relative; }
+.gallery-scroller{
+  display:flex; gap:12px;
+  overflow-x:auto; overflow-y:hidden;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  padding:12px 56px;              /* 给左右按钮留空间 */
+  border-radius:14px; background:#fff;
+  box-shadow:0 10px 26px rgba(0,0,0,.08);
+}
+.gallery-scroller::-webkit-scrollbar{ height:8px; }
+.gallery-scroller::-webkit-scrollbar-thumb{ background:rgba(0,0,0,.15); border-radius:999px; }
+.gallery-scroller img{
+  height:130px; width:auto; object-fit:cover;
+  border-radius:10px; flex:0 0 auto;
+  scroll-snap-align:start;
+  box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+
+/* 左右按钮 */
+.gbtn{
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:38px; height:38px; border:none; border-radius:50%;
+  background:#fff; box-shadow:0 4px 12px rgba(0,0,0,.18);
+  color:var(--brand); font-weight:900; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+}
+.gbtn:hover{ filter:brightness(1.03); }
+.gprev{ left:8px; } .gnext{ right:8px; }
+
+@media (max-width:700px){
+  .gallery-scroller img{ height:100px; }
 }
 </style>
 {% endblock %}
@@ -161,25 +183,65 @@ body{ background:var(--page); }
     <h2>Teaching Philosophy</h2>
     <div class="philo-band">
       <nav class="philo-list" aria-label="Teaching Philosophy principles">
-        <a class="philo-item" href="{{ DOSSIER }}#page={{ PAGES[0] }}" target="__blank" rel="noopener">
+        <a class="philo-item" href="{{ DOSSIER }}#page={{ PAGES[0] }}" target="_blank" rel="noopener">
           Linking Theory &amp; Real-World Application
         </a>
-        <a class="philo-item" href="{{ DOSSIER }}#page={{ PAGES[1] }}" target="__blank" rel="noopener">
+        <a class="philo-item" href="{{ DOSSIER }}#page={{ PAGES[1] }}" target="_blank" rel="noopener">
           Proactive &amp; Interactive Learning
         </a>
-        <a class="philo-item" href="{{ DOSSIER }}#page={{ PAGES[2] }}" target="__blank" rel="noopener">
+        <a class="philo-item" href="{{ DOSSIER }}#page={{ PAGES[2] }}" target="_blank" rel="noopener">
           Valuing Students’ Voices
         </a>
-        <a class="philo-item" href="{{ DOSSIER }}#page={{ PAGES[3] }}" target="__blank" rel="noopener">
+        <a class="philo-item" href="{{ DOSSIER }}#page={{ PAGES[3] }}" target="_blank" rel="noopener">
           Teaching as Continual Growth
         </a>
       </nav>
     </div>
   </section>
+
+  <!-- 横向滚动教学照片（就在哲学区下面） -->
+  <section class="gallery-wrap" aria-label="Teaching photos">
+    <button class="gbtn gprev" type="button" aria-label="Scroll left">‹</button>
+    <div class="gallery-scroller" id="teach-photos">
+      {# 教学图片文件：放在 static/img/teaching/ 下。注意第一张名为 teacching8.jpg（双 c）。 #}
+      {% set teaching_photos = [
+        'teacching8.jpg','teaching1.png','teaching2.png',
+        'teaching4.jpg','teaching5.png','teaching7.jpg','teaching9.jpg'
+      ] %}
+      {% for f in teaching_photos %}
+        <img src="{{ url_for('static', filename='img/teaching/' ~ f) }}" alt="Teaching photo {{ loop.index }}">
+      {% endfor %}
+    </div>
+    <button class="gbtn gnext" type="button" aria-label="Scroll right">›</button>
+  </section>
+
 </div>
 {% endblock %}
 
-{% block content_scripts %}{% endblock %}
+{% block content_scripts %}
+<script>
+/* 简单滚动控制（左右按钮 + 鼠标滚轮横向滚动） */
+(function(){
+  const box  = document.getElementById('teach-photos');
+  if(!box) return;
+  const prev = document.querySelector('.gbtn.gprev');
+  const next = document.querySelector('.gbtn.gnext');
+  const step = () => Math.max(220, Math.floor(box.clientWidth * 0.8));
+
+  prev.addEventListener('click', () => box.scrollBy({ left: -step(), behavior: 'smooth' }));
+  next.addEventListener('click', () => box.scrollBy({ left:  step(), behavior: 'smooth' }));
+
+  // 纵向滚轮 → 横向滚动（更易用）
+  box.addEventListener('wheel', (e) => {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      e.preventDefault();
+      box.scrollBy({ left: e.deltaY, behavior: 'smooth' });
+    }
+  }, { passive:false });
+})();
+</script>
+{% endblock %}
+
 
 
 
