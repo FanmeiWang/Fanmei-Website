@@ -4,203 +4,192 @@
 {% block extra_css %}
 <style>
 :root{
-  --deep : #004F59;    /* 深绿蓝（品牌） */
-  --ink  : #163D41;    /* 正文深色 */
-  --sand : #FAF9F4;    /* 背景米色 */
+  --teal: #004F59;      /* 品牌深绿蓝 */
+  --ink : #14343A;
 
-  /* 渐变（绿 / 黄） */
-  --grad-green: linear-gradient(135deg,#2FBDA1 0%,#7ED8C0 100%);
-  --grad-yellow: linear-gradient(135deg,#FFD066 0%,#FFE7AE 100%);
+  /* 渐变（绿 / 黄 / 天蓝，顶部四卡用；哲学点用绿黄） */
+  --g-amber: linear-gradient(180deg,#FFD066 0%, #FFE7A6 100%);
+  --g-teal : linear-gradient(180deg,#5AC3B0 0%, #A7E0D6 100%);
+  --g-sky  : linear-gradient(180deg,#6CB7CF 0%, #B9E1F3 100%);
+
+  --page-bg:#FAF9F4;
+  --shadow : 0 14px 36px rgba(0,0,0,.12);
+  --shadow-sm: 0 8px 22px rgba(0,0,0,.10);
 }
 
-/* 页面基调 */
-body{ background:var(--sand); }
-.page-wrap{ max-width:1220px; margin:0 auto; padding:0 1rem 70px; }
-.page-title{ text-align:center; color:var(--deep); margin:60px 0 26px; }
+/* 页面容器 */
+body{ background:var(--page-bg); }
+.page-wrap{ max-width:1220px; margin:0 auto; padding:0 1rem 64px; }
+.page-title{
+  text-align:center; color:var(--teal);
+  margin:54px 0 26px; font-size:2.8rem; line-height:1.15;
+}
 
-/* ───────────── 顶部四张卡片 ───────────── */
-.cards{
-  display:grid; gap:1.2rem;
+/* ── 顶部四张模块卡 ───────────────────── */
+.module-grid{
+  display:grid; gap:1.25rem;
   grid-template-columns:repeat(4,minmax(0,1fr));
 }
-@media (max-width:1100px){ .cards{grid-template-columns:repeat(2,minmax(0,1fr));} }
-@media (max-width:640px){ .cards{grid-template-columns:1fr;} }
+@media (max-width:1100px){ .module-grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
+@media (max-width:640px){  .module-grid{grid-template-columns:1fr;} }
 
-.tt-card{
-  border-radius:22px; overflow:hidden; background:#fff;
-  box-shadow:0 14px 36px rgba(0,0,0,.08);
-  display:flex; flex-direction:column;
+.module-card{
+  display:block; text-decoration:none; color:var(--teal);
+  border-radius:24px; overflow:hidden; box-shadow:var(--shadow-sm);
+  background:#fff; transition:transform .22s ease, box-shadow .22s ease;
 }
-.tt-head{
-  min-height:150px; display:flex; align-items:center; justify-content:center;
-  color:#fff; position:relative;
-}
-.tt-head .icon{
-  width:56px; height:56px; border-radius:14px;
-  display:flex; align-items:center; justify-content:center;
-  background:rgba(255,255,255,.22);
-  box-shadow:inset 0 0 0 2px rgba(255,255,255,.16);
-  font-size:26px;
-}
-.tt-body{
-  padding:1.35rem 1.4rem 1.2rem; color:var(--ink);
-  border-top:1px solid rgba(0,0,0,.06);
-}
-.tt-title{ margin:0 0 .35rem; font-size:1.6rem; color:var(--deep); }
-.tt-desc{ margin:0 0 .9rem; line-height:1.55; }
-.tt-cta{
-  font-weight:800; color:var(--deep); text-decoration:none;
-  border-bottom:2px solid rgba(0,79,89,.2);
-}
-.tt-cta:hover{ border-color:var(--deep); }
+.module-card:hover{ transform:translateY(-6px); box-shadow:var(--shadow); }
 
-/* 单张卡片的头部配色（绿 / 黄交替） */
-.head-yellow{ background:var(--grad-yellow); }
-.head-green { background:var(--grad-green); }
+.card-head{
+  height:156px; display:flex; align-items:center; justify-content:center;
+  color:#fff;
+}
+.card-head i{ font-size:2rem; opacity:.95; }
 
-/* ───────────── 折叠式 Teaching Philosophy（只显示4个点） ───────────── */
+.card-body{ background:#fff; padding:1.15rem 1.35rem 1.25rem; }
+.card-body h3{ margin:.1rem 0 .45rem; font-size:1.6rem; color:var(--teal); }
+.card-body p{ margin:0 0 .9rem; color:#4d6367; line-height:1.55; }
+.card-link{
+  font-weight:800; color:var(--teal); text-decoration:none;
+  border-bottom:2px solid rgba(0,79,89,.22); padding-bottom:1px;
+}
+.card-link:hover{ border-color:var(--teal); }
+
+/* 头部渐变 */
+.grad-amber{ background:var(--g-amber); }
+.grad-teal { background:var(--g-teal);  }
+.grad-sky  { background:var(--g-sky);   }
+
+/* ── 折叠：Teaching Philosophy（置中 + 只显示4点） ── */
 .philo{
-  margin:34px 0 0;
-  border-radius:18px; overflow:hidden;
+  /* 放在中间：设置最大宽度并左右 auto */
+  max-width:960px; margin:34px auto 18px;
+  border-radius:20px; overflow:hidden;
   border:1px solid rgba(0,0,0,.06);
-  background:#fff;
-  box-shadow:0 10px 26px rgba(0,0,0,.06);
+  background:#fff; box-shadow:0 8px 24px rgba(0,0,0,.06);
 }
 .philo > summary{
-  list-style:none; cursor:pointer; padding:1rem 1.1rem;
-  display:flex; align-items:center; justify-content:space-between; gap:.8rem;
+  list-style:none; cursor:pointer; user-select:none;
+  /* 居中标题 */
+  text-align:center;
+  padding:1rem 1.1rem;
+  font-weight:900; font-size:1.25rem; color:var(--teal);
   background:linear-gradient(180deg,#EAF5F1 0%, #FFF7DD 100%);
-  color:var(--deep); font-weight:900; font-size:1.2rem;
 }
 .philo > summary::-webkit-details-marker{ display:none; }
-.philo .caret{ transition:transform .18s ease; }
-.philo[open] .caret{ transform:rotate(90deg); }
 
-.philo-body{ padding:1rem 1.1rem 1.2rem; }
-
-.philo-grid{
-  display:grid; gap:1rem;
-  grid-template-columns:repeat(4,minmax(0,1fr));
+.points{ padding:1rem; border-top:1px solid rgba(0,0,0,.06); }
+.points-grid{
+  display:grid; gap:1rem; grid-template-columns:repeat(4,minmax(0,1fr));
 }
-@media (max-width:1100px){ .philo-grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
-@media (max-width:640px){ .philo-grid{grid-template-columns:1fr;} }
+@media (max-width:980px){ .points-grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
+@media (max-width:520px){ .points-grid{grid-template-columns:1fr;} }
 
-.philo-point{
-  border-radius:16px;
-  padding:1rem 1rem;
-  color:var(--deep);
+/* 可点击的点：做成整块 <a> */
+.point{
   display:flex; align-items:center; gap:.7rem;
-  box-shadow:0 8px 24px rgba(0,0,0,.06);
+  border-radius:16px; padding:1rem 1rem;
+  color:var(--teal); font-weight:800; letter-spacing:.1px;
+  box-shadow:0 8px 22px rgba(0,0,0,.08);
+  text-decoration:none;
 }
-.philo-point .badge{
-  flex:0 0 38px; height:38px; border-radius:10px;
+.point .badge{
+  flex:0 0 42px; height:42px; border-radius:10px;
   display:flex; align-items:center; justify-content:center;
-  font-weight:900; color:var(--deep);
-  background:#fff; box-shadow:inset 0 0 0 1px rgba(0,0,0,.06);
+  color:var(--teal); font-size:1.1rem; font-weight:900;
+  background:#fff; box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);
 }
-.philo-point h4{ margin:0; font-size:1.02rem; }
+.point:hover{ transform:translateY(-2px); }
 
-/* 四个点：绿/黄渐变交错 */
-.pt-1{ background:var(--grad-green); }
-.pt-2{ background:var(--grad-yellow); }
-.pt-3{ background:var(--grad-green); }
-.pt-4{ background:var(--grad-yellow); }
+/* 绿黄渐变交错 */
+.pt-1,.pt-3{ background:var(--g-teal); }
+.pt-2,.pt-4{ background:var(--g-amber); }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="page-wrap">
-  <h1 class="page-title">Teaching&nbsp;&amp;&nbsp;Training</h1>
+  <h1 class="page-title">Teaching &amp; Training</h1>
 
   <!-- 顶部四张卡片 -->
-  <div class="cards">
-    <!-- Academic Courses -->
-    <section class="tt-card">
-      <div class="tt-head head-yellow">
-        <div class="icon"><i class="fa-solid fa-bookmark"></i></div>
+  <div class="module-grid">
+    <a href="{{ url_for('teaching_academic') }}" class="module-card">
+      <div class="card-head grad-amber"><i class="fa-solid fa-bookmark"></i></div>
+      <div class="card-body">
+        <h3>Academic Courses</h3>
+        <p>Undergraduate, MBA &amp; EMBA syllabi I designed and taught.</p>
+        <span class="card-link">Course list</span>
       </div>
-      <div class="tt-body">
-        <h2 class="tt-title">Academic Courses</h2>
-        <p class="tt-desc">Undergraduate, MBA &amp; EMBA syllabi I designed and taught.</p>
-        <a class="tt-cta" href="{{ url_for('teaching_academic') }}">Course list</a>
-      </div>
-    </section>
+    </a>
 
-    <!-- Corporate Training -->
-    <section class="tt-card">
-      <div class="tt-head head-green">
-        <div class="icon"><i class="fa-solid fa-bars-staggered"></i></div>
+    <a href="{{ url_for('teaching_corporate') }}" class="module-card">
+      <div class="card-head grad-teal"><i class="fa-solid fa-bars-staggered"></i></div>
+      <div class="card-body">
+        <h3>Corporate Training</h3>
+        <p>In‑house workshops on HR analytics, culture and performance.</p>
+        <span class="card-link">Contracts</span>
       </div>
-      <div class="tt-body">
-        <h2 class="tt-title">Corporate Training</h2>
-        <p class="tt-desc">In‑house workshops on HR analytics, culture and performance.</p>
-        <a class="tt-cta" href="{{ url_for('teaching_corporate') }}">Contracts</a>
-      </div>
-    </section>
+    </a>
 
-    <!-- Teaching Awards -->
-    <section class="tt-card">
-      <div class="tt-head head-yellow">
-        <div class="icon"><i class="fa-solid fa-graduation-cap"></i></div>
+    <a href="{{ url_for('teaching_awards') }}" class="module-card">
+      <div class="card-head grad-amber"><i class="fa-solid fa-graduation-cap"></i></div>
+      <div class="card-body">
+        <h3>Teaching Awards</h3>
+        <p>Institutional accolades recognising instructional excellence.</p>
+        <span class="card-link">Awards timeline</span>
       </div>
-      <div class="tt-body">
-        <h2 class="tt-title">Teaching Awards</h2>
-        <p class="tt-desc">Institutional accolades recognising instructional excellence.</p>
-        <a class="tt-cta" href="{{ url_for('teaching_awards') }}">Awards timeline</a>
-      </div>
-    </section>
+    </a>
 
-    <!-- Thesis Supervision -->
-    <section class="tt-card">
-      <div class="tt-head head-green">
-        <div class="icon"><i class="fa-solid fa-list-ul"></i></div>
+    <a href="{{ url_for('teaching_thesis') }}" class="module-card">
+      <div class="card-head grad-sky"><i class="fa-solid fa-list-ul"></i></div>
+      <div class="card-body">
+        <h3>Thesis Supervision</h3>
+        <p>Supervision provided to 50‑plus bachelor’s &amp; master’s dissertations.</p>
+        <span class="card-link">At‑a‑glance</span>
       </div>
-      <div class="tt-body">
-        <h2 class="tt-title">Thesis Supervision</h2>
-        <p class="tt-desc">Supervision provided to 50‑plus bachelor’s &amp; master’s dissertations.</p>
-        <a class="tt-cta" href="{{ url_for('teaching_thesis') }}">At‑a‑glance</a>
-      </div>
-    </section>
+    </a>
   </div>
 
-  <!-- 折叠式：Teaching Philosophy（仅4个点） -->
+  <!-- 居中折叠：Teaching Philosophy（四个点 → Dossier 链接） -->
+  {% set dossier_pdf = url_for('static', filename='docs/teaching_dossier.pdf') %}
+  {% set dossier_doc = url_for('static', filename='docs/teaching_dossier.docx') %}
+
   <details class="philo">
-    <summary>
-      Teaching Philosophy <span class="caret">▸</span>
-    </summary>
-    <div class="philo-body">
-      <div class="philo-grid">
-        <div class="philo-point pt-1">
+    <summary>Teaching Philosophy — four principles</summary>
+    <div class="points">
+      <div class="points-grid">
+        <!-- 1：理论 ↔ 实务 -->
+        <a class="point pt-1" href="{{ dossier_pdf }}" target="_blank" rel="noopener"
+           onclick="if(this.href.endsWith('.pdf')===false){ this.href='{{ dossier_doc }}'; }">
           <span class="badge">1</span>
-          <h4>Linking Theory &amp; Real‑World Application</h4>
-        </div>
-        <div class="philo-point pt-2">
+          <span>Linking Theory &amp; Real‑World Application</span>
+        </a>
+        <!-- 2：主动与互动 -->
+        <a class="point pt-2" href="{{ dossier_pdf }}" target="_blank" rel="noopener"
+           onclick="if(this.href.endsWith('.pdf')===false){ this.href='{{ dossier_doc }}'; }">
           <span class="badge">2</span>
-          <h4>Proactive, Interactive Learning</h4>
-        </div>
-        <div class="philo-point pt-3">
+          <span>Proactive, Interactive Learning</span>
+        </a>
+        <!-- 3：尊重学生声音 -->
+        <a class="point pt-3" href="{{ dossier_pdf }}" target="_blank" rel="noopener"
+           onclick="if(this.href.endsWith('.pdf')===false){ this.href='{{ dossier_doc }}'; }">
           <span class="badge">3</span>
-          <h4>Respecting Diverse Student Voices</h4>
-        </div>
-        <div class="philo-point pt-4">
+          <span>Valuing Students’ Voices</span>
+        </a>
+        <!-- 4：持续成长 -->
+        <a class="point pt-4" href="{{ dossier_pdf }}" target="_blank" rel="noopener"
+           onclick="if(this.href.endsWith('.pdf')===false){ this.href='{{ dossier_doc }}'; }">
           <span class="badge">4</span>
-          <h4>Teaching as Continual Growth</h4>
-        </div>
+          <span>Teaching as Continual Growth</span>
+        </a>
       </div>
     </div>
   </details>
 </div>
 {% endblock %}
 
-{% block content_scripts %}
-<script>
-// 无脚本逻辑必需项，仅用于保证某些浏览器 summary 点击区域的可点击性增强（可删）
-document.querySelectorAll('.philo > summary').forEach(s => {
-  s.addEventListener('keydown', e => {
-    if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); s.click(); }
-  });
-});
-</script>
-{% endblock %}
+{% block content_scripts %}{% endblock %}
+
+
 
 
