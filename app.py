@@ -367,11 +367,13 @@ teaching_photos = [
 ]
 
 # 2️⃣ 把 photos=teaching_photos 传给模板
+# 2️⃣ 把 photos=teaching_photos 传给模板
 @app.route("/teaching")
 def teaching_overview():
     return render_template(
         "teaching_overview.html",
-        photos=teaching_photos        # ← 关键
+        photos=teaching_photos,
+        academic=teaching_data       # ← 传入 academic，模板就能用
     )
 @app.route("/teaching/scroll")
 def teaching_scroll():
@@ -462,6 +464,7 @@ def presentations():
                            talks=presentation_data)
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
