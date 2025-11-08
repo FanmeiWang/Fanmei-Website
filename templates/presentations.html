@@ -43,6 +43,34 @@
 .talk:last-child{border-bottom:none}
 .talk .title{font-weight:750}
 .talk .meta{color:var(--muted)}
+
+  @media (min-width: 1024px){
+  /* 容器整体更宽，并取消左右内边距，让内容更靠页面两侧 */
+  .page-wrap{
+    max-width: 1380px;   /* 原 1200 → 1380（你也可以调到 1440/1500） */
+    padding: 0 0 64px;   /* 去掉左右 1rem 内边距 */
+  }
+
+  /* 三列布局：缩窄两侧栏、放大中栏，并缩小列间距 */
+  .pr-grid{
+    grid-template-columns: 230px minmax(0,1fr) 230px; /* 原 280px → 230px */
+    gap: 16px;                                       /* 原 22px → 16px */
+  }
+
+  /* 海报卡片更紧凑，缩小内边距与缩略图间距 */
+  .poster{ padding: 8px; }       /* 原 10px → 8px */
+  .thumbs{ gap: 8px; }           /* 原 10px → 8px */
+
+  /* 中间滚动区更高一些，视觉更“满” */
+  .scroller{ height: 700px; }    /* 原 620px → 700px，可按需调整 */
+}
+
+/* 超宽屏时再放大一点（可选） */
+@media (min-width: 1440px){
+  .page-wrap{ max-width: 1500px; }
+  .pr-grid{ grid-template-columns: 260px minmax(0,1fr) 260px; }
+}
+
 </style>
 {% endblock %}
 
@@ -115,3 +143,4 @@
 })();
 </script>
 {% endblock %}
+
