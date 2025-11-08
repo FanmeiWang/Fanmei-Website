@@ -429,117 +429,94 @@ def teaching_thesis():
     )
 
 # ---- Presentations（唯一路由）----
+# ---- Presentations（唯一）----
 @app.route("/presentations")
 def presentations():
-    # 中间完整列表（按你 CV/Teaching Dossier）
+    # 中间完整列表（按你的 CV）
     talks = [
         {
             "title": "How to Conduct Human Resources Management-Related Studies in China? (Chinese)",
             "venue": "Workshop “Research on Ethnic Minority Group Members in China”, Department of Sociology, Zhejiang University",
-            "city":  "Hangzhou, Zhejiang, China",
-            "date":  "Apr 28, 2019",
-            "desc":  ""
+            "city": "Hangzhou, Zhejiang, China",
+            "date": "Apr 28, 2019",
         },
         {
-            "title": "Human Resource Management for Ethnic Minority Employees in Organizations in Chinese Minority-inhabited Regions: A Case Study in the Tibetan Autonomous Region (Chinese)",
+            "title": "Human Resource Management for Ethnic Minority Employees in Organizations in Chinese Minority‑inhabited Regions: A Case Study in the Tibetan Autonomous Region (Chinese)",
             "venue": "Institute for Advanced Study in Humanities & Social Sciences, Zhejiang University",
-            "city":  "Hangzhou, Zhejiang, China",
-            "date":  "Apr 29, 2019",
-            "desc":  ""
+            "city": "Hangzhou, Zhejiang, China",
+            "date": "Apr 29, 2019",
         },
         {
-            "title": "A New Perspective in Analyzing China Ethnic-related Employment Issues (English)",
+            "title": "A New Perspective in Analyzing China Ethnic‑related Employment Issues (English)",
             "venue": "Fairbank Center Visiting Scholar Presentations, Fairbank Center for Chinese Studies, Harvard University",
-            "city":  "Boston, MA",
-            "date":  "May 1, 2018",
-            "desc":  ""
+            "city": "Boston, MA",
+            "date": "May 1, 2018",
         },
         {
             "title": "Career Development for Ethnic Minority Employees: A Case Study in the Tibetan Autonomous Region (English)",
             "venue": "Affiliate Presentations, Fairbank Center for Chinese Studies, Harvard University",
-            "city":  "Boston, MA",
-            "date":  "Apr 26, 2018",
-            "desc":  ""
-        },
-        {
-            "title": "Panel Discussant: “(De)Constructing Myths of Migration”",
-            "venue": "Harvard East Asia Society Conference 2018, 21st Annual Conference: (De)Constructing Boundaries, Harvard University",
-            "city":  "Boston, MA",
-            "date":  "Feb 9, 2018",
-            "desc":  ""
+            "city": "Boston, MA",
+            "date": "Apr 26, 2018",
         },
         {
             "title": "Chinese Ethnic Policies: An International Comparative Perspective (English)",
-            "venue": "Guest lecture in Ethics in Public Affair and Corporate Decision-Making seminar course, Schwarzman College, Tsinghua University",
-            "city":  "Beijing, China",
-            "date":  "Feb 2, 2017",
-            "desc":  ""
+            "venue": "Ethics in Public Affair and Corporate Decision‑Making seminar course, Schwarzman College, Tsinghua University",
+            "city": "Beijing, China",
+            "date": "Feb 2, 2017",
         },
         {
             "title": "Chinese Ethnic Issues in the Context of One Belt, One Road Initiative (Chinese)",
-            "venue": "Conference “Cultural Diversity and Construction of One Belt, One Road”, Institute of Global Ethnology and Anthropology, Minzu University of China",
-            "city":  "Beijing, China",
-            "date":  "Dec 24, 2016",
-            "desc":  ""
+            "venue": "“Cultural Diversity and Construction of One Belt, One Road”, Institute of Global Ethnology and Anthropology, Minzu University of China",
+            "city": "Beijing, China",
+            "date": "Dec 24, 2016",
         },
         {
             "title": "Affirmative Action – The Historical Development and Social Influence of Preferential Policies for Ethnic Minorities in the United States (Chinese)",
             "venue": "Department of Policies and Regulations, State Ethnic Affairs Commission of China",
-            "city":  "Beijing, China",
-            "date":  "Nov 6, 2016",
-            "desc":  ""
+            "city": "Beijing, China",
+            "date": "Nov 6, 2016",
         },
         {
-            "title": "Cross-Cultural Management (English)",
+            "title": "Cross‑Cultural Management (English)",
             "venue": "MBA seminar, Manchester Metropolitan University Business School, School of Economics and Management, USTB",
-            "city":  "Beijing, China",
-            "date":  "Jun 9, 2016",
-            "desc":  ""
+            "city": "Beijing, China",
+            "date": "Jun 9, 2016",
         },
         {
             "title": "Race and Ethnicity in America (Chinese)",
             "venue": "American Culture and Society Seminar Series, American Studies Center, Peking University",
-            "city":  "Beijing, China",
-            "date":  "Feb 29, 2013",
-            "desc":  ""
+            "city": "Beijing, China",
+            "date": "Feb 29, 2013",
+        },
+        {
+            "title": "Panel Discussant: “(De)Constructing Myths of Migration”",
+            "venue": "Harvard East Asia Society Conference 2018, 21st Annual Conference: (De)Constructing Boundaries, Harvard University",
+            "city": "Boston, MA",
+            "date": "Feb 9, 2018",
         },
     ]
 
-    # 两侧海报（Harvard 广告图）
-    ads = [
-        {"file": "Harvard_presentation_adv1.jpg", "alt": "Harvard — Visiting Scholar Presentations poster"},
-        {"file": "Harvard_presentation_adv2.jpg", "alt": "Harvard — Affiliate Presentation announcement"}
-    ]
+    # 顶部两张海报（放在 static/img/presentation/）
+    posters = ["Harvard_presentation_adv1.jpg", "Harvard_presentation_adv2.jpg"]
 
-    # 左侧（在左边海报下）三张
-    left_photos = [
-        "presentation1.jpg",
-        "presentation6.jpg",
-        "presentation7.jpg",
-    ]
-
-    # 右侧（在右边海报下）三张（哈佛现场三张）
-    right_photos = [
-        "Harvard_presentation1.jpg",
-        "Harvard_presentation2.jpg",
-        "Harvard_presentation3.jpg",
-    ]
-
-    # 可选：额外底部相册（如果模板需要 gallery，可继续用）
-    gallery = left_photos + right_photos + ["Presentation8.jpg", "Presentation10.jpg"]
+    # 左右各 3 张配图（按你的要求）
+    left_photos  = ["presentation1.jpg", "presentation6.jpg", "presentation7.jpg"]
+    right_photos = ["Harvard_presentation1.jpg",
+                    "Harvard_presentation2.jpg",
+                    "Harvard_presentation3.jpg"]
 
     return render_template(
         "presentations.html",
         talks=talks,
-        ads=ads,
+        posters=posters,
         left_photos=left_photos,
-        right_photos=right_photos,
-        gallery=gallery
+        right_photos=right_photos
     )
 
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
