@@ -425,6 +425,38 @@ def teaching_thesis():
         ug_theses=data.get("undergraduate", []),
         grad_theses=data.get("graduate", []),
     )
+@app.route("/presentations")
+def presentations():
+    talks = [
+        {
+            "title": "A New Perspective in Analyzing China Ethnic-related Employment Issues",
+            "venue": "Fairbank Center Visiting Scholar Presentations, Harvard University",
+            "date": "May 1, 2018",
+            "city": "Boston, MA"
+        },
+        {
+            "title": "How to Conduct Human Resources Management-Related Studies in China?",
+            "venue": "Department of Sociology, Zhejiang University",
+            "date": "Apr 28, 2019",
+            "city": "Hangzhou"
+        },
+        {
+            "title": "Human Resource Management for Ethnic Minority Employees in Organizations in Chinese Minority-inhabited Regions",
+            "venue": "Institute for Advanced Study in Humanities & Social Sciences, Zhejiang University",
+            "date": "Apr 29, 2019",
+            "city": "Hangzhou"
+        },
+        # 如果你要把“在哈佛的第二次演讲”加上，照这个格式再加一条即可
+    ]
+    images = [
+        {"file":"harvard1.jpg", "alt":"Harvard — Fairbank Center"},
+        {"file":"harvard2.jpg", "alt":"Harvard — Fairbank Center"},
+        {"file":"teaching1.png", "alt":"Seminar photo"},
+        {"file":"teaching2.png", "alt":"Lecture photo"},
+        {"file":"teaching7.jpg", "alt":"Workshop photo"},
+        {"file":"teaching9.jpg", "alt":"Classroom photo"},
+    ]
+    return render_template("presentations.html", talks=talks, images=images)
 
 
 # 放在所有路由定义之后
@@ -464,6 +496,7 @@ def presentations():
                            talks=presentation_data)
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
