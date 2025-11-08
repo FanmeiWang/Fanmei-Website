@@ -1,30 +1,63 @@
 {% extends "base.html" %}
-{% block title %}Presentations &amp; Media{% endblock %}
+{% block title %}Presentations — Fanmei Wang{% endblock %}
+
+{% block extra_css %}
+<style>
+:root{ --ink:#14343A; --brand:#004F59; --muted:#617176; --tile:#fff; }
+.page-wrap{max-width:1000px;margin:0 auto;padding:0 1rem 48px}
+.page-title{ color:var(--brand); text-align:center; margin:56px 0 20px; }
+.lead{ color:var(--brand); background:linear-gradient(180deg,#FFF6C7 0%,#FFFBE6 100%);
+       border-left:5px solid var(--brand); border-radius:12px; padding:.75rem .9rem; }
+.section{ margin-top:22px; }
+.h3{ font-size:1.35rem; font-weight:900; color:var(--ink); margin:0 0 .6rem; }
+
+/* talk list */
+.talks{ list-style:none; padding:0; margin:0; display:grid; gap:.75rem; }
+.talk{ background:var(--tile); border-radius:12px; padding:.85rem 1rem;
+       box-shadow:0 10px 22px rgba(0,0,0,.08); }
+.talk .t{ font-weight:800; color:var(--ink); margin:0 0 .25rem; }
+.talk .m{ color:var(--muted); font-size:.96rem; }
+
+/* gallery */
+.grid{ display:grid; gap:14px; grid-template-columns:repeat(3,minmax(0,1fr)); }
+@media(max-width:900px){ .grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:560px){ .grid{ grid-template-columns:1fr; } }
+.card{ background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 10px 22px rgba(0,0,0,.08); }
+.card img{ width:100%; aspect-ratio:4/3; object-fit:cover; display:block; }
+.cap{ padding:.7rem 1rem; color:var(--ink); }
+</style>
+{% endblock %}
+
 {% block content %}
-<h1 class="display-5 mb-4">Presentations &amp; Media</h1>
+{% set talks = talks or [] %}
+{% set images = images or [] %}
 
-<div class="row row-cols-1 row-cols-md-2 g-4">
-  {% for talk in talks %}
-    <div class="col">
-      <div class="card h-100 shadow-sm">
-        <!-- 图片或占位符 -->
-        {% set img_file = talk.cover if talk.cover else "placeholder.jpg" %}
-        <img src="{{ url_for('static', filename='images/' + img_file) }}"
-             class="card-img-top" alt="{{ talk.title }}">
+<div class="page-wrap">
+  <h1 class="page-title">Presentations</h1>
+  <p class="lead">Selected invited talks and lectures.</p>
 
-        <div class="card-body">
-          <h5 class="card-title">{{ talk.title }}</h5>
-          <p class="card-text fw-bold">{{ talk.venue }}</p>
-          <p class="card-text"><small class="text-muted">{{ talk.date }} · {{ talk.type }}</small></p>
+  <section class="section">
+    <h3 class="h3">Selected Talks</h3>
+    <ul class="talks">
+      {% for k in talks %}
+      <li class="talk">
+        <div class="t">{{ k.title }}</div>
+        <div class="m">{{ k.venue }} &nbsp;•&nbsp; {{ k.date }} &nbsp;•&nbsp; {{ k.city }}</div>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
 
-          {% if talk.link %}
-            <a href="{{ talk.link }}" class="btn btn-outline-primary" target="_blank">
-              View recording / slides
-            </a>
-          {% endif %}
-        </div>
-      </div>
+  <section class="section">
+    <h3 class="h3">Photos</h3>
+    <div class="grid">
+      {% for p in images %}
+      <figure class="card">
+        <img src="{{ url_for('static', filename='img/presentations/' ~ p.file) }}" alt="{{ p.alt or 'presentation photo' }}">
+        <figcaption class="cap">{{ p.alt or '' }}</figcaption>
+      </figure>
+      {% endfor %}
     </div>
-  {% endfor %}
+  </section>
 </div>
 {% endblock %}
