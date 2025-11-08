@@ -4,65 +4,97 @@
 {% block extra_css %}
 <style>
 :root{
-  --teal: #004F59;      /* 品牌深绿蓝 */
-  --ink : #14343A;
+  --teal:#004F59;           /* 品牌深绿蓝 */
+  --ink:#14343A;
+  --page:#FAF9F4;
 
-  /* 渐变（绿 / 黄 / 天蓝，顶部四卡用；哲学点用绿黄） */
-  --g-amber: linear-gradient(180deg,#FFD066 0%, #FFE7A6 100%);
-  --g-teal : linear-gradient(180deg,#5AC3B0 0%, #A7E0D6 100%);
-  --g-sky  : linear-gradient(180deg,#6CB7CF 0%, #B9E1F3 100%);
+  /* 绿色：浅/中/深（用于卡片内外两层渐变） */
+  --g-light-1:#EAF5F1;      /* very light mint */
+  --g-light-2:#CFECE3;
+  --g-mid    :#92D7C6;
+  --g-deep   :#2FBDA1;      /* 深绿（外框上端） */
 
-  --page-bg:#FAF9F4;
-  --shadow : 0 14px 36px rgba(0,0,0,.12);
-  --shadow-sm: 0 8px 22px rgba(0,0,0,.10);
+  /* 黄色点使用的渐变 */
+  --y-light :#FFF7DD;
+  --y-mid   :#FFE7AE;
+  --y-deep  :#FFD066;
+
+  --shadow-lg:0 14px 36px rgba(0,0,0,.12);
+  --shadow-sm:0 8px 22px rgba(0,0,0,.10);
 }
 
-/* 页面容器 */
-body{ background:var(--page-bg); }
+body{ background:var(--page); }
 .page-wrap{ max-width:1220px; margin:0 auto; padding:0 1rem 64px; }
-.page-title{
-  text-align:center; color:var(--teal);
-  margin:54px 0 26px; font-size:2.8rem; line-height:1.15;
+.page-title{ text-align:center; color:var(--teal); margin:54px 0 26px; }
+
+/* 进入动效 */
+@keyframes fadeUp{
+  from{ opacity:0; transform:translateY(10px); }
+  to  { opacity:1; transform:none; }
+}
+.reveal{ opacity:0; animation:fadeUp .46s ease both; }
+@media (prefers-reduced-motion: reduce){
+  .reveal{ animation:none; opacity:1; }
 }
 
-/* ── 顶部四张模块卡 ───────────────────── */
-.module-grid{
-  display:grid; gap:1.25rem;
+/* ───────── 顶部四张卡片（外框深→浅，内层浅→深） ───────── */
+.cards{
+  display:grid; gap:1.2rem;
   grid-template-columns:repeat(4,minmax(0,1fr));
 }
-@media (max-width:1100px){ .module-grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
-@media (max-width:640px){  .module-grid{grid-template-columns:1fr;} }
+@media (max-width:1100px){ .cards{grid-template-columns:repeat(2,minmax(0,1fr));} }
+@media (max-width:640px){  .cards{grid-template-columns:1fr;} }
 
-.module-card{
-  display:block; text-decoration:none; color:var(--teal);
-  border-radius:24px; overflow:hidden; box-shadow:var(--shadow-sm);
-  background:#fff; transition:transform .22s ease, box-shadow .22s ease;
+/* 外框（深→浅绿） */
+.card-shell{
+  border-radius:26px; padding:2px;   /* 用 padding 做“边框” */
+  background:linear-gradient(180deg,var(--g-deep) 0%, var(--g-mid) 100%);
+  box-shadow:var(--shadow-sm);
+  transition:transform .22s ease, box-shadow .22s ease;
 }
-.module-card:hover{ transform:translateY(-6px); box-shadow:var(--shadow); }
+.card-shell:hover{ transform:translateY(-6px); box-shadow:var(--shadow-lg); }
 
-.card-head{
-  height:156px; display:flex; align-items:center; justify-content:center;
+/* 内层（浅→深绿），再放内容 */
+.tt-card{
+  border-radius:24px; overflow:hidden;
+  background:linear-gradient(180deg,var(--g-light-1) 0%, var(--g-light-2) 55%, var(--g-mid) 100%);
+  display:flex; flex-direction:column; height:100%;
+}
+.tt-head{
+  min-height:156px; display:flex; align-items:center; justify-content:center;
   color:#fff;
+  /* 为图标容器再加一层淡绿到深绿，增强顶部“头部”的层次 */
+  background:linear-gradient(180deg,rgba(255,255,255,.08) 0%, rgba(0,0,0,.08) 100%);
 }
-.card-head i{ font-size:2rem; opacity:.95; }
+.tt-head .icon{
+  width:56px; height:56px; border-radius:14px;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,.16);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.14);
+  font-size:26px; color:#fff;
+}
 
-.card-body{ background:#fff; padding:1.15rem 1.35rem 1.25rem; }
-.card-body h3{ margin:.1rem 0 .45rem; font-size:1.6rem; color:var(--teal); }
-.card-body p{ margin:0 0 .9rem; color:#4d6367; line-height:1.55; }
-.card-link{
+.tt-body{
+  background:#fff;      /* 正文白底，保证可读性 */
+  padding:1.15rem 1.35rem 1.25rem;
+  border-top:1px solid rgba(0,0,0,.06);
+}
+.tt-title{ margin:.1rem 0 .45rem; font-size:1.6rem; color:var(--teal); }
+.tt-desc{ margin:0 0 .9rem; color:#4d6367; line-height:1.55; }
+.tt-cta{
   font-weight:800; color:var(--teal); text-decoration:none;
   border-bottom:2px solid rgba(0,79,89,.22); padding-bottom:1px;
 }
-.card-link:hover{ border-color:var(--teal); }
+.tt-cta:hover{ border-color:var(--teal); }
 
-/* 头部渐变 */
-.grad-amber{ background:var(--g-amber); }
-.grad-teal { background:var(--g-teal);  }
-.grad-sky  { background:var(--g-sky);   }
+/* 依次延迟 */
+.cards .card-shell:nth-child(1){ animation-delay: .00s; }
+.cards .card-shell:nth-child(2){ animation-delay: .08s; }
+.cards .card-shell:nth-child(3){ animation-delay: .16s; }
+.cards .card-shell:nth-child(4){ animation-delay: .24s; }
 
-/* ── 折叠：Teaching Philosophy（置中 + 只显示4点） ── */
+/* ───────── Teaching Philosophy（置中折叠，仅四个黄点） ───────── */
 .philo{
-  /* 放在中间：设置最大宽度并左右 auto */
   max-width:960px; margin:34px auto 18px;
   border-radius:20px; overflow:hidden;
   border:1px solid rgba(0,0,0,.06);
@@ -70,40 +102,33 @@ body{ background:var(--page-bg); }
 }
 .philo > summary{
   list-style:none; cursor:pointer; user-select:none;
-  /* 居中标题 */
-  text-align:center;
-  padding:1rem 1.1rem;
+  text-align:center; padding:1rem 1.1rem;
   font-weight:900; font-size:1.25rem; color:var(--teal);
   background:linear-gradient(180deg,#EAF5F1 0%, #FFF7DD 100%);
 }
 .philo > summary::-webkit-details-marker{ display:none; }
 
-.points{ padding:1rem; border-top:1px solid rgba(0,0,0,.06); }
-.points-grid{
+.philo-body{ padding:1rem; border-top:1px solid rgba(0,0,0,.06); }
+.philo-grid{
   display:grid; gap:1rem; grid-template-columns:repeat(4,minmax(0,1fr));
 }
-@media (max-width:980px){ .points-grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
-@media (max-width:520px){ .points-grid{grid-template-columns:1fr;} }
+@media (max-width:980px){ .philo-grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
+@media (max-width:520px){ .philo-grid{grid-template-columns:1fr;} }
 
-/* 可点击的点：做成整块 <a> */
-.point{
-  display:flex; align-items:center; gap:.7rem;
-  border-radius:16px; padding:1rem 1rem;
-  color:var(--teal); font-weight:800; letter-spacing:.1px;
-  box-shadow:0 8px 22px rgba(0,0,0,.08);
-  text-decoration:none;
-}
-.point .badge{
-  flex:0 0 42px; height:42px; border-radius:10px;
+/* 单个黄点（浅→深），可点击到 PDF；无数字 */
+.philo-point{
+  text-decoration:none; color:var(--teal);
   display:flex; align-items:center; justify-content:center;
-  color:var(--teal); font-size:1.1rem; font-weight:900;
-  background:#fff; box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);
+  border-radius:16px; padding:1rem 1rem; text-align:center;
+  background:linear-gradient(180deg,var(--y-light) 0%, var(--y-mid) 55%, var(--y-deep) 100%);
+  box-shadow:0 8px 22px rgba(0,0,0,.08);
+  font-weight:800;
 }
-.point:hover{ transform:translateY(-2px); }
-
-/* 绿黄渐变交错 */
-.pt-1,.pt-3{ background:var(--g-teal); }
-.pt-2,.pt-4{ background:var(--g-amber); }
+/* 依次延迟 */
+.philo-grid .philo-point:nth-child(1){ animation-delay:.00s; }
+.philo-grid .philo-point:nth-child(2){ animation-delay:.08s; }
+.philo-grid .philo-point:nth-child(3){ animation-delay:.16s; }
+.philo-grid .philo-point:nth-child(4){ animation-delay:.24s; }
 </style>
 {% endblock %}
 
@@ -111,76 +136,74 @@ body{ background:var(--page-bg); }
 <div class="page-wrap">
   <h1 class="page-title">Teaching &amp; Training</h1>
 
-  <!-- 顶部四张卡片 -->
-  <div class="module-grid">
-    <a href="{{ url_for('teaching_academic') }}" class="module-card">
-      <div class="card-head grad-amber"><i class="fa-solid fa-bookmark"></i></div>
-      <div class="card-body">
-        <h3>Academic Courses</h3>
-        <p>Undergraduate, MBA &amp; EMBA syllabi I designed and taught.</p>
-        <span class="card-link">Course list</span>
-      </div>
-    </a>
+  <!-- 四张绿色卡片（外深→浅，内浅→深；逐个渐显） -->
+  <div class="cards">
+    <!-- 1 -->
+    <div class="card-shell reveal">
+      <section class="tt-card">
+        <div class="tt-head"><div class="icon"><i class="fa-solid fa-bookmark"></i></div></div>
+        <div class="tt-body">
+          <h2 class="tt-title">Academic Courses</h2>
+          <p class="tt-desc">Undergraduate, MBA &amp; EMBA syllabi I designed and taught.</p>
+          <a class="tt-cta" href="{{ url_for('teaching_academic') }}">Course list</a>
+        </div>
+      </section>
+    </div>
 
-    <a href="{{ url_for('teaching_corporate') }}" class="module-card">
-      <div class="card-head grad-teal"><i class="fa-solid fa-bars-staggered"></i></div>
-      <div class="card-body">
-        <h3>Corporate Training</h3>
-        <p>In‑house workshops on HR analytics, culture and performance.</p>
-        <span class="card-link">Contracts</span>
-      </div>
-    </a>
+    <!-- 2 -->
+    <div class="card-shell reveal">
+      <section class="tt-card">
+        <div class="tt-head"><div class="icon"><i class="fa-solid fa-bars-staggered"></i></div></div>
+        <div class="tt-body">
+          <h2 class="tt-title">Corporate Training</h2>
+          <p class="tt-desc">In‑house workshops on HR analytics, culture and performance.</p>
+          <a class="tt-cta" href="{{ url_for('teaching_corporate') }}">Contracts</a>
+        </div>
+      </section>
+    </div>
 
-    <a href="{{ url_for('teaching_awards') }}" class="module-card">
-      <div class="card-head grad-amber"><i class="fa-solid fa-graduation-cap"></i></div>
-      <div class="card-body">
-        <h3>Teaching Awards</h3>
-        <p>Institutional accolades recognising instructional excellence.</p>
-        <span class="card-link">Awards timeline</span>
-      </div>
-    </a>
+    <!-- 3 -->
+    <div class="card-shell reveal">
+      <section class="tt-card">
+        <div class="tt-head"><div class="icon"><i class="fa-solid fa-trophy"></i></div></div>
+        <div class="tt-body">
+          <h2 class="tt-title">Teaching Awards</h2>
+          <p class="tt-desc">Institutional accolades recognising instructional excellence.</p>
+          <a class="tt-cta" href="{{ url_for('teaching_awards') }}">Awards timeline</a>
+        </div>
+      </section>
+    </div>
 
-    <a href="{{ url_for('teaching_thesis') }}" class="module-card">
-      <div class="card-head grad-sky"><i class="fa-solid fa-list-ul"></i></div>
-      <div class="card-body">
-        <h3>Thesis Supervision</h3>
-        <p>Supervision provided to 50‑plus bachelor’s &amp; master’s dissertations.</p>
-        <span class="card-link">At‑a‑glance</span>
-      </div>
-    </a>
+    <!-- 4 -->
+    <div class="card-shell reveal">
+      <section class="tt-card">
+        <div class="tt-head"><div class="icon"><i class="fa-solid fa-graduation-cap"></i></div></div>
+        <div class="tt-body">
+          <h2 class="tt-title">Thesis Supervision</h2>
+          <p class="tt-desc">Supervision provided to 50‑plus bachelor’s &amp; master’s dissertations.</p>
+          <a class="tt-cta" href="{{ url_for('teaching_thesis') }}">At‑a‑glance</a>
+        </div>
+      </section>
+    </div>
   </div>
 
-  <!-- 居中折叠：Teaching Philosophy（四个点 → Dossier 链接） -->
+  <!-- Teaching Philosophy（居中折叠，四个黄色点；逐个渐显；链接 PDF） -->
   {% set dossier_pdf = url_for('static', filename='docs/teaching_dossier.pdf') %}
-  {% set dossier_doc = url_for('static', filename='docs/teaching_dossier.docx') %}
-
   <details class="philo">
-    <summary>Teaching Philosophy — four principles</summary>
-    <div class="points">
-      <div class="points-grid">
-        <!-- 1：理论 ↔ 实务 -->
-        <a class="point pt-1" href="{{ dossier_pdf }}" target="_blank" rel="noopener"
-           onclick="if(this.href.endsWith('.pdf')===false){ this.href='{{ dossier_doc }}'; }">
-          <span class="badge">1</span>
-          <span>Linking Theory &amp; Real‑World Application</span>
+    <summary>Teaching Philosophy</summary>
+    <div class="philo-body">
+      <div class="philo-grid">
+        <a class="philo-point reveal" href="{{ dossier_pdf }}" target="_blank" rel="noopener">
+          Linking Theory &amp; Real‑World Application
         </a>
-        <!-- 2：主动与互动 -->
-        <a class="point pt-2" href="{{ dossier_pdf }}" target="_blank" rel="noopener"
-           onclick="if(this.href.endsWith('.pdf')===false){ this.href='{{ dossier_doc }}'; }">
-          <span class="badge">2</span>
-          <span>Proactive, Interactive Learning</span>
+        <a class="philo-point reveal" href="{{ dossier_pdf }}" target="_blank" rel="noopener">
+          Proactive, Interactive Learning
         </a>
-        <!-- 3：尊重学生声音 -->
-        <a class="point pt-3" href="{{ dossier_pdf }}" target="_blank" rel="noopener"
-           onclick="if(this.href.endsWith('.pdf')===false){ this.href='{{ dossier_doc }}'; }">
-          <span class="badge">3</span>
-          <span>Valuing Students’ Voices</span>
+        <a class="philo-point reveal" href="{{ dossier_pdf }}" target="_blank" rel="noopener">
+          Valuing Students’ Voices
         </a>
-        <!-- 4：持续成长 -->
-        <a class="point pt-4" href="{{ dossier_pdf }}" target="_blank" rel="noopener"
-           onclick="if(this.href.endsWith('.pdf')===false){ this.href='{{ dossier_doc }}'; }">
-          <span class="badge">4</span>
-          <span>Teaching as Continual Growth</span>
+        <a class="philo-point reveal" href="{{ dossier_pdf }}" target="_blank" rel="noopener">
+          Teaching as Continual Growth
         </a>
       </div>
     </div>
@@ -188,7 +211,23 @@ body{ background:var(--page-bg); }
 </div>
 {% endblock %}
 
-{% block content_scripts %}{% endblock %}
+{% block content_scripts %}
+<script>
+// 仅用于在部分浏览器上确保初始动画——当页面可见时强制触发重绘
+document.addEventListener('visibilitychange', function(){
+  if(document.visibilityState === 'visible'){
+    document.querySelectorAll('.reveal').forEach(el=>{
+      el.style.animationName='none';
+      // 触发重排后恢复动画名
+      void el.offsetWidth;
+      el.style.animationName='';
+    });
+  }
+});
+</script>
+{% endblock %}
+
+
 
 
 
