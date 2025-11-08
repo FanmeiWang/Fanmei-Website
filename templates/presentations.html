@@ -3,92 +3,115 @@
 
 {% block extra_css %}
 <style>
-/* 页面栅格：左侧海报列（固定宽）| 中间列表（自适应）| 右侧海报列（固定宽） */
-.pres-layout{
+:root{
+  --ink:#16363b;
+  --muted:#5a6a6f;
+  --brand:#004F59;
+}
+.page-wrap{max-width:1220px;margin:0 auto;padding:0 1rem 64px;}
+.page-title{text-align:center;color:var(--brand);margin:42px 0 18px;letter-spacing:.2px}
+
+/* 三列：左 300 / 中自适应 / 右 300 */
+.pres-grid{
   display:grid;
-  grid-template-columns: 320px minmax(0,1fr) 320px;
-  gap: 18px;
-  align-items: start;
+  grid-template-columns: 300px minmax(0,1fr) 300px;
+  gap:22px;
 }
 
-/* 边栏海报与其下的小图库 */
-.poster-col .poster{
-  width:100%; border-radius:12px; display:block;
-  box-shadow:0 12px 28px rgba(0,0,0,.12);
+/* 海报 + 缩略图 */
+.poster{width:100%;border-radius:14px;box-shadow:0 10px 24px rgba(0,0,0,.12);display:block}
+.thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.thumbs img{width:100%;height:112px;object-fit:cover;border-radius:10px;box-shadow:0 6px 14px rgba(0,0,0,.10)}
+
+/* 列表容器：更小字号，更紧凑；自动滚动 */
+.talk-scroll{
+  height:580px;               /* 可按需要调整 */
+  overflow:auto;
   background:#fff;
+  border-radius:16px;
+  box-shadow:0 12px 28px rgba(0,0,0,.08);
+  padding:6px 4px;
 }
-.thumb-strip{
-  margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;
+.talk-list{list-style:none;margin:0;padding:0}
+.talk{
+  padding:12px 14px;
+  border-bottom:1px solid rgba(0,0,0,.06);
+  line-height:1.35;
+  color:var(--ink);
+  font-size:1.02rem;          /* 比原来更小 */
 }
-.thumb-strip img{
-  width:calc((320px - 20px) / 2); /* 两列小图 */
-  height:110px; object-fit:cover; border-radius:8px;
-  box-shadow:0 6px 16px rgba(0,0,0,.10);
-}
-
-/* 中间的完整列表更宽一些，避免“瘦长” */
-.talks{
-  background:#fff; border-radius:14px;
-  box-shadow:0 12px 28px rgba(0,0,0,.10);
-  padding:14px 18px;
-}
-.talk{ padding:12px 10px; border-bottom:1px solid rgba(0,0,0,.06); }
-.talk:last-child{ border-bottom:0 }
-.talk h3{ margin:0 0 6px; font-size:1.12rem; line-height:1.35; color:#12363C; }
-.talk .meta{ color:#5C6A6E; font-size:.98rem; }
+.talk:last-child{border-bottom:none}
+.talk .title{font-weight:750}
+.talk .meta{color:var(--muted)}
 </style>
 {% endblock %}
 
 {% block content %}
-{% set posters = posters|default(ads|default([])) %}    {# 兼容 ads 或 posters #}
-{% set gallery = gallery|default(images|default([])) %} {# 兼容 images 或 gallery #}
-{% set BASE = 'img/presentation/' %}
-
 <div class="page-wrap">
   <h1 class="page-title">Presentations</h1>
 
-  <div class="pres-layout">
-
-    {# ===== 左侧：海报 + 左侧三张小图（presentation1/6/7） ===== #}
-    <aside class="poster-col">
-      {% if posters|length > 0 %}
-        <img class="poster" src="{{ url_for('static', filename=BASE ~ posters[0]) }}" alt="Harvard poster left">
+  <div class="pres-grid">
+    <!-- 左列：海报 + 3 图 -->
+    <aside>
+      {% if posters and posters[0] %}
+        <img class="poster" src="{{ url_for('static', filename='img/presentation/' ~ posters[0]) }}" alt="Harvard poster 1">
       {% endif %}
-
-      <div class="thumb-strip" aria-label="Left photos">
-        {% for f in ['presentation1.jpg','presentation6.jpg','presentation7.jpg','presentation5.jpg'] %}
-          <img src="{{ url_for('static', filename=BASE ~ f) }}" alt="Presentation photo {{ loop.index }}">
+      <div class="thumbs">
+        {% for img in left_photos %}
+          <img src="{{ url_for('static', filename='img/presentation/' ~ img) }}" alt="Presentation photo {{ loop.index }}">
         {% endfor %}
       </div>
     </aside>
 
-    {# ===== 中间：完整列表（保持你已有的 talks 数据） ===== #}
-    <main class="talks">
-      {% for t in talks %}
-        <article class="talk">
-          <h3>{{ t.title }}</h3>
-          <div class="meta">
-            {{ t.venue }} — {{ t.city }} · {{ t.date }}
-          </div>
-          {% if t.desc %}<p class="meta">{{ t.desc }}</p>{% endif %}
-        </article>
-      {% endfor %}
+    <!-- 中列：完整列表（单行样式） -->
+    <main>
+      <div class="talk-scroll" id="talkScroll" aria-label="Full list of talks">
+        <ul class="talk-list">
+          {% for t in talks %}
+          <li class="talk">
+            <span class="title">{{ t.title }}</span>
+            <span class="meta"> — {{ t.venue }} — {{ t.city }} • {{ t.date }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
     </main>
 
-    {# ===== 右侧：海报 + 右侧三张小图（Harvard_presentation1/2/3） ===== #}
-    <aside class="poster-col">
+    <!-- 右列：海报 + 3 图 -->
+    <aside>
       {% if posters|length > 1 %}
-        <img class="poster" src="{{ url_for('static', filename=BASE ~ posters[1]) }}" alt="Harvard poster right">
+        <img class="poster" src="{{ url_for('static', filename='img/presentation/' ~ posters[1]) }}" alt="Harvard poster 2">
       {% endif %}
-
-      <div class="thumb-strip" aria-label="Right photos">
-        {% for f in ['Harvard_presentation1.jpg','Harvard_presentation2.jpg','Harvard_presentation3.jpg'，'presentation8.jpg'] %}
-          <img src="{{ url_for('static', filename=BASE ~ f) }}" alt="Harvard presentation photo {{ loop.index }}">
+      <div class="thumbs">
+        {% for img in right_photos %}
+          <img src="{{ url_for('static', filename='img/presentation/' ~ img) }}" alt="Harvard presentation photo {{ loop.index }}">
         {% endfor %}
       </div>
     </aside>
-
   </div>
 </div>
 {% endblock %}
 
+{% block content_scripts %}
+<script>
+/* 轻微自动上下滚动；鼠标悬停暂停 */
+(function(){
+  const box = document.getElementById('talkScroll');
+  if(!box || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  let dir = 1, raf;
+  function step(){
+    box.scrollTop += 0.5 * dir;     // 速度(像素/帧)，想更慢就改 0.4/0.3
+    if (box.scrollTop + box.clientHeight >= box.scrollHeight - 1) dir = -1;
+    if (box.scrollTop <= 0) dir = 1;
+    raf = requestAnimationFrame(step);
+  }
+  function start(){ raf = requestAnimationFrame(step); }
+  function stop(){ cancelAnimationFrame(raf); }
+
+  box.addEventListener('mouseenter', stop);
+  box.addEventListener('mouseleave', start);
+  start();
+})();
+</script>
+{% endblock %}
