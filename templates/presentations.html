@@ -56,7 +56,7 @@
       {% endif %}
 
       <div class="thumb-strip" aria-label="Left photos">
-        {% for f in ['presentation1.jpg','presentation6.jpg','presentation7.jpg'] %}
+        {% for f in ['presentation1.jpg','presentation6.jpg','presentation7.jpg','presentation5.jpg'] %}
           <img src="{{ url_for('static', filename=BASE ~ f) }}" alt="Presentation photo {{ loop.index }}">
         {% endfor %}
       </div>
@@ -82,7 +82,7 @@
       {% endif %}
 
       <div class="thumb-strip" aria-label="Right photos">
-        {% for f in ['Harvard_presentation1.jpg','Harvard_presentation2.jpg','Harvard_presentation3.jpg'] %}
+        {% for f in ['Harvard_presentation1.jpg','Harvard_presentation2.jpg','Harvard_presentation3.jpg'，'presentation8.jpg'] %}
           <img src="{{ url_for('static', filename=BASE ~ f) }}" alt="Harvard presentation photo {{ loop.index }}">
         {% endfor %}
       </div>
@@ -91,3 +91,4 @@
   </div>
 </div>
 {% endblock %}
+
