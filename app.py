@@ -280,12 +280,12 @@ ai_projects = [
     {
         "title": "Resume–Job Matching BERT Model",
         "desc":  "Fine-tuned bilingual BERT + BM25 on 20 k resumes and 5 k job posts.",
-        "video": "resume_match.mp4"          # 本地 static/video/…
+        "video": "resume_match.mp4"
     },
     {
         "title": "Attrition Prediction Dashboard (Power BI)",
         "desc":  "Explainable XGBoost + SHAP, live scenario filtering via Power BI Service.",
-        "video": "https://youtu.be/abcd1234"  # YouTube 链接
+        "video": "https://youtu.be/abcd1234"
     },
     {
         "title": "HR Chatbot for Policy Q&A (Rasa + LLM)",
@@ -293,6 +293,7 @@ ai_projects = [
         "video": "chatbot_demo.mp4"
     }
 ]
+
 # ---------- Public-Service Analytics ① · 内部数据项目 ----------
 gov_survey_projects = [
     {"title": "Service Request Mgmt. System – Request-Tracking Dashboard",
@@ -367,7 +368,6 @@ teaching_photos = [
 ]
 
 # 2️⃣ 把 photos=teaching_photos 传给模板
-# 2️⃣ 把 photos=teaching_photos 传给模板
 @app.route("/teaching")
 def teaching_overview():
     return render_template(
@@ -375,6 +375,7 @@ def teaching_overview():
         photos=teaching_photos,
         academic=teaching_data       # ← 传入 academic，模板就能用
     )
+
 @app.route("/teaching/scroll")
 def teaching_scroll():
     return render_template("teaching.html",
@@ -384,6 +385,7 @@ def teaching_scroll():
                            trainer_summary=trainer_summary,
                            awards=awards_data,
                            photos=teaching_photos)
+
 @app.route("/teaching/academic")
 def teaching_academic():
     return render_template("teaching_academic.html",
@@ -425,39 +427,121 @@ def teaching_thesis():
         ug_theses=data.get("undergraduate", []),
         grad_theses=data.get("graduate", []),
     )
+
+# ---- Presentations (唯一路由；其它同名路由请删除) ----
 @app.route("/presentations")
 def presentations():
+    # 左右两侧固定的 Harvard 海报（放在 static/img/presentations/ 下）
+    posters = [
+        "Harvard_presentation_adv1.jpg",
+        "Harvard_presentation_adv2.png",
+    ]
+
+    # 中间 FULL LIST（来自你的 CV / Teaching Dossier）
     talks = [
         {
-            "title": "A New Perspective in Analyzing China Ethnic-related Employment Issues",
-            "venue": "Fairbank Center Visiting Scholar Presentations, Harvard University",
-            "date": "May 1, 2018",
-            "city": "Boston, MA"
+            "title": "How to Conduct Human Resources Management‑Related Studies in China?",
+            "venue": "Workshop ‘Research on Ethnic Minority Group Members in China’, Department of Sociology, Zhejiang University",
+            "date":  "Apr 28, 2019",
+            "city":  "Hangzhou, Zhejiang, China",
+            "type":  "Workshop / Invited Talk",
+            "lang":  "Chinese"
         },
         {
-            "title": "How to Conduct Human Resources Management-Related Studies in China?",
-            "venue": "Department of Sociology, Zhejiang University",
-            "date": "Apr 28, 2019",
-            "city": "Hangzhou"
+            "title": "Human Resource Management for Ethnic Minority Employees in Organizations in Chinese Minority‑inhabited Regions: A Case Study in the Tibetan Autonomous Region",
+            "venue": "Institute for Advanced Study in Humanities and Social Sciences, Zhejiang University",
+            "date":  "Apr 29, 2019",
+            "city":  "Hangzhou, Zhejiang, China",
+            "type":  "Invited Talk",
+            "lang":  "Chinese"
         },
         {
-            "title": "Human Resource Management for Ethnic Minority Employees in Organizations in Chinese Minority-inhabited Regions",
-            "venue": "Institute for Advanced Study in Humanities & Social Sciences, Zhejiang University",
-            "date": "Apr 29, 2019",
-            "city": "Hangzhou"
+            "title": "A New Perspective in Analyzing China Ethnic‑related Employment Issues",
+            "venue": "Fairbank Center Visiting Scholar Presentations, Fairbank Center for Chinese Studies, Harvard University",
+            "date":  "May 1, 2018",
+            "city":  "Boston, MA",
+            "type":  "Invited Talk",
+            "lang":  "English"
         },
-        # 如果你要把“在哈佛的第二次演讲”加上，照这个格式再加一条即可
+        {
+            "title": "Career Development for Ethnic Minority Employees: A Case Study in the Tibetan Autonomous Region",
+            "venue": "Affiliate Presentations, Fairbank Center for Chinese Studies, Harvard University",
+            "date":  "Apr 26, 2018",
+            "city":  "Boston, MA",
+            "type":  "Invited Talk",
+            "lang":  "English"
+        },
+        {
+            "title": "Chinese Ethnic Policies: An International Comparative Perspective",
+            "venue": "Ethics in Public Affair and Corporate Decision‑Making seminar course, Schwarzman College, Tsinghua University",
+            "date":  "Feb 2, 2017",
+            "city":  "Beijing, China",
+            "type":  "Guest Lecture",
+            "lang":  "English"
+        },
+        {
+            "title": "Chinese Ethnic Issues in the Context of One Belt, One Road Initiative",
+            "venue": "Conference ‘Cultural Diversity and Construction of One Belt, One Road’, Institute of Global Ethnology and Anthropology, Minzu University of China",
+            "date":  "Dec 24, 2016",
+            "city":  "Beijing, China",
+            "type":  "Conference Talk",
+            "lang":  "Chinese"
+        },
+        {
+            "title": "Affirmative Action – The Historical Development and Social Influence of Preferential Policies for Ethnic Minorities in the United States",
+            "venue": "Department of Policies and Regulations, State Ethnic Affairs Commission of China",
+            "date":  "Nov 6, 2016",
+            "city":  "Beijing, China",
+            "type":  "Invited Talk",
+            "lang":  "Chinese"
+        },
+        {
+            "title": "Cross‑Cultural Management",
+            "venue": "MBA seminar for Manchester Metropolitan University Business School, School of Economics and Management, USTB",
+            "date":  "Jun 9, 2016",
+            "city":  "Beijing, China",
+            "type":  "Guest Lecture",
+            "lang":  "English"
+        },
+        {
+            "title": "Race and Ethnicity in America",
+            "venue": "American Culture and Society Seminar Series, American Studies Center, Peking University",
+            "date":  "Feb 29, 2013",
+            "city":  "Beijing, China",
+            "type":  "Guest Lecture",
+            "lang":  "Chinese"
+        },
+        {
+            "title": "Panel Discussant: ‘(De)Constructing Myths of Migration’",
+            "venue": "Harvard East Asia Society Conference 2018, 21st Annual Conference: (De)Constructing Boundaries, Harvard University",
+            "date":  "Feb 9, 2018",
+            "city":  "Boston, MA",
+            "type":  "Panel Discussant",
+            "lang":  "English"
+        },
     ]
-    images = [
-        {"file":"harvard1.jpg", "alt":"Harvard — Fairbank Center"},
-        {"file":"harvard2.jpg", "alt":"Harvard — Fairbank Center"},
-        {"file":"teaching1.png", "alt":"Seminar photo"},
-        {"file":"teaching2.png", "alt":"Lecture photo"},
-        {"file":"teaching7.jpg", "alt":"Workshop photo"},
-        {"file":"teaching9.jpg", "alt":"Classroom photo"},
-    ]
-    return render_template("presentations.html", talks=talks, images=images)
 
+    # 页底横向照片带（注意大小写，严格按你给的文件名）
+    gallery = [
+        "Harvard_presentation1.jpg",
+        "Harvard_presentation2.jpg",
+        "Harvard_presentation3.jpg",
+        "presentation1.jpg",
+        "presentation5.jpg",
+        "presentation6.jpg",
+        "presentation7.jpg",
+        "Presentation8.jpg",
+        "Presentation10.jpg",
+    ]
+
+    # 模板里若用 ads 变量，这里也一起传，避免 “ads is undefined”
+    return render_template(
+        "presentations.html",
+        talks=talks,
+        posters=posters,
+        ads=posters,
+        gallery=gallery
+    )
 
 # 放在所有路由定义之后
 from flask import redirect, url_for
@@ -469,8 +553,8 @@ presentation_data = [
         "venue": "Harvard University Fairbank Center",
         "date":  "2023-11-18",
         "type":  "Keynote",
-        "link":  "https://fairbank.fas.harvard.edu/event/ai-hr-analytics/",   # 视频或网页
-        "cover": "harvard_ai_talk.jpg"   # static/images/harvard_ai_talk.jpg
+        "link":  "https://fairbank.fas.harvard.edu/event/ai-hr-analytics/",
+        "cover": "harvard_ai_talk.jpg"
     },
     {
         "title": "Ethnicity & HRM Practice in Minority Regions",
@@ -485,17 +569,16 @@ presentation_data = [
         "venue": "Treasury Board of Canada",
         "date":  "2024-05-02",
         "type":  "Internal Webinar",
-        "link":  "",          # 只有列表，没有公开视频
-        "cover": ""           # 没有图片
+        "link":  "",
+        "cover": ""
     },
     # ……其余条目……
 ]
-@app.route("/presentations")
-def presentations():
-    return render_template("presentations.html",
-                           talks=presentation_data)
+
 if __name__ == "__main__":
     app.run(debug=True)
+
+
 
 
 
