@@ -1,27 +1,14 @@
-from datetime import datetime
-
-from flask import Flask, render_template, redirect, url_for
-from jinja2 import TemplateNotFound          
+from flask import Flask, render_template   
 
 app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return redirect(url_for("about"))
+    return render_template("index.html")  
 
-# ---------- About ----------
-@app.route("/about")
+@app.route("/about")                
 def about():
-    return render_template(
-        "about.html",
-        edu_list=education_data,   
-        current_year=datetime.now().year
-    )
-
-@app.errorhandler(TemplateNotFound)
-def handle_missing_template(e):
-    app.logger.warning("Template not found: %s", e)
-    return f"Template '{e.name}' not found.", 404
+    return render_template("about.html")
 
 education_data = [
     {
@@ -40,7 +27,7 @@ education_data = [
     },
     {
         "school": "Laurentian University",
-        "degree": "M.A. in Applied Social Research",
+        "degree": "M.A. in Sociology",
         "status": "",
         "detail": "",
         "logo": "laurentian.png"
@@ -150,24 +137,9 @@ article_list = [
 
 @app.route("/publications")
 def publications():
-    books = [
-        # 每本书：cover 图片文件、角色、引用格式（任意 html 块）
-        {"cover": "affirmative_action.jpg",
-         "role": "Author",
-         "cite": "Wang, F.M. (2015). <em>Affirmative&nbsp;Action – The Historical Development ...</em> ISBN 978750977966."},
-        {"cover": "social_conflict.jpg",
-         "role": "Translator",
-         "cite": "Pruitt, D.G. & Carnevale, P.J. (2021) <em>Social Conflict</em> (3rd ed.). Chinese translation by Fanmei Wang."},
-        # ...
-    ]
-
-    articles = [
-        {"type": "Journal Article",
-         "cite": "Wang, F.M. (2019). Career Advancement for Tibetan Employees in the Tibet Autonomous Region. <em>Qinghai Journal of Ethnology</em>, 176-171."},
-        # …
-    ]
-    return render_template("publications.html", books=books, articles=articles)
-
+    return render_template("publications.html",
+                           books=book_list,
+                           articles=article_list)
 
 # ---------- Academic teaching data ----------
 teaching_data = {
@@ -238,6 +210,38 @@ awards_data = [
 # ───────────────────────────
 #  项 目 数据 重新整理
 # ───────────────────────────
+
+# 1) Academic Research  (学术项目)
+academic_projects = [
+    {
+        "title": "Mutual Embeddedness of Social Structure of Ethnic Groups",
+        "funding": "IAS, Zhejiang University",
+        "period":  "2020 – present",
+        "amount":  "—",
+        "cover":   "tibet.jpg"
+    },
+    {
+        "title": "Ethnicity & HRM Practice in Minority Regions",
+        "funding": "IAS, Zhejiang University",
+        "period":  "2019",
+        "amount":  "$17 000 CAD",
+        "cover":   "minority_hrm.jpg"
+    },
+    {
+        "title": "Career Development for Minority Employees (TAR)",
+        "funding": "Fairbank Center, Harvard University",
+        "period":  "2017 – 2018",
+        "amount":  "$25 920 CAD",
+        "cover":   "tar_career.jpg"
+    },
+    {
+        "title": "Georgia & the New Silk Road Economic Belt",
+        "funding": "China ODRC, CUFE",
+        "period":  "2015 – 2016",
+        "amount":  "$4 000 CAD",
+        "cover":   "silkroad.jpg"
+    }
+]
 
 # 2) Corporate Consulting  (企业咨询 / 调研)
 consulting_projects = [
@@ -333,6 +337,11 @@ gov_consulting_projects = [
 def projects():          # ← endpoint = "projects"
     return render_template("projects.html")
 
+@app.route("/projects/academic")
+def projects_academic():
+    return render_template("projects_academic.html",
+                           projects=academic_projects)
+
 @app.route("/projects/consulting")
 def projects_consulting():
     return render_template("projects_consulting.html",
@@ -345,13 +354,16 @@ def projects_ai():
 
 @app.route("/projects/federal-analytics")
 def projects_public_service():
-    return render_template("projects_public_service.html",
-                           surveys=gov_survey_projects,
-                           consults=gov_consulting_projects)
+    return render_template(
+        "projects_public_service.html",
+        surveys=gov_survey_projects,
+        consults=gov_consulting_projects,
+    )
+
 teaching_photos = [
     "teaching1.png", "teaching2.png", "teaching3.png",
     "teaching4.png", "teaching5.png", "teaching6.png",
-    "teaching7.png", "teaching8.png", "teaching9.png"
+    "teaching7.png", "teaching8.png", "teaching9.png",
 ]
 
 # 2️⃣ 把 photos=teaching_photos 传给模板
@@ -359,14 +371,8 @@ teaching_photos = [
 def teaching_overview():
     return render_template(
         "teaching_overview.html",
-        photos=teaching_photos,          
-        academic=teaching_data,          
-        thesis=thesis_stats,             
-        training_contract=training_contract,  
-        trainer_summary=trainer_summary,      
-        awards=awards_data               
+        photos=teaching_photos        # ← 关键
     )
-
 @app.route("/teaching/scroll")
 def teaching_scroll():
     return render_template("teaching.html",
@@ -393,69 +399,30 @@ def teaching_awards():
 
 @app.route("/teaching/thesis")
 def teaching_thesis():
-    return render_template("teaching_thesis.html",
-                           thesis=thesis_stats)
-# ────────────────────────────────────────────────
-#  Academic-Research projects  ⭢ 时间线用的数据
-# ────────────────────────────────────────────────
-# ===== Academic-research timeline =====
-academic_projects = [
-    {
-        "year": "2020 – present",
-        "org":  "IAS · Zhejiang University",
-        "title": "The Development of Mutual Embeddedness of Social Structures in Multi-ethnic Countries",
-        "desc":  "Grant under Prof. Zhixiang Jian exploring inter-ethnic integration in multi-ethnic societies."
-    },
-    {
-        "year": "2019",
-        "org":  "IAS · Zhejiang University",
-        "title": "Ethnicity & Human Resources Management Practice in Chinese Minority-inhabited Regions",
-        "desc":  "Fellowship grant (CAD 17 000) analysing HRM practices and policy adaptation across minority regions."
-    },
-    {
-        "year": "2017-18",
-        "org":  "Harvard Univ. · Fairbank Center",
-        "title": "Career Development for Ethnic-minority Employees in Chinese Organizations",
-        "desc":  "CSC-funded visiting-scholar project (CAD 25 920) on cultural sensitivity & policy implementation.",
-        "featured": True          # 深红高亮
-    },
-    {
-        "year": "2015-16",
-        "org":  "China Overseas Development Research Center",
-        "title": "Georgia in the Context of the New Silk Road Economic Belt",
-        "desc":  "CAD 4 000 study of Georgia’s economic development and HR implications along the Belt & Road."
-    },
-    {
-        "year": "2013-14",
-        "org":  "State Ethnic Affairs Commission of China",
-        "title": "Career Development of Minority Ethnic Group Members in Tibet Autonomous Region",
-        "desc":  "Investigated barriers and advancement pathways for Tibetan employees (CAD 4 000 grant)."
-    },
-    {
-        "year": "2013",
-        "org":  "China Tibetology Research Center",
-        "title": "Development & Financial Support for Tibetan Industries with Local Advantages",
-        "desc":  "Project led by Prof. Shiding Liu; assessed policy support for region-specific industrial clusters."
-    },
-    {
-        "year": "2012",
-        "org":  "China Tibetology Research Center",
-        "title": "Tibetan Thangka Industry Development Research",
-        "desc":  "Explored market expansion and HR training needs in the traditional Thangka art sector (PI Danzeng-Lunzhu)."
-    }
-]
+    import os, json
+    base_dir = os.path.dirname(os.path.abspath(__file__))
 
-@app.route("/projects/academic")
-def academic_research():                # 路由不变
+    # 依次尝试这两个路径：项目/data/theses.json 和 项目根目录/theses.json
+    candidates = [
+        os.path.join(base_dir, "data", "theses.json"),
+        os.path.join(base_dir, "theses.json"),
+    ]
+
+    data = {"undergraduate": [], "graduate": []}
+    for p in candidates:
+        if os.path.exists(p):
+            try:
+                with open(p, encoding="utf-8") as f:
+                    data = json.load(f)
+            except Exception:
+                pass
+            break  # 找到就用
+
     return render_template(
-        "academic_research.html",
-        entries=academic_projects        # 把 7 条数据传给模板
+        "teaching_thesis.html",
+        ug_theses=data.get("undergraduate", []),
+        grad_theses=data.get("graduate", []),
     )
-
-
-# ────────────────────────────────────────────────
-#  /projects/academic 路由 —— **只渲染一个模板**
-# ────────────────────────────────────────────────
 
 
 # 放在所有路由定义之后
@@ -468,7 +435,7 @@ presentation_data = [
         "venue": "Harvard University Fairbank Center",
         "date":  "2023-11-18",
         "type":  "Keynote",
-        "link":  "https://fairbank.fas.harvard.edu/event/ai-hr-analytics/",   
+        "link":  "https://fairbank.fas.harvard.edu/event/ai-hr-analytics/",   # 视频或网页
         "cover": "harvard_ai_talk.jpg"   # static/images/harvard_ai_talk.jpg
     },
     {
@@ -484,8 +451,8 @@ presentation_data = [
         "venue": "Treasury Board of Canada",
         "date":  "2024-05-02",
         "type":  "Internal Webinar",
-        "link":  "",          
-        "cover": ""           
+        "link":  "",          # 只有列表，没有公开视频
+        "cover": ""           # 没有图片
     },
     # ……其余条目……
 ]
