@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block title %}About — Fanmei Wang, PhD{% endblock %}
 
@@ -6,8 +6,8 @@
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
+  /* ===== 页面布局 / 个人卡片 ===== */
   :root{ --brand-teal:#004F59; }
-
   .container      {max-width:1100px;margin:0 auto;padding:0 1rem;}
   .profile-card   {display:grid;grid-template-columns:260px 1fr;gap:2rem;
                    background:#fff;border-radius:12px;padding:2.5rem 3rem;
@@ -17,63 +17,59 @@
     .profile-card{grid-template-columns:1fr}
     .profile-photo img{margin:0 auto}
   }
-
   .profile-photo img{width:100%;border-radius:8px;object-fit:cover;
                      box-shadow:0 4px 12px rgba(0,0,0,.12);margin-top:24px;}
-  .profile-name   {margin:0 0 1rem;font-size:2.4rem;color:var(--brand-teal);}
+  .profile-name   {margin:0 0 1rem;font-size:2.6rem;color:var(--brand-teal);}
   .profile-social a{margin-right:1rem;font-size:1.3rem;color:var(--brand-teal);
                     transition:opacity .2s;}
-  .profile-social a:hover{opacity:.75}
-
+  .profile-social a:hover{opacity:.7}
   .badge-wall     {list-style:none;padding:0;display:flex;flex-wrap:wrap;
                    gap:1rem;align-items:center;}
   .badge-wall img {height:38px;width:auto;object-fit:contain;}
 
-  .logo-wall      {list-style:none;margin:2rem 0 0;padding:0;
-                   display:flex;flex-wrap:wrap;gap:1.5rem 2rem;
-                   justify-content:center;}
-  .logo-wall img  {max-height:80px;flex:0 0 auto;}
-
-  /* ===== 两侧缓慢竖向滚动 LOGO 轨道（桌面显示，悬停暂停） ===== */
+  /* ===== 两侧竖向滚动 LOGO 轨道（慢速，可悬停暂停） ===== */
   .rail-edge{
-    position:fixed; top:80px; bottom:80px; width:120px;
-    pointer-events:none; z-index:1; /* 不挡中间内容点击 */
+    position: fixed; top: 80px; bottom: 80px; width: 120px;
+    z-index: 2;                 /* 不遮住顶栏，但在页面内容之上 */
+    pointer-events: none;       /* 不挡住中间内容的点击 */
   }
-  .rail-edge.left{  left:0; }
-  .rail-edge.right{ right:0; }
+  .rail-edge.left{  left: 0; }
+  .rail-edge.right{ right: 0; }
 
   .rail-track{ position:absolute; inset:0; overflow:hidden; }
   .rail-run{
     display:flex; flex-direction:column; gap:10px;
-    animation:railScroll 90s linear infinite;   /* 速度：90s 一轮（可调） */
-    filter:grayscale(.05) brightness(.98);
+    animation: railScroll 90s linear infinite; /* 速度：90s/圈（慢速） */
+    filter: grayscale(.05) brightness(.98);
   }
-  .rail-edge.right .rail-run{ animation-direction:reverse; }
+  .rail-edge.right .rail-run{ animation-direction: reverse; }
 
   .rail-logo{
-    width:100px; height:100px; object-fit:contain; background:#fff;
+    width: 100px; height: 100px; object-fit: contain; background:#fff;
     border-radius:10px; box-shadow:0 6px 16px rgba(0,0,0,.10);
     padding:10px;
   }
 
-  @media(hover:hover){
-    .rail-edge:hover .rail-run{ animation-play-state:paused; }
+  /* 悬停暂停（桌面） */
+  @media (hover:hover){
+    .rail-edge:hover .rail-run{ animation-play-state: paused; }
   }
 
-  @keyframes railScroll{ to{ transform:translateY(-50%); } }
+  /* 竖向滚动关键帧：向上移动半程实现无缝 */
+  @keyframes railScroll{ to{ transform: translateY(-50%); } }
 
-  /* 小屏不显示两侧轨道，避免遮挡正文 */
-  @media(max-width:1100px){
-    .rail-edge{ display:none; }
-    .container{ padding-left:1rem; padding-right:1rem; }
+  /* 小屏不显示两侧轨道，避免遮挡 */
+  @media (max-width: 1100px){
+    .rail-edge{ display: none; }
+    .page-wrap, .container{ padding-left: 1rem; padding-right: 1rem; }
   }
-
-  /* 若只想显示两侧轨道，把下一行解除注释即可 */
-  /* .logo-wall{ display:none; } */
 </style>
 {% endblock %}
 
 {% block content %}
+{# 两侧轨道用到的 LOGO 文件（位于 static/img/logos/ 下） #}
+{% set LOGOS = ['pku','ustb','georgian','laurentian','fairbank','hrpa','psdata'] %}
+
 <main class="container">
 
   <!-- ===== Profile Card ===== -->
@@ -106,62 +102,41 @@
 
     <!-- ===== Badges ===== -->
     <ul class="badge-wall">
-      {% for b in [
-        'python','flask','deep_learning','machine_learning','generative_ai',
-        'sas','spss','nvivo','sql','power_bi'
-      ] %}
-        <li>
-          <img src="{{ url_for('static', filename='img/badges/' ~ b ~ '.png') }}"
-               alt="{{ b }}">
-        </li>
+      {% for b in ['python','flask','deep_learning','machine_learning','generative_ai',
+                   'sas','spss','nvivo','sql','power_bi'] %}
+        <li><img src="{{ url_for('static', filename='img/badges/' ~ b ~ '.png') }}"
+                 alt="{{ b }}"></li>
       {% endfor %}
     </ul>
   </section>
 
-  <!-- ===== Partner / University Logos（底部整排，保留） ===== -->
-  <ul class="logo-wall">
-    {% for logo in ['pku','ustb','georgian','laurentian','fairbank','hrpa','psdata'] %}
-      <li>
-        <img src="{{ url_for('static', filename='img/logos/' ~ logo ~ '.png') }}"
-             alt="{{ logo }}">
-      </li>
-    {% endfor %}
-  </ul>
+  {# 注意：已移除原来的 <ul class="logo-wall"> —— 不再在底部展示机构 LOGO #}
 
 </main>
 
-{# ===== 两侧竖向滚动轨道：与底部同一批 LOGO，做两遍无缝循环 ===== #}
-{% set edge_logos = [
-  'img/logos/pku.png',
-  'img/logos/ustb.png',
-  'img/logos/georgian.png',
-  'img/logos/laurentian.png',
-  'img/logos/fairbank.png',
-  'img/logos/hrpa.png',
-  'img/logos/psdata.png'
-] %}
-
+<!-- ===== 左侧滚动 LOGO 轨道 ===== -->
 <aside class="rail-edge left" aria-hidden="true">
   <div class="rail-track">
     <div class="rail-run">
-      {% for f in edge_logos %}
-        <img class="rail-logo" src="{{ url_for('static', filename=f) }}" alt="">
+      {% for f in LOGOS %}
+        <img class="rail-logo" src="{{ url_for('static', filename='img/logos/' ~ f ~ '.png') }}" alt="">
       {% endfor %}
-      {% for f in edge_logos %}
-        <img class="rail-logo" src="{{ url_for('static', filename=f) }}" alt="">
+      {% for f in LOGOS %}
+        <img class="rail-logo" src="{{ url_for('static', filename='img/logos/' ~ f ~ '.png') }}" alt="">
       {% endfor %}
     </div>
   </div>
 </aside>
 
+<!-- ===== 右侧滚动 LOGO 轨道（反向滚动） ===== -->
 <aside class="rail-edge right" aria-hidden="true">
   <div class="rail-track">
     <div class="rail-run">
-      {% for f in edge_logos %}
-        <img class="rail-logo" src="{{ url_for('static', filename=f) }}" alt="">
+      {% for f in LOGOS %}
+        <img class="rail-logo" src="{{ url_for('static', filename='img/logos/' ~ f ~ '.png') }}" alt="">
       {% endfor %}
-      {% for f in edge_logos %}
-        <img class="rail-logo" src="{{ url_for('static', filename=f) }}" alt="">
+      {% for f in LOGOS %}
+        <img class="rail-logo" src="{{ url_for('static', filename='img/logos/' ~ f ~ '.png') }}" alt="">
       {% endfor %}
     </div>
   </div>
