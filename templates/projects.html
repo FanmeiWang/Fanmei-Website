@@ -1,67 +1,158 @@
-{# ---------------- Projects index page ---------------- #}
 {% extends "base.html" %}
-{% block title %}Projects — Fanmei Wang, PhD{% endblock %}
+{% block title %}Projects — Fanmei Wang{% endblock %}
 
 {% block extra_css %}
 <style>
-/* 页面整体 */
-.projects-wrapper{
-  max-width:900px;margin:60px auto 100px;padding:0 1rem;text-align:center}
-.projects-title{
-  font-size:2.6rem;margin:0 0 2.8rem;color:var(--brand-teal,#004F59);
-  font-family:"Merriweather","Noto Serif SC",serif}
+/* ───────── 色板与基底（与 Teaching / Publications 统一） ───────── */
+:root{
+  --brand:#004F59;
+  --ink:#14343A;
+  --page:#F2EEE6;
 
-/* ▸ 网格容器 —— 2×2 固定 */
-.proj-menu{
-  display:grid;grid-template-columns:repeat(2,minmax(240px,1fr));
-  gap:2.2rem;justify-content:center}
-/* 小屏降为 1 列 */
-@media(max-width:700px){
-  .proj-menu{grid-template-columns:1fr;max-width:420px;margin-inline:auto}}
+  --shadow:    0 12px 32px rgba(0,0,0,.10);
+  --shadow-lg: 0 18px 42px rgba(0,0,0,.12);
 
-/* ▸ 单张卡片 */
+  /* 白卡顶部“纸感”高光 */
+  --paper-glow: linear-gradient(180deg, rgba(255,247,220,.55), rgba(255,247,220,0) 46%, transparent);
+
+  /* 卡片头部渐变（浅金 / 浅褐） */
+  --hero-gold-top:#FFE4AC;  --hero-gold-btm:#E8C066;   /* Academic */
+  --hero-tan-top :#EBD3B6;  --hero-tan-btm :#C9A178;   /* Consulting */
+  --hero-honey-top:#FFDDA4; --hero-honey-btm:#E3B25F;  /* Public Service */
+  --hero-sand-top:#F0D8B0;  --hero-sand-btm:#CFA170;   /* 备用 */
+
+  /* AI：现代褐金（更深一些） */
+  --ai-top:#2C2A27; --ai-mid:#7B5A29; --ai-gold:#D6A84F;
+}
+
+/* 页面骨架 */
+body{ background:var(--page); }
+.page-title{ text-align:center; color:var(--brand); margin:56px 0 28px; }
+
+/* 进入动画 */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none}}
+.reveal{opacity:0; animation:fadeUp .55s ease both; animation-delay:var(--d,0s)}
+@media (prefers-reduced-motion:reduce){ .reveal{animation:none;opacity:1} }
+
+/* ───────── 侧边滚动照片墙（两边上下滚动） ───────── */
+.rail{ position:fixed; top:0; bottom:0; width:120px; pointer-events:none; z-index:-1; }
+.rail.left{ left:0; } .rail.right{ right:0; }
+.rail-inner{ display:flex; flex-direction:column; gap:8px; animation:railScroll 60s linear infinite; }
+.rail.right .rail-inner{ animation-direction:reverse; }
+.rail img{ width:120px; height:120px; object-fit:cover; border-radius:6px; filter:brightness(.95) saturate(.9); }
+@keyframes railScroll{ to{ transform:translateY(-50%);} }
+@media (max-width:1000px){ .rail{ display:none; } }
+
+/* 给正文留出与侧轨同宽的左右内边距 */
+.rail-pad{ padding:0 110px; }
+@media (max-width:1000px){ .rail-pad{ padding:0 1rem; } }
+
+/* ───────── 卡片栅格（白卡 + 彩色头） ───────── */
+.proj-grid{
+  max-width:1160px; margin:0 auto 80px;
+  display:grid; gap:1.6rem;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+}
+@media (max-width:1100px){ .proj-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:640px){  .proj-grid{ grid-template-columns:1fr; } }
+
 .proj-card{
-  display:flex;align-items:center;justify-content:center;
-  height:200px;padding:1.4rem;border-radius:22px;
-  color:#fff;font-size:1.55rem;font-weight:600;line-height:1.28;
-  text-decoration:none;text-align:center;box-shadow:0 6px 22px rgba(0,0,0,.10);
-  transition:transform .25s,box-shadow .25s}
-.proj-card:hover{transform:translateY(-8px);box-shadow:0 14px 32px rgba(0,0,0,.14)}
+  display:block; text-decoration:none; color:#1f2e33;
+  border-radius:22px; overflow:hidden; background:#fff;
+  box-shadow:var(--shadow); transition:transform .25s, box-shadow .25s;
+  min-height:380px; position:relative;
+}
+.proj-card:hover{ transform:translateY(-8px); box-shadow:var(--shadow-lg); }
 
-/* 4 张卡片 —— 深浅不同的绿色渐变 */
-.card-1{background:linear-gradient(135deg,#028a65 0%,#1ad98f 100%)}
-.card-2{background:linear-gradient(135deg,#019264 0%,#2df5a1 100%)}
-.card-3{background:linear-gradient(135deg,#009c67 0%,#4bffb0 100%)}
-.card-4{background:linear-gradient(135deg,#00a46a 0%,#66ffc0 100%)}
+/* 顶部彩色头：居中标题，占比>一半 */
+.proj-card .hero{
+  height: 200px;
+  display:flex; align-items:center; justify-content:center; text-align:center;
+  background:linear-gradient(180deg,var(--hero-top),var(--hero-btm));
+  border-radius:22px 22px 12px 12px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35);
+}
+.proj-card .hero-title{
+  margin:0; font-weight:900; letter-spacing:.3px;
+  font-size:1.6rem; line-height:1.12; color:#1f2e33;
+  text-shadow:0 1px 0 rgba(255,255,255,.35);
+}
 
-/* 小屏卡片尺寸微调 */
-@media(max-width:700px){
-  .proj-card{height:160px;font-size:1.35rem}}
+/* 下半区简要说明（可选） */
+.proj-card .body{ padding:18px 20px 22px; color:#2D4B4F; line-height:1.55; }
+
+/* 白卡顶部纸感 */
+.proj-card::before{
+  content:""; position:absolute; inset:0; border-radius:22px; pointer-events:none;
+  background:var(--paper-glow); mix-blend-mode:multiply; opacity:.6;
+}
+
+/* 配色：为每张卡定义头部渐变 */
+.card--academic{ --hero-top:var(--hero-gold-top);  --hero-btm:var(--hero-gold-btm); }
+.card--consult { --hero-top:var(--hero-tan-top);   --hero-btm:var(--hero-tan-btm); }
+.card--public  { --hero-top:var(--hero-honey-top); --hero-btm:var(--hero-honey-btm); }
+
+/* AI Projects：更现代的褐金，并加“光带”动画与白字 */
+.card--ai   .hero{ 
+  background:linear-gradient(135deg,var(--ai-top) 0%, var(--ai-mid) 55%, var(--ai-gold) 100%);
+  position:relative; overflow:hidden;
+}
+.card--ai   .hero-title{ color:#fff; text-shadow:0 1px 0 rgba(0,0,0,.35); }
+.card--ai   .hero::after{
+  content:""; position:absolute; inset:-20%;
+  background:linear-gradient(120deg, transparent 45%, rgba(255,255,255,.35) 55%, transparent 65%);
+  transform:translateX(-120%); animation:sheen 6s ease-in-out infinite;
+}
+@keyframes sheen { 0%{transform:translateX(-120%)} 55%{transform:translateX(120%)} 100%{transform:translateX(120%)} }
 </style>
 {% endblock %}
 
 {% block content %}
-<main class="projects-wrapper">
-  <h1 class="projects-title">Projects</h1>
 
-  <div class="proj-menu">
-    <a href="{{ url_for('projects_ai') }}"
-       class="proj-card card-1">AI &amp; ML<br>Projects</a>
+/* ------- 侧轨用到的图片清单：把文件名换成你在 static/img/projects_wall/ 下的实际文件 ------- */
+{% set wall_files = ['p1.jpg','p2.jpg','p3.jpg','p4.jpg','p5.jpg','p6.jpg','p7.jpg','p8.jpg'] %}
 
-    <a href="{{ url_for('projects_public_service') }}"
-       class="proj-card card-2">Public-Service<br>Analytics</a>
-
-    <a href="{{ url_for('projects_academic') }}">
-       class="proj-card card-3">Academic<br>Research</a>
-
-    <a href="{{ url_for('projects_consulting') }}"
-       class="proj-card card-4">Corporate<br>Consulting</a>
+<!-- 左/右两侧滚动照片墙 -->
+<div class="rail left">
+  <div class="rail-inner">
+    {% for f in wall_files %}<img src="{{ url_for('static', filename='img/projects_wall/' ~ f) }}" alt="">{% endfor %}
+    {% for f in wall_files %}<img src="{{ url_for('static', filename='img/projects_wall/' ~ f) }}" alt="">{% endfor %}
   </div>
-</main>
+</div>
+<div class="rail right">
+  <div class="rail-inner">
+    {% for f in wall_files %}<img src="{{ url_for('static', filename='img/projects_wall/' ~ f) }}" alt="">{% endfor %}
+    {% for f in wall_files %}<img src="{{ url_for('static', filename='img/projects_wall/' ~ f) }}" alt="">{% endfor %}
+  </div>
+</div>
+
+<div class="rail-pad">
+  <h1 class="page-title">Projects</h1>
+
+  <section class="proj-grid">
+    <!-- Academic Research -->
+    <a class="proj-card card--academic reveal" href="{{ url_for('projects_academic') }}">
+      <div class="hero"><h2 class="hero-title">Academic Research</h2></div>
+      <div class="body"></div>
+    </a>
+
+    <!-- Corporate Consulting -->
+    <a class="proj-card card--consult reveal" href="{{ url_for('projects_consulting') }}">
+      <div class="hero"><h2 class="hero-title">Corporate Consulting</h2></div>
+      <div class="body"></div>
+    </a>
+
+    <!-- AI Projects（去掉 HR；现代褐金，突出） -->
+    <a class="proj-card card--ai reveal" href="{{ url_for('projects_ai') }}">
+      <div class="hero"><h2 class="hero-title">AI Projects</h2></div>
+      <div class="body"></div>
+    </a>
+
+    <!-- Public‑Service Analytics -->
+    <a class="proj-card card--public reveal" href="{{ url_for('projects_public_service') }}">
+      <div class="hero"><h2 class="hero-title">Public‑Service Analytics</h2></div>
+      <div class="body"></div>
+    </a>
+  </section>
+</div>
 {% endblock %}
-
-
-
-
-
-
