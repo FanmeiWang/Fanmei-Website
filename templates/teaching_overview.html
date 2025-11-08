@@ -1,163 +1,282 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Teaching — Fanmei Wang, PhD</title>
-  <!-- 全站样式 -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+{% extends "base.html" %}
+{% block title %}Teaching & Training – Fanmei Wang{% endblock %}
 
-  <!-- 页面专用样式 -->
-  <style>
-  :root{
-    --deep-teal:#004F59;
-    --amber:#FFD066;
-    --mint:#4FB39E;
-    --sun:#FFECB3;
-    --shadow:0 6px 18px rgba(0,0,0,.08);
-  }
-  body{margin:0;background:#FAF9F4;font-family:'Poppins',sans-serif;}
-  .container{max-width:1300px;margin:0 auto;padding:0 1rem;}
-  h1.page-title{color:var(--deep-teal);font-size:2.7rem;text-align:center;margin:60px 0 40px;}
+{% block extra_css %}
+<style>
+:root{
+  --deep        : #004F59;   /* dark teal */
+  --mint-bg     : #EAF5F1;   /* pale mint (left card) */
+  --mint-line   : #D6E9E3;   /* divider line */
+  --amber-light : #FFF7DD;   /* soft amber (module cards) */
+  --amber-mid   : #FFE4A9;   /* mid amber */
+  --amber       : #FFD066;   /* accent */
+}
 
-  /* ---- 卡片网格 ---- */
-  .card-grid{
-    display:grid;gap:2.2rem;
-    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  }
+/* Collapsible header for philosophy */
+.philo-card > summary{
+  list-style:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:.6rem .9rem;
+  color:var(--deep); font-weight:900; font-size:1.3rem;
+  background:transparent;
+  border-radius:12px;
+}
+.philo-card > summary::-webkit-details-marker{ display:none; }
+.philo-card[open] > summary{ background:#E1EFEA; }
+.philo-content{ padding:.2rem 0 .4rem; }
 
-  .teach-card{
-    background:#fff;border-radius:22px;overflow:hidden;
-    box-shadow:var(--shadow);transition:transform .25s, box-shadow .25s;
-    display:flex;flex-direction:column;cursor:pointer;
-  }
-  .teach-card:hover{transform:translateY(-6px);box-shadow:0 10px 26px rgba(0,0,0,.12);}
+/* Page background + side rails spacing (reduced side padding) */
+body{ background:#FAF9F4; padding:0 110px; overflow-x:hidden; }
+@media(max-width:1000px){ body{padding:0 1rem;} }
 
-  /* 顶部渐变色块，可放图标 */
-  .card-banner{
-    height:140px;position:relative;
-    display:flex;align-items:center;justify-content:center;
-  }
-  .card-banner svg{width:64px;height:64px;opacity:.9;fill:#fff;}
+/* Photo rails */
+.rail{ position:fixed; top:0; bottom:0; width:130px; overflow:hidden; pointer-events:none; z-index:-1; }
+.rail.left{left:0;} .rail.right{right:0;}
+@media(max-width:1000px){ .rail{ display:none; } }
+.rail-inner{ display:flex; flex-direction:column; gap:8px; animation:scroll 60s linear infinite; }
+.rail.right .rail-inner{ animation-direction:reverse; }
+.rail-inner img{ width:130px; height:130px; object-fit:cover; border-radius:6px; filter:brightness(.9) grayscale(.15); }
+@keyframes scroll{ to{ transform:translateY(-50%); } }
 
-  /* 按序替换渐变色 */
-  .teach-card:nth-of-type(1) .card-banner{background:linear-gradient(130deg,var(--amber),#FFE9A8);}
-  .teach-card:nth-of-type(2) .card-banner{background:linear-gradient(130deg,var(--mint),#B5F1E4);}
-  .teach-card:nth-of-type(3) .card-banner{background:linear-gradient(130deg,#FFB549,#FFE8C1);}
-  .teach-card:nth-of-type(4) .card-banner{background:linear-gradient(130deg,#50A5C1,#CDF0FF);}
+/* Title */
+.page-title{ font-size:2.8rem; margin:60px 0 26px; text-align:center; color:var(--deep); }
 
-  /* 文字区 */
-  .card-body{padding:1.6rem 1.9rem;flex:1;display:flex;flex-direction:column;}
-  .card-title{margin:0 0 .7rem;font-size:1.45rem;color:var(--deep-teal);}
-  .card-desc{margin:0;color:#444;font-size:.96rem;line-height:1.35;}
+/* Two-column layout (LEFT wider: ~58%) */
+.teach-layout{
+  max-width:1220px; margin:0 auto 70px;
+  display:grid; grid-template-columns:7fr 5fr;  /* left ≈58%, right ≈42% */
+  gap:2rem;                                     /* bigger gap pushes right further right */
+  align-items:stretch;
+}
+@media(max-width:960px){ .teach-layout{ grid-template-columns:1fr; } }
 
-  /* 详情列表 & 时间线 ↓↓↓ -------------------- */
-  details{margin-top:1.1rem;}
-  details[open] summary{margin-bottom:.8rem}
-  summary{list-style:none;cursor:pointer;font-weight:600;color:var(--deep-teal);}
-  summary::-webkit-details-marker{display:none;}
+/* LEFT: Philosophy card */
+.philo-card{
+  background:var(--mint-bg);
+  border:1px solid rgba(0,0,0,.06); border-radius:18px;
+  padding:1rem 1.1rem; box-shadow:0 10px 26px rgba(0,0,0,.06);
+  display:flex; flex-direction:column;
+}
+.philo-header{ margin:.2rem 0 .6rem; color:var(--deep); font-size:1.9rem; font-weight:900; }
+.philo-intro{ color:#14343A; line-height:1.68; font-size:1rem; margin:.25rem 0 .8rem; }
+.philo-intro p{ margin:.45rem 0; }
 
-  ul.bullet,ul.timeline{margin:0;padding:0;list-style:none;font-size:.93rem;line-height:1.35;}
-  ul.bullet li{margin:.25rem 0;}
-  ul.bullet li::before{content:"• ";color:var(--deep-teal);font-weight:700;}
+/* Collapsible details with preserved prose */
+.prin-acd{ border:1px solid rgba(0,0,0,.06); background:#fff; border-radius:12px; margin:.65rem 0; overflow:hidden; }
+.prin-acd > summary{ list-style:none; cursor:pointer; padding:.75rem .95rem; color:var(--deep); font-weight:800; font-size:1.05rem; background:#fff; }
+.prin-acd > summary::-webkit-details-marker{ display:none; }
+.prin-body{ padding:.65rem .95rem 1rem; color:#14343A; line-height:1.68; font-size:1rem; }
+.prin-body p{ margin:.48rem 0; }
 
-  ul.timeline{border-left:2px solid var(--deep-teal);padding-left:.85rem;}
-  ul.timeline li{position:relative;margin:0 0 .6rem;}
-  ul.timeline li::before{content:"";position:absolute;left:-.73rem;top:.4rem;width:.45rem;height:.45rem;border-radius:50%;background:var(--deep-teal);}
-  </style>
-</head>
-<body>
-  {% include "navbar.html" %}
+/* RIGHT: Modules container (equal height) with left divider */
+.modules-card{
+  background:linear-gradient(180deg,#FFF3B8 0%, #FFF8D9 100%);
+  border:1px solid rgba(0,0,0,.06); border-radius:18px; padding:1rem;
+  box-shadow:0 10px 26px rgba(0,0,0,.06); display:flex; height:100%;
+  border-left:6px solid var(--mint-line);         /* subtle vertical separator */
+}
 
-  <main class="container">
-    <h1 class="page-title">Teaching &amp; Training</h1>
+/* Vertical stack of module cards */
+.module-grid{ display:grid; grid-template-columns:1fr; gap:1rem; align-content:start; width:100%; }
+.module-card{
+  display:block; text-decoration:none; color:var(--deep);
+  padding:2.1rem 2.2rem; border-radius:18px;
+  background:linear-gradient(135deg,var(--amber-light),var(--amber-mid));
+  box-shadow:0 8px 26px rgba(0,0,0,.08);
+  transition:transform .25s, box-shadow .25s; position:relative;
+}
+.module-card:hover{ transform:translateY(-8px); box-shadow:0 14px 36px rgba(0,0,0,.12); }
+.mod-title{ margin:0 0 .6rem; font-size:1.6rem; display:flex; gap:.7rem; align-items:center; }
+.mod-title i{ font-size:1.4rem; color:var(--amber); }
+.mod-desc{ margin:0; font-size:1.02rem; line-height:1.5; }
+.module-card::after{
+  content:""; position:absolute; right:22px; bottom:22px; width:88px; height:88px;
+  opacity:.07; pointer-events:none; background-size:contain; background-repeat:no-repeat;
+}
+.module-card:nth-child(1)::after{background-image:url('{{ url_for("static", filename="img/icons/book.svg") }}');}
+.module-card:nth-child(2)::after{background-image:url('{{ url_for("static", filename="img/icons/trainer.svg") }}');}
+.module-card:nth-child(3)::after{background-image:url('{{ url_for("static", filename="img/icons/award.svg") }}');}
+.module-card:nth-child(4)::after{background-image:url('{{ url_for("static", filename="img/icons/thesis.svg") }}');}
 
-    <div class="card-grid">
+/* ===== Teaching Philosophy tiles under the modules ===== */
+.philo-strip{max-width:1220px;margin:34px auto 80px;padding:0 1rem}
+.philo-title{margin:0 0 14px;font-size:1.6rem;color:#004F59;font-weight:900;text-align:center}
 
-      <!-- 1) Academic Courses -->
-      <div class="teach-card">
-        <div class="card-banner">
-          <!-- 可替换为 SVG 图标；示例为简易书本形状 -->
-          <svg viewBox="0 0 24 24"><path d="M3 5a2 2 0 0 1 2-2h13a3 3 0 0 1 3 3v13.5a1.5 1.5 0 0 1-2.25 1.32L15 19.13l-5.75 1.69A1.5 1.5 0 0 1 7 19.37V6a1 1 0 0 0-1-1H3z"/></svg>
-        </div>
-        <div class="card-body">
-          <h2 class="card-title">Academic Courses</h2>
-          <p class="card-desc">Undergraduate, MBA &amp; EMBA syllabi I designed and delivered.</p>
+.philo-grid{
+  display:grid;gap:1rem;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+}
+@media (max-width:1200px){ .philo-grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
+@media (max-width:640px){ .philo-grid{grid-template-columns:1fr;} }
 
-          <details>
-            <summary>Course list</summary>
-            {% for subgroup, items in academic.items() %}
-              <strong>{{ subgroup }}</strong>
-              <ul class="bullet">
-                {% for c in items %}
-                  <li>{{ c.course }} — {{ c.level }}</li>
-                {% endfor %}
-              </ul>
-            {% endfor %}
-          </details>
-        </div>
+.philo-card-mini{
+  background:#EAF5F1;               /* green base */
+  border:1px solid rgba(0,0,0,.06);
+  border-radius:16px;
+  box-shadow:0 8px 24px rgba(0,0,0,.06);
+  padding:1.1rem 1.2rem;
+  display:flex;gap:.8rem;align-items:flex-start;
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.philo-card-mini:hover{ transform:translateY(-4px); box-shadow:0 12px 28px rgba(0,0,0,.08); }
+
+.philo-card-mini .icon{
+  flex:0 0 40px;height:40px;border-radius:10px;
+  background:linear-gradient(180deg,#FFE59A,#FFF2BF);  /* amber accent */
+  display:flex;align-items:center;justify-content:center;
+  color:#004F59;font-size:1.1rem;font-weight:900;
+}
+.philo-card-mini h3{margin:.1rem 0 .35rem;font-size:1.05rem;color:#004F59}
+.philo-card-mini p{margin:0;color:#35565B;font-size:.95rem;line-height:1.45}
+.philo-card-mini a{color:#004F59;text-decoration:none;border-bottom:2px solid rgba(0,79,89,.2)}
+.philo-card-mini a:hover{border-color:#004F59}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Photo rails -->
+<div class="rail left">
+  <div class="rail-inner">
+    {% for img in photos %}<img src="{{ url_for('static', filename='img/teaching/' ~ img) }}">{% endfor %}
+    {% for img in photos %}<img src="{{ url_for('static', filename='img/teaching/' ~ img) }}">{% endfor %}
+  </div>
+</div>
+<div class="rail right">
+  <div class="rail-inner">
+    {% for img in photos %}<img src="{{ url_for('static', filename='img/teaching/' ~ img) }}">{% endfor %}
+    {% for img in photos %}<img src="{{ url_for('static', filename='img/teaching/' ~ img) }}">{% endfor %}
+  </div>
+</div>
+
+<h1 class="page-title">Teaching&nbsp;&amp;&nbsp;Training</h1>
+
+<section class="teach-layout">
+
+  <!-- LEFT (collapsible; keep your long original text inside each section) -->
+  <details class="philo-card" open>
+    <summary>Teaching Philosophy</summary>
+
+    <div class="philo-content">
+      <!-- Intro -->
+      <div class="philo-intro">
+        <p>My introduction to teaching and learning in higher education occurred during my undergraduate studies in China, where the traditional approach reflects Confucian educational ideology and culture. I sought to demonstrate self-discipline, diligence, respect, courtesy, and thoughtfulness in words and deeds, and I approached schooling as a chance to cultivate these qualities. Professors often teach by establishing theoretical frameworks that enable holistic, systematic thinking—the trees and the forest. The curriculum builds a comprehensive foundation and cultivates logical, rigorous reasoning. These habits of care and thoughtfulness now serve me well as an academic and instructor.</p>
+        <p>My understanding of possibilities expanded during my M.A. at Laurentian University when I first encountered interactive, collaborative, and exploratory learning and experimented with it as a teaching assistant. During my Ph.D. at Peking University I taught a seminar for American students—<em>Contemporary Issues in China</em>—at IES Abroad’s Beijing Center using literature, workshops, guest lectures, discussion, and field observation. I witnessed how interactive pedagogy can spark students’ profound re-thinking.</p>
+        <p>Later, at the University of Science and Technology Beijing (USTB), I taught for almost a decade (lecturer → assistant professor) and coordinated the International Graduate Program while the School of Economics and Management pursued AMBA and AACSB accreditation. Supported by international collaborations and reforms, I continued to develop a student-centred pedagogy. From these contexts I distilled four points that guide my practice below.</p>
       </div>
 
-      <!-- 2) Corporate Training -->
-      <div class="teach-card">
-        <div class="card-banner">
-          <svg viewBox="0 0 24 24"><path d="M4 4h16v2H4zm2 4h12v2H6zm-2 4h16v2H4zm2 4h12v2H6z"/></svg>
+      <!-- Four collapsible points (keep your full original sections here) -->
+      <details class="prin-acd" id="p1">
+        <summary>Linking Theory and Real-World Applications</summary>
+        <div class="prin-body">
+          <!-- paste your full original section 1 here -->
         </div>
-        <div class="card-body">
-          <h2 class="card-title">Corporate Training</h2>
-          <p class="card-desc">Enterprise workshops on HR analytics, culture and performance.</p>
+      </details>
 
-          <details>
-            <summary>Contracts</summary>
-            <ul class="timeline">
-              {% for t in training_contract %}
-                <li>{{ t }}</li>
-              {% endfor %}
-            </ul>
-          </details>
+      <details class="prin-acd" id="p2">
+        <summary>Creating Proactive and Interactive Learning Environments</summary>
+        <div class="prin-body">
+          <!-- paste your full original section 2 here -->
         </div>
-      </div>
+      </details>
 
-      <!-- 3) Teaching Awards -->
-      <div class="teach-card">
-        <div class="card-banner">
-          <svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5zm0 20 6-3.27V10L12 13l-6-3v8.73z"/></svg>
+      <details class="prin-acd" id="p3">
+        <summary>Valuing Students as Individuals and Respecting Their Voices</summary>
+        <div class="prin-body">
+          <!-- paste your full original section 3 here -->
         </div>
-        <div class="card-body">
-          <h2 class="card-title">Teaching Awards</h2>
-          <p class="card-desc">Institutional accolades recognising instructional excellence.</p>
+      </details>
 
-          <details>
-            <summary>Awards timeline</summary>
-            <ul class="timeline">
-              {% for a in awards %}
-                <li><strong>{{ a.award }}</strong> — {{ a.institution }} · {{ a.year }}</li>
-              {% endfor %}
-            </ul>
-          </details>
+      <details class="prin-acd" id="p4">
+        <summary>Embracing Teaching as a Continual Process of Learning, Progress, and Growth</summary>
+        <div class="prin-body">
+          <!-- paste your full original section 4 here -->
         </div>
-      </div>
-
-      <!-- 4) Thesis Supervision -->
-      <div class="teach-card">
-        <div class="card-banner">
-          <svg viewBox="0 0 24 24"><path d="M5 4h14v2H5zm0 4h10v2H5zm0 4h14v2H5zm0 4h10v2H5z"/></svg>
-        </div>
-        <div class="card-body">
-          <h2 class="card-title">Thesis Supervision</h2>
-          <p class="card-desc">Guidance provided to 50-plus bachelor’s &amp; master’s dissertations.</p>
-
-          <details>
-            <summary>At-a-glance</summary>
-            <ul class="bullet">
-              <li>Bachelor’s papers — {{ thesis.bachelor }}</li>
-              <li>Master’s theses — {{ thesis.master }}</li>
-            </ul>
-          </details>
-        </div>
-      </div>
+      </details>
     </div>
-  </main>
-</body>
-</html>
+  </details>
+
+  <!-- RIGHT: vertical modules -->
+  <section class="modules-card">
+    <div class="module-grid">
+
+      <a href="{{ url_for('teaching_academic') }}" class="module-card">
+        <h2 class="mod-title"><i class="fa-solid fa-book-open"></i> Academic Courses</h2>
+        <p class="mod-desc">Undergraduate, MBA &amp; EMBA syllabi I designed and delivered.</p>
+      </a>
+
+      <a href="{{ url_for('teaching_corporate') }}" class="module-card">
+        <h2 class="mod-title"><i class="fa-solid fa-chalkboard-user"></i> Corporate Training</h2>
+        <p class="mod-desc">Enterprise workshops on HR analytics, culture, and performance.</p>
+      </a>
+
+      <a href="{{ url_for('teaching_awards') }}" class="module-card">
+        <h2 class="mod-title"><i class="fa-solid fa-trophy"></i> Teaching Awards</h2>
+        <p class="mod-desc">Institutional accolades recognising instructional excellence.</p>
+      </a>
+
+      <a href="{{ url_for('teaching_thesis') }}" class="module-card">
+        <h2 class="mod-title"><i class="fa-solid fa-graduation-cap"></i> Thesis Supervision</h2>
+        <p class="mod-desc">Guidance provided to 50-plus bachelor’s &amp; master’s dissertations.</p>
+      </a>
+
+    </div>
+  </section>
+</section>
+
+<!-- ===== Philosophy tiles (quick glance) ===== -->
+<section class="philo-strip">
+  <h2 class="philo-title">Teaching Philosophy</h2>
+  <div class="philo-grid">
+    <article class="philo-card-mini">
+      <span class="icon">→</span>
+      <div>
+        <h3>Linking Theory and Real-World Applications</h3>
+        <p><a href="#p1">Cases, field projects, and research-informed tasks translate frameworks into judgment and practice.</a></p>
+      </div>
+    </article>
+
+    <article class="philo-card-mini">
+      <span class="icon">✦</span>
+      <div>
+        <h3>Creating Proactive & Interactive Environments</h3>
+        <p><a href="#p2">Scaffolded participation, storytelling, labs, and cross-cultural teamwork with timely feedback.</a></p>
+      </div>
+    </article>
+
+    <article class="philo-card-mini">
+      <span class="icon">☻</span>
+      <div>
+        <h3>Valuing Students’ Voices</h3>
+        <p><a href="#p3">Multi-method assessment, transparent rubrics, and equitable speaking opportunities.</a></p>
+      </div>
+    </article>
+
+    <article class="philo-card-mini">
+      <span class="icon">∞</span>
+      <div>
+        <h3>Continual Growth</h3>
+        <p><a href="#p4">Evidence-based iteration, peer learning, and translating research into classroom tools.</a></p>
+      </div>
+    </article>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block content_scripts %}
+<script>
+/* When clicking a philosophy tile link, open the target details and scroll to it */
+(function(){
+  document.addEventListener('click', function(e){
+    const a = e.target.closest('.philo-card-mini a');
+    if(!a) return;
+    const sel = a.getAttribute('href');
+    const d = document.querySelector(sel);
+    if(d && !d.open) d.open = true;
+    if(d) d.scrollIntoView({behavior:'smooth', block:'start'});
+    e.preventDefault();
+  }, false);
+})();
+</script>
+{% endblock %}
