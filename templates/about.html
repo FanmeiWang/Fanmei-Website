@@ -84,34 +84,17 @@
 
       <p>Engaging and creative data analyst, and a Certified Human Resources Professional, currently working for the Government of Canada. Prior to this role, I accumulated over 15&nbsp;years of experience teaching and conducting research in HRM at universities and world-renowned research institutions. In addition to my subject-matter expertise, I have taught both quantitative and qualitative methods at the graduate level. My research focuses on diversity and cultural sensitivity; ethnic and racial minority experiences in HRM fields; and related policies.</p>
 
-      <p>Now, I am dedicated to AI applications across various HR domains, leveraging my extensive expertise in HRM alongside machine learning, deep learning, NLP, and conversational AI to enhance data-driven insights, support policy development, and improve employee engagement through interactive feedback tools.</p>
+      <p><strong>AI for HR, end to end:</strong> I bridge HR domain work with AI architecture and
+full‑stack delivery—designing data contracts and lakehouse ingestion, building Python/Flask
+apps and APIs, and shipping ML/NLP features that improve insights, policy and engagement.</p>
 
-      <p><em>Flagship project:</em> I conceived, coded, and deployed the
-         <strong>Language Competency Evaluation &amp; Training Tool (v 2.3)</strong> — a Python / Flask application that assesses bilingual proficiency and recommends tailored micro-learning paths. Built and hosted on Render, the tool propelled our cross-agency team into the <strong>Top 4 finalists of the 2025 Public Service Data &amp; AI Challenge</strong>.</p>
+<p><em>Highlights:</em> (1) the <strong>Language Competency Evaluation &amp; Training Tool
+(v2.3)</strong>, a bilingual‑skills recommender (Top‑4 finalist, 2025 Public Service Data &amp; AI
+Challenge); (2) a <strong>YAML contract–driven ETL</strong> that writes curated/gold layers and a
+<code>dq_report</code> with quality metrics, promotes snapshots by policy, and runs on Azure
+(ADLS Gen2 + Automation/DevOps + Synapse/Power BI + Purview + Log Analytics). Next: ML anomaly
+detection, schema‑drift, and a GenAI agent that explains failures and proposes safe fixes.</p>
 
-      <p><em>Engineering highlight:</em> As the primary designer and lead developer,
-I architected a <strong>YAML data‑contract–driven ETL</strong> in Python.
-Using <code>columns.yml</code> and <code>config.yml</code>, it encodes a
-<strong>one‑row‑per‑employee‑month</strong> grain, join logic, PII‑safe
-de‑identification, and rigorous data‑quality checks—standardizing team
-workflows and producing auditable monthly snapshots.</p>
-
-<p><strong>Next step — AI automation:</strong> adding statistical/ML anomaly
-detection, rule learning from historical corrections, schema‑drift alerts,
-and LLM‑assisted documentation & data‑mapping to further improve reliability
-and reduce manual work.</p>
-
-<!-- 可选：折叠展示技术细节 -->
-<details class="tech-details">
-  <summary>See technical details</summary>
-  <ul>
-    <li>Contract: YAML (<code>columns.yml</code>, <code>config.yml</code>)</li>
-    <li>Grain: employee × month; unique on (<code>employee_id</code>, <code>month</code>)</li>
-    <li>Privacy: PII-safe de-identification (hash/salt, masking)</li>
-    <li>DQ: not-null, unique-pair, in-range, referential checks</li>
-    <li>Ops: automated, auditable monthly snapshots</li>
-  </ul>
-</details>
 
           <p>As the Brand Ambassador for CRA, I am honored to represent and promote our brand both internally and externally.</p>
 
@@ -166,4 +149,5 @@ and reduce manual work.</p>
   </div>
 </aside>
 {% endblock %}
+
 
