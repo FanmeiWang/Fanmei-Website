@@ -1,29 +1,44 @@
-{% extends 'base.html' %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Education — Fanmei Wang, PhD</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <!-- 复用你的导航 -->
+  <nav>
+    <span class="brand">Fanmei Wang, PhD</span>
+    <ul class="nav-links">
+      <li><a href="{{ url_for('about') }}">About</a></li>
+      <li><a href="{{ url_for('education') }}">Education</a></li>
+      <li><a href="{{ url_for('teaching_overview') }}">Teaching</a></li>
+      <li><a href="{{ url_for('projects') }}">Projects</a></li>
+      <li><a href="{{ url_for('publications') }}">Publications</a></li>
+      <li><a href="#blog">Research&nbsp;Blog</a></li>
+    </ul>
+  </nav>
 
-{% block title %}Education — Fanmei Wang, PhD{% endblock %}
-
-{% block content %}
-  <section class="container mt-5">
-    <h1 class="section-title">Education</h1>
+  <main class="page-container">
+    <h1>Education</h1>
 
     {% for item in edu_list %}
-      <div class="edu-item">
-        <img class="edu-logo"
-             src="{{ url_for('static', filename='img/logos/' ~ item.logo) }}"
-             alt="{{ item.school }} logo">
-
-        <div class="edu-text">
-          <h3>{{ item.school }}
-            {% if item.status %}
-              <span class="tag">{{ item.status }}</span>
-            {% endif %}
-          </h3>
-          <p>
-            <strong>{{ item.degree }}</strong>
-            {% if item.detail %}&nbsp;— {{ item.detail }}{% endif %}
-          </p>
-        </div>
+    <section class="edu-item" style="animation-delay: {{ loop.index0 * 0.1 }}s;">
+      <img class="edu-logo"
+           src="{{ url_for('static', filename='img/logos/' + item.logo) }}"
+           alt="{{ item.school }} logo">
+      <div class="edu-text">
+        <h3>{{ item.school }}</h3>
+        <p>
+          <strong>{{ item.degree }}</strong>
+          {% if item.status %}<span class="tag">({{ item.status }})</span>{% endif %}
+          {% if item.detail %}<br><em>{{ item.detail }}</em>{% endif %}
+        </p>
       </div>
+    </section>
     {% endfor %}
-  </section>
-{% endblock %}
+  </main>
+</body>
+</html>
+
