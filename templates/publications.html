@@ -5,11 +5,59 @@
   <title>Publications — Fanmei Wang, PhD</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    /* ───────── 仅本页：移除顶部淡蓝横幅 ───────── */
+    /* 若站点其它页面用到不同类名，这里一并兜底隐藏 */
+    .pub-hero,
+    .page-hero, .hero-cover, .page-cover, .masthead, .header-sky {
+      display: none !important;
+    }
+
+    /* ───────── 双栏布局（左：Books；右：Journal Articles）───────── */
+    .pub-grid{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 16px;
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;   /* 右边稍宽一些 */
+      gap: 28px;
+      align-items: start;
+    }
+
+    /* 右侧这一列设置为独立滚动容器（pub-grid 的第 2 个 section） */
+    .pub-grid > section:nth-child(2){
+      /* 视口高度 - 导航/页边距的占位，按你站点大致高度微调 */
+      max-height: calc(100vh - 160px);
+      overflow-y: auto;
+      padding-right: .4rem;             /* 给滚动条留一点空间 */
+      scrollbar-gutter: stable;          /* 避免出现滚动条时布局跳动 */
+      scroll-behavior: smooth;
+      /* FireFox 滚动条颜色 */
+      scrollbar-color: #c9d4d9 transparent;
+      scrollbar-width: thin;
+    }
+    /* WebKit 滚动条样式（Chrome/Edge/Safari） */
+    .pub-grid > section:nth-child(2)::-webkit-scrollbar{ width: 10px; }
+    .pub-grid > section:nth-child(2)::-webkit-scrollbar-thumb{
+      background: #c9d4d9; border-radius: 8px;
+    }
+    .pub-grid > section:nth-child(2)::-webkit-scrollbar-track{ background: transparent; }
+
+    /* 窄屏（单列）时，自动取消右侧独立滚动，避免双滚动体验 */
+    @media (max-width: 1000px){
+      .pub-grid{ grid-template-columns: 1fr; }
+      .pub-grid > section:nth-child(2){
+        max-height: none; overflow: visible; padding-right: 0;
+      }
+    }
+  </style>
 </head>
+
 <body>
   {% include "navbar.html" %}
 
-  <!-- 改横幅：高度 200px，滤镜更轻 -->
+  <!-- 顶部横幅：本页已通过 CSS 隐藏 -->
   <header class="pub-hero"></header>
 
   <!-- 双栏网格 -->
@@ -32,7 +80,7 @@
       </div>
     </section>
 
-    <!-- ── 右列：Journal Articles ───────── -->
+    <!-- ── 右列：Journal Articles（独立滚动） ───────── -->
     <section>
       <h2 class="section-title">Journal Articles</h2>
       <div class="pub-list">
