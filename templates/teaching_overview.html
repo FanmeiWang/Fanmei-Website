@@ -21,7 +21,7 @@
   --hero-sand-top:#F0D8B0;  --hero-sand-btm:#CFA170;   /* Thesis */
 
   /* 哲学区配色 */
-  --philo-band:#2f3a3f;      /* 深灰绿：做背景带，提高白字对比 */
+  --philo-band:#2f3a3f;      /* 深灰绿 */
   --bullet:#F4B400;          /* 大圆点：柔和黄 */
 }
 
@@ -38,7 +38,7 @@ body{ background:var(--page); }
 /* ────────────────── 顶部四张卡 ────────────────── */
 .cards{
   display:grid; grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:2.2rem;                 /* 卡与卡间距 */
+  gap:2.2rem;
 }
 @media (max-width:1100px){ .cards{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media (max-width:640px){  .cards{ grid-template-columns:1fr; } }
@@ -76,10 +76,12 @@ body{ background:var(--page); }
 .card--honey { --hero-top:var(--hero-honey-top); --hero-btm:var(--hero-honey-btm); }
 .card--sand  { --hero-top:var(--hero-sand-top);  --hero-btm:var(--hero-sand-btm); }
 
-/* ────────────────── Teaching Philosophy：两列链接 + 大黄点，无白框 ────────────────── */
+/* ────────────────── Teaching Philosophy ────────────────── */
 .philo{ max-width:1200px; margin:28px auto 0; }
-.philo h2{ text-align:center; color:var(--ink); margin:0 0 12px; font-weight:900; font-size:1.6rem; letter-spacing:.2px; }
-
+.philo h2{
+  text-align:center; color:var(--ink); margin:0 0 12px;
+  font-weight:900; font-size:1.6rem; letter-spacing:.2px;
+}
 .philo-band{
   background: var(--philo-band);
   border-radius:10px;
@@ -89,10 +91,11 @@ body{ background:var(--page); }
 .philo-list{
   display:grid;
   grid-template-columns: repeat(2, minmax(0,1fr));
-  gap:10px 28px;        /* 行距/列距 */
+  gap:10px 28px;
 }
-@media (max-width: 720px){ .philo-list{ grid-template-columns: 1fr; } }
-
+@media (max-width: 720px){
+  .philo-list{ grid-template-columns: 1fr; }
+}
 .philo-item{
   display:flex; align-items:center; gap:.6rem;
   color:#fff; text-decoration:none;
@@ -101,8 +104,6 @@ body{ background:var(--page); }
 }
 .philo-item:hover{ text-decoration: underline; }
 .philo-item:focus-visible{ outline:2px solid rgba(255,255,255,.6); outline-offset:2px; border-radius:4px; }
-
-/* 黄色圆点 */
 .philo-item::before{
   content:"";
   width:16px; height:16px; border-radius:50%;
@@ -111,39 +112,38 @@ body{ background:var(--page); }
   flex:0 0 16px;
 }
 
-/* ────────────────── 横向滚动相册（加在哲学区下面） ────────────────── */
-.gallery-wrap{ margin:18px auto 0; max-width:1200px; position:relative; }
-.gallery-scroller{
-  display:flex; gap:12px;
-  overflow-x:auto; overflow-y:hidden;
-  scroll-snap-type:x mandatory;
-  -webkit-overflow-scrolling:touch;
-  padding:12px 56px;              /* 给左右按钮留空间 */
-  border-radius:14px; background:#fff;
-  box-shadow:0 10px 26px rgba(0,0,0,.08);
+/* ────────────────── 滚动画廊（哲学模块下面） ────────────────── */
+.gallery{ max-width:1200px; margin:18px auto 0; }
+.marquee{
+  position:relative; overflow:hidden;
+  border-radius:14px;
+  background: #ffffffcc;
+  box-shadow: 0 10px 26px rgba(0,0,0,.08);
+  padding:12px 0;
 }
-.gallery-scroller::-webkit-scrollbar{ height:8px; }
-.gallery-scroller::-webkit-scrollbar-thumb{ background:rgba(0,0,0,.15); border-radius:999px; }
-.gallery-scroller img{
-  height:130px; width:auto; object-fit:cover;
+.marquee .track{
+  display:flex; align-items:center; gap:14px;
+  width:max-content;                    /* 使内容宽度随图片撑开 */
+  animation: scrollLeft 38s linear infinite;
+}
+.marquee:hover .track{ animation-play-state: paused; }  /* 悬停暂停 */
+
+@keyframes scrollLeft{
+  from{ transform: translateX(0); }
+  to  { transform: translateX(-50%); } /* 播完一半宽度=正好一组图片 */
+}
+
+.marquee img{
+  height:120px; width:auto; object-fit:cover;
   border-radius:10px; flex:0 0 auto;
-  scroll-snap-align:start;
-  box-shadow:0 3px 10px rgba(0,0,0,.08);
+  box-shadow:0 4px 14px rgba(0,0,0,.10);
+  filter:saturate(1.02);
 }
+@media(max-width:760px){ .marquee img{ height:88px; } }
 
-/* 左右按钮 */
-.gbtn{
-  position:absolute; top:50%; transform:translateY(-50%);
-  width:38px; height:38px; border:none; border-radius:50%;
-  background:#fff; box-shadow:0 4px 12px rgba(0,0,0,.18);
-  color:var(--brand); font-weight:900; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-}
-.gbtn:hover{ filter:brightness(1.03); }
-.gprev{ left:8px; } .gnext{ right:8px; }
-
-@media (max-width:700px){
-  .gallery-scroller img{ height:100px; }
+/* 遵循“减少动画”偏好 */
+@media (prefers-reduced-motion: reduce){
+  .marquee .track{ animation:none; }
 }
 </style>
 {% endblock %}
@@ -178,7 +178,7 @@ body{ background:var(--page); }
     </section>
   </div>
 
-  <!-- Teaching Philosophy：两列链接 + 大黄点，无白框，白字 -->
+  <!-- Teaching Philosophy：两列链接 + 大黄点 -->
   <section class="philo">
     <h2>Teaching Philosophy</h2>
     <div class="philo-band">
@@ -199,53 +199,29 @@ body{ background:var(--page); }
     </div>
   </section>
 
-  <!-- 横向滚动教学照片（就在哲学区下面） -->
-  <section class="gallery-wrap" aria-label="Teaching photos">
-    <button class="gbtn gprev" type="button" aria-label="Scroll left">‹</button>
-    <div class="gallery-scroller" id="teach-photos">
-      {# 教学图片文件：放在 static/img/teaching/ 下。注意第一张名为 teacching8.jpg（双 c）。 #}
-      {% set teaching_photos = [
-        'teacching8.jpg','teaching1.png','teaching2.png',
-        'teaching4.jpg','teaching5.png','teaching7.jpg','teaching9.jpg'
-      ] %}
-      {% for f in teaching_photos %}
-        <img src="{{ url_for('static', filename='img/teaching/' ~ f) }}" alt="Teaching photo {{ loop.index }}">
-      {% endfor %}
+  <!-- 滚动图片条（自动循环；悬停暂停） -->
+  {% set gallery_imgs = [
+    'teacching8.jpg','teaching1.png','teaching2.png',
+    'teaching4.jpg','teaching5.png','teaching7.jpg','teaching9.jpg'
+  ] %}
+  <section class="gallery" aria-label="Teaching photos">
+    <div class="marquee">
+      <div class="track">
+        {# 第一组 #}
+        {% for f in gallery_imgs %}
+          <img src="{{ url_for('static', filename='img/teaching/' ~ f) }}"
+               alt="Teaching photo {{ loop.index }}">
+        {% endfor %}
+        {# 第二组（重复一遍以实现无缝循环） #}
+        {% for f in gallery_imgs %}
+          <img src="{{ url_for('static', filename='img/teaching/' ~ f) }}"
+               alt="" aria-hidden="true">
+        {% endfor %}
+      </div>
     </div>
-    <button class="gbtn gnext" type="button" aria-label="Scroll right">›</button>
   </section>
 
 </div>
 {% endblock %}
 
-{% block content_scripts %}
-<script>
-/* 简单滚动控制（左右按钮 + 鼠标滚轮横向滚动） */
-(function(){
-  const box  = document.getElementById('teach-photos');
-  if(!box) return;
-  const prev = document.querySelector('.gbtn.gprev');
-  const next = document.querySelector('.gbtn.gnext');
-  const step = () => Math.max(220, Math.floor(box.clientWidth * 0.8));
-
-  prev.addEventListener('click', () => box.scrollBy({ left: -step(), behavior: 'smooth' }));
-  next.addEventListener('click', () => box.scrollBy({ left:  step(), behavior: 'smooth' }));
-
-  // 纵向滚轮 → 横向滚动（更易用）
-  box.addEventListener('wheel', (e) => {
-    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-      e.preventDefault();
-      box.scrollBy({ left: e.deltaY, behavior: 'smooth' });
-    }
-  }, { passive:false });
-})();
-</script>
-{% endblock %}
-
-
-
-
-
-
-
-
+{% block content_scripts %}{% endblock %}
