@@ -1,29 +1,12 @@
-{# 统一导航栏 /templates/navbar.html #}
-<header class="site-header">
-  <nav class="nav">
+<nav>
+  <span class="brand"><a href="/">Fanmei Wang, PhD</a></span>
 
-    <!-- 品牌（左侧） -->
-    <a class="brand" href="{{ url_for('about') }}">Fanmei&nbsp;Wang, PhD</a>
+  <ul class="nav-links">
+    <li><a href="{{ url_for('about') }}">About</a></li>
+    <li><a href="{{ url_for('publications') }}">Publications</a></li>
+    <li><a href="{{ url_for('projects') }}">Projects</a></li>
+    <li><a href="{{ url_for('teaching_overview') }}">Teaching</a></li>
+    <li><a href="#blog">Research Blog</a></li>
+  </ul>
+</nav>
 
-    <!-- 菜单（右侧） -->
-    <ul class="nav-list">
-      <li><a href="{{ url_for('about') }}"
-             class="{% if request.endpoint=='about' %}active{% endif %}">About</a></li>
-
-      <li><a href="{{ url_for('education') }}"
-             class="{% if request.endpoint=='education' %}active{% endif %}">Education</a></li>
-
-      <li><a href="{{ url_for('publications') }}"
-             class="{% if request.endpoint=='publications' %}active{% endif %}">Publications</a></li>
-
-      <li><a href="{{ url_for('projects') }}"
-             class="{% if request.endpoint.startswith('projects') %}active{% endif %}">Projects</a></li>
-
-      <li><a href="{{ url_for('teaching_overview') }}"
-             class="{% if request.endpoint.startswith('teaching') %}active{% endif %}">Teaching</a></li>
-
-      <li><a href="{{ url_for('presentations') }}"
-             class="{% if request.endpoint=='presentations' %}active{% endif %}">Research&nbsp;Blog</a></li>
-    </ul>
-  </nav>
-</header>
