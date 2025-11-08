@@ -431,122 +431,100 @@ def teaching_thesis():
 # ---- Presentations (唯一路由；其它同名路由请删除) ----
 @app.route("/presentations")
 def presentations():
-    # 左右两侧固定的 Harvard 海报（放在 static/img/presentations/ 下）
-    posters = [
-        "Harvard_presentation_adv1.jpg",
-        "Harvard_presentation_adv2.png",
-    ]
-
-    # 中间 FULL LIST（来自你的 CV / Teaching Dossier）
+    # ---- 中间完整列表（按你的 CV）----
     talks = [
         {
-            "title": "How to Conduct Human Resources Management‑Related Studies in China?",
-            "venue": "Workshop ‘Research on Ethnic Minority Group Members in China’, Department of Sociology, Zhejiang University",
-            "date":  "Apr 28, 2019",
-            "city":  "Hangzhou, Zhejiang, China",
-            "type":  "Workshop / Invited Talk",
-            "lang":  "Chinese"
+            "title": "How to Conduct Human Resources Management-Related Studies in China? (Chinese)",
+            "venue": "Workshop “Research on Ethnic Minority Group Members in China”, Department of Sociology, Zhejiang University",
+            "city": "Hangzhou, Zhejiang, China",
+            "date": "Apr 28, 2019",
+            "desc": ""
         },
         {
-            "title": "Human Resource Management for Ethnic Minority Employees in Organizations in Chinese Minority‑inhabited Regions: A Case Study in the Tibetan Autonomous Region",
-            "venue": "Institute for Advanced Study in Humanities and Social Sciences, Zhejiang University",
-            "date":  "Apr 29, 2019",
-            "city":  "Hangzhou, Zhejiang, China",
-            "type":  "Invited Talk",
-            "lang":  "Chinese"
+            "title": "Human Resource Management for Ethnic Minority Employees in Organizations in Chinese Minority‑inhabited Regions: A Case Study in the Tibetan Autonomous Region (Chinese)",
+            "venue": "Institute for Advanced Study in Humanities & Social Sciences, Zhejiang University",
+            "city": "Hangzhou, Zhejiang, China",
+            "date": "Apr 29, 2019",
+            "desc": ""
         },
         {
-            "title": "A New Perspective in Analyzing China Ethnic‑related Employment Issues",
+            "title": "A New Perspective in Analyzing China Ethnic‑related Employment Issues (English)",
             "venue": "Fairbank Center Visiting Scholar Presentations, Fairbank Center for Chinese Studies, Harvard University",
-            "date":  "May 1, 2018",
-            "city":  "Boston, MA",
-            "type":  "Invited Talk",
-            "lang":  "English"
+            "city": "Boston, MA",
+            "date": "May 1, 2018",
+            "desc": ""
         },
         {
-            "title": "Career Development for Ethnic Minority Employees: A Case Study in the Tibetan Autonomous Region",
+            "title": "Career Development for Ethnic Minority Employees: A Case Study in the Tibetan Autonomous Region (English)",
             "venue": "Affiliate Presentations, Fairbank Center for Chinese Studies, Harvard University",
-            "date":  "Apr 26, 2018",
-            "city":  "Boston, MA",
-            "type":  "Invited Talk",
-            "lang":  "English"
+            "city": "Boston, MA",
+            "date": "Apr 26, 2018",
+            "desc": ""
         },
         {
-            "title": "Chinese Ethnic Policies: An International Comparative Perspective",
-            "venue": "Ethics in Public Affair and Corporate Decision‑Making seminar course, Schwarzman College, Tsinghua University",
-            "date":  "Feb 2, 2017",
-            "city":  "Beijing, China",
-            "type":  "Guest Lecture",
-            "lang":  "English"
+            "title": "Chinese Ethnic Policies: An International Comparative Perspective (English)",
+            "venue": "Guest lecture in Ethics in Public Affair and Corporate Decision‑Making seminar course, Schwarzman College, Tsinghua University",
+            "city": "Beijing, China",
+            "date": "Feb 2, 2017",
+            "desc": ""
         },
         {
-            "title": "Chinese Ethnic Issues in the Context of One Belt, One Road Initiative",
-            "venue": "Conference ‘Cultural Diversity and Construction of One Belt, One Road’, Institute of Global Ethnology and Anthropology, Minzu University of China",
-            "date":  "Dec 24, 2016",
-            "city":  "Beijing, China",
-            "type":  "Conference Talk",
-            "lang":  "Chinese"
+            "title": "Chinese Ethnic Issues in the Context of One Belt, One Road Initiative (Chinese)",
+            "venue": "Conference “Cultural Diversity and Construction of One Belt, One Road”, Institute of Global Ethnology and Anthropology, Minzu University of China",
+            "city": "Beijing, China",
+            "date": "Dec 24, 2016",
+            "desc": ""
         },
         {
-            "title": "Affirmative Action – The Historical Development and Social Influence of Preferential Policies for Ethnic Minorities in the United States",
+            "title": "Affirmative Action – The Historical Development and Social Influence of Preferential Policies for Ethnic Minorities in the United States (Chinese)",
             "venue": "Department of Policies and Regulations, State Ethnic Affairs Commission of China",
-            "date":  "Nov 6, 2016",
-            "city":  "Beijing, China",
-            "type":  "Invited Talk",
-            "lang":  "Chinese"
+            "city": "Beijing, China",
+            "date": "Nov 6, 2016",
+            "desc": ""
         },
         {
-            "title": "Cross‑Cultural Management",
-            "venue": "MBA seminar for Manchester Metropolitan University Business School, School of Economics and Management, USTB",
-            "date":  "Jun 9, 2016",
-            "city":  "Beijing, China",
-            "type":  "Guest Lecture",
-            "lang":  "English"
+            "title": "Cross‑Cultural Management (English)",
+            "venue": "MBA seminar, Manchester Metropolitan University Business School, School of Economics and Management, USTB",
+            "city": "Beijing, China",
+            "date": "Jun 9, 2016",
+            "desc": ""
         },
         {
-            "title": "Race and Ethnicity in America",
+            "title": "Race and Ethnicity in America (Chinese)",
             "venue": "American Culture and Society Seminar Series, American Studies Center, Peking University",
-            "date":  "Feb 29, 2013",
-            "city":  "Beijing, China",
-            "type":  "Guest Lecture",
-            "lang":  "Chinese"
+            "city": "Beijing, China",
+            "date": "Feb 29, 2013",
+            "desc": ""
         },
         {
-            "title": "Panel Discussant: ‘(De)Constructing Myths of Migration’",
+            "title": "Panel Discussant: “(De)Constructing Myths of Migration”",
             "venue": "Harvard East Asia Society Conference 2018, 21st Annual Conference: (De)Constructing Boundaries, Harvard University",
-            "date":  "Feb 9, 2018",
-            "city":  "Boston, MA",
-            "type":  "Panel Discussant",
-            "lang":  "English"
+            "city": "Boston, MA",
+            "date": "Feb 9, 2018",
+            "desc": ""
         },
     ]
 
-    # 页底横向照片带（注意大小写，严格按你给的文件名）
-    gallery = [
-        "Harvard_presentation1.jpg",
-        "Harvard_presentation2.jpg",
-        "Harvard_presentation3.jpg",
-        "presentation1.jpg",
-        "presentation5.jpg",
-        "presentation6.jpg",
-        "presentation7.jpg",
-        "Presentation8.jpg",
-        "Presentation10.jpg",
+    # ---- 两侧海报（放在 static/img/presentation/ 下）----
+    posters = [
+        "Harvard_presentation_adv1.jpg",
+        "Harvard_presentation_adv2.jpg",
     ]
 
-    # 模板里若用 ads 变量，这里也一起传，避免 “ads is undefined”
-    return render_template(
-        "presentations.html",
-        talks=talks,
-        posters=posters,
-        ads=posters,
-        gallery=gallery
-    )
+    # ---- 页底/备用相册（同目录）----
+    gallery = [
+        "Harvard_presentation1.jpg", "Harvard_presentation2.jpg", "Harvard_presentation3.jpg",
+        "presentation1.jpg", "presentation5.jpg", "presentation6.jpg", "presentation7.jpg",
+        "Presentation8.jpg", "Presentation10.jpg",
+    ]
 
-# 放在所有路由定义之后
-from flask import redirect, url_for
+    return render_template("presentations.html",
+                           talks=talks,
+                           posters=posters,
+                           gallery=gallery)
+# ===================================================================
 
-# ---------- Presentation & Media ----------
+#（可保留，不影响）
 presentation_data = [
     {
         "title": "Innovation, AI and HR Analytics",
@@ -572,9 +550,9 @@ presentation_data = [
         "link":  "",
         "cover": ""
     },
-    # ……其余条目……
 ]
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
