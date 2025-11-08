@@ -1,23 +1,295 @@
 {% extends "base.html" %}
-{% block content %}
-<h1 class="page-title">Academic Courses</h1>
-<p class="lead">
-  Explore the undergraduate, graduate, and executive-MBA syllabi I have designed
-  and delivered, spanning human-resource management, organisational behaviour,
-  research methods, and China-focused seminars.
-</p>
-<a href="{{ url_for('teaching_academic') }}" class="module-card">
-  <h2 class="mod-title"><i class="fa-solid fa-book-open"></i> Academic Courses</h2>
-  <p class="mod-desc">Undergraduate, MBA &amp; EMBA syllabi I designed and delivered.</p>
-  <p class="mod-sub">6 subjects · 2010 – 2017</p>
-</a>
+{% block title %}Academic Courses I Taught — Fanmei Wang{% endblock %}
 
-{% for subgroup, items in academic.items() %}
-  <h2 class="subhead">{{ subgroup }}</h2>
-  <ul class="course-list">
-    {% for c in items %}
-      <li>{{ c.course }} — {{ c.level }}</li>
-    {% endfor %}
-  </ul>
-{% endfor %}
+{% block extra_css %}
+<style>
+:root{
+  --teal: var(--brand-teal, #004F59);
+  --sand: var(--sand, #F4E4C5);
+  --sand-strong: #F3DE9E;
+  --beige: #E8E3D6;
+  --ink: #14343A;
+}
+.page-wrap{max-width:980px;margin:0 auto;padding:0 1rem 3rem}
+.page-title{letter-spacing:.2px}
+.lead{
+  color: var(--teal);
+  background: linear-gradient(180deg,#FFF6C7 0%, #FFFBE6 100%);
+  border-left: 5px solid var(--teal);
+  border-radius: 12px;
+  padding: .75rem .9rem;
+  margin: .6rem 0 1.2rem;
+  font-size: 1.12rem;
+  font-weight: 650;
+}
+
+
+/* 统计芯片（不使用缩写UG） */
+.kpis{display:flex;gap:.6rem;flex-wrap:wrap;margin:.6rem 0 1.2rem}
+.kpis .chip{
+  background:#fff;border:1px solid rgba(0,0,0,.06);
+  border-radius:999px;padding:.5rem 1rem;font-size:1rem;color:#516366;
+  box-shadow:0 1px 0 rgba(0,0,0,.06)
+}
+
+/* 手风琴外框（大黄块） */
+.accordion{display:grid;gap:1rem}
+.panel{
+  background:linear-gradient(180deg,#FFE59A 0%, #FFF2BF 100%);
+  border:1px solid rgba(0,0,0,.04);
+  border-radius:26px;
+  box-shadow:0 8px 24px rgba(0,0,0,.06);
+  overflow:hidden;
+}
+.catalog{
+  background: linear-gradient(180deg,#F7F4DF 0%, #EEF5E6 100%); /* 浅土黄绿底 */
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 28px;
+  padding: 1rem 1rem 1.2rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,.05);
+  margin-top: .5rem;
+}
+
+
+/* 头部按钮 */
+.panel-btn{
+  width:100%;
+  display:flex;align-items:center;justify-content:space-between;
+  /* 更高：上下内边距加大 */
+  padding:1.4rem 1.6rem;
+  background:transparent;border:none;cursor:pointer;
+  /* 标题更大 */
+  color:var(--teal);font-weight:800;font-size:1.38rem;letter-spacing:.2px
+}
+.panel-btn .sub{font-size:1.05rem;font-weight:600;color:#3a5357;opacity:.9}
+.panel-btn .caret{font-size:1.25rem;color:var(--teal);transition:transform .18s ease}
+
+/* 内容舞台（单条课程查看器） */
+.stage{display:none;padding:0 1rem 1.2rem}
+.stage.open{display:block}
+
+.viewer{
+  background:#FFF4D6; /* 浅沙黄而非白色 */
+  border:1px solid rgba(0,0,0,.06);
+  border-left:6px solid var(--teal);
+  border-radius:16px;
+  padding:1.15rem 1rem;
+  box-shadow:0 10px 28px rgba(0,0,0,.08);
+  cursor:pointer; /* 点击整卡片可播放下一条 */
+}
+.viewer:active{transform:translateY(1px)}
+.viewer h3{margin:0 0 .35rem;font-size:1.32rem;color:var(--ink)}
+.viewer .meta{margin:0;font-size:1.04rem;color:#56696D}
+
+/* 控制条与进度 */
+.controls{margin-top:.9rem;display:flex;align-items:center;justify-content:space-between;gap:.6rem}
+.nav{
+  appearance:none;border:none;cursor:pointer;
+  padding:.6rem 1rem;border-radius:12px;font-weight:800;font-size:1rem;
+  background:linear-gradient(180deg,#FFF6DE 0%, #FBE9BB 100%);
+  color:var(--teal);box-shadow:0 2px 0 rgba(0,0,0,.05), inset 0 0 0 1px rgba(0,0,0,.06)
+}
+.counter{font-size:1rem;color:#3e585c}
+.progress{height:8px;background:#f3e4bf;border-radius:999px;overflow:hidden;margin-top:.7rem}
+.progress > span{display:block;height:100%;background:var(--teal);width:0%}
+
+/* 细节与动效 */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none}}
+.viewer{animation:fadeInUp .18s ease}
+@media (prefers-reduced-motion: reduce){
+  .viewer{animation:none}
+}
+</style>
 {% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+  <h1 class="page-title">Academic Courses I Taught</h1>
+  <p class="lead">A concise catalogue of the undergraduate and graduate courses (including MBA/EMBA courses) <strong>I designed and taught</strong> .</p>
+
+  {% set ug_list  = academic['Undergraduate Courses'] %}
+  {% set mba_list = academic['Graduate / MBA Courses'] %}
+  {% set numword = {0:'ZERO',1:'ONE',2:'TWO',3:'THREE',4:'FOUR',5:'FIVE',6:'SIX',7:'SEVEN',8:'EIGHT',9:'NINE',10:'TEN',11:'ELEVEN',12:'TWELVE'} %}
+
+
+  
+  <div class="catalog">
+  <div class="accordion" id="accordion">
+
+    <!-- Undergraduate -->
+    <section class="panel" id="panel-undergrad">
+  <button class="panel-btn" data-target="ug" aria-expanded="false" aria-controls="stage-ug">
+    <span>Undergraduate Courses</span>
+    <span class="sub">{{ numword[ug_list|length] }} COURSES</span>
+    <span class="caret">▸</span>
+  </button>
+
+  <div class="stage" id="stage-ug" aria-live="polite">
+    <div class="viewer" title="Click to reveal the next course">
+      <h3 class="course-title"></h3>
+
+      <!-- 元信息：左=项目类型；右=学校 · 年份 -->
+      <div class="meta-row">
+        <span class="meta-left" data-role="prog"></span>
+        <span class="meta-right">
+          <span data-role="school"></span>
+          <span aria-hidden="true">·</span>
+          <span data-role="years"></span>
+        </span>
+      </div>
+
+      <div class="controls">
+        <button class="nav" data-dir="-1" aria-label="Previous course">‹ Prev</button>
+        <span class="counter" data-role="counter"></span>
+        <button class="nav" data-dir="1" aria-label="Next course">Next ›</button>
+      </div>
+      <div class="progress"><span data-role="bar"></span></div>
+    </div></div>
+  </div>
+</section>
+
+
+    <!-- Graduate / MBA / EMBA -->
+    <section class="panel" id="panel-graduate">
+      <button class="panel-btn" data-target="mba" aria-expanded="false" aria-controls="stage-mba">
+        <span>Graduate / MBA / EMBA Courses</span>
+        <span class="sub">{{ numword[mba_list|length] }} COURSES</span>
+        <span class="caret">▸</span>
+      </button>
+      <div class="stage" id="stage-mba" aria-live="polite">
+        <div class="viewer" title="Click to reveal the next course">
+          <h3 class="course-title"></h3>
+          <p class="meta"></p>
+          <div class="controls">
+            <button class="nav" data-dir="-1" aria-label="Previous course">‹ Prev</button>
+            <span class="counter" data-role="counter"></span>
+            <button class="nav" data-dir="1" aria-label="Next course">Next ›</button>
+          </div>
+          <div class="progress"><span data-role="bar"></span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+(function () {
+  // 1) 数据
+  const DATA = {
+    ug: {{ ug_list|tojson }},
+    mba: {{ mba_list|tojson }}
+  };
+  const state = { ug: 0, mba: 0 };
+
+  // 学校简称 → 全称
+  const SCHOOL_MAP = {
+    'USTB': 'University of Science and Technology Beijing, Economics and Management College'
+  };
+
+  // 2) 渲染一条课程
+  function render(section){
+    const list  = DATA[section] || [];
+    if (!list.length) return;
+
+    const i     = state[section] = Math.max(0, Math.min(state[section], list.length-1));
+    const item  = list[i];
+    const stage = document.getElementById('stage-' + section);
+    if (!stage) return;
+
+    const title = stage.querySelector('.course-title');
+    const ctr   = stage.querySelector('[data-role="counter"]');
+    const bar   = stage.querySelector('[data-role="bar"]');
+    if (title) title.textContent = item.course || '';
+
+    // 解析 level，如 "MBA / EMBA · USTB · 2011–2012" 或 "USTB · 2012–2017"
+    const parts = (item.level || '').split('·').map(s => s.trim());
+    let program='', school='', years='';
+    if (parts.length === 3)      { [program, school, years] = parts; }
+    else if (parts.length === 2) { [school, years] = parts; }
+    else if (parts.length === 1) { program = parts[0]; }
+
+    school = SCHOOL_MAP[school] || school;
+
+    // A) 新结构：.meta-row（左=项目；右=学校·年份）
+    const progEl   = stage.querySelector('[data-role="prog"]');
+    const schoolEl = stage.querySelector('[data-role="school"]');
+    const yearsEl  = stage.querySelector('[data-role="years"]');
+    const dotEl    = stage.querySelector('.meta-right [aria-hidden]');
+    if (progEl && schoolEl && yearsEl){
+      progEl.textContent   = program || '';
+      schoolEl.textContent = school  || '';
+      yearsEl.textContent  = years   || '';
+      if (dotEl) dotEl.style.display = (school && years) ? '' : 'none';
+    }
+
+    // B) 旧结构：<p class="meta">（你的 Graduate 面板仍在用）
+    const metaP = stage.querySelector('.meta');
+    if (metaP){
+      let txt = '';
+      if (program) txt += program;
+      if (school)  txt += (txt ? ' · ' : '') + school;
+      if (years)   txt += (txt ? ' · ' : '') + years;
+      metaP.textContent = txt;
+    }
+
+    if (ctr) ctr.textContent = (i+1) + ' of ' + list.length;
+    if (bar) bar.style.width = (((i+1)/list.length) * 100).toFixed(2) + '%';
+  }
+
+  // 3) 手风琴切换（只展开一个）
+  function toggle(section){
+    const other = section === 'ug' ? 'mba' : 'ug';
+
+    const curBtn   = document.querySelector('.panel-btn[data-target="'+section+'"]');
+    const curStage = document.getElementById('stage-'+section);
+    const curCaret = curBtn ? curBtn.querySelector('.caret') : null;
+
+    const otherBtn   = document.querySelector('.panel-btn[data-target="'+other+'"]');
+    const otherStage = document.getElementById('stage-'+other);
+    const otherCaret = otherBtn ? otherBtn.querySelector('.caret') : null;
+
+    if (curStage)  curStage.classList.add('open');
+    if (curBtn)    curBtn.setAttribute('aria-expanded','true');
+    if (curCaret)  curCaret.textContent = '▾';
+
+    if (otherStage) otherStage.classList.remove('open');
+    if (otherBtn)   otherBtn.setAttribute('aria-expanded','false');
+    if (otherCaret) otherCaret.textContent = '▸';
+
+    render(section);
+  }
+
+  // 4) 绑定交互
+  function bind(section){
+    const btn   = document.querySelector('.panel-btn[data-target="'+section+'"]');
+    const stage = document.getElementById('stage-'+section);
+    if (!stage) return;
+
+    const viewer = stage.querySelector('.viewer');
+    if (btn) btn.addEventListener('click', () => toggle(section));
+
+    stage.querySelectorAll('.nav').forEach(b=>{
+      b.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const dir = Number(b.dataset.dir);
+        const n = (DATA[section] || []).length;
+        if (!n) return;
+        state[section] = (state[section] + dir + n) % n;
+        render(section);
+      });
+    });
+
+    if (viewer) viewer.addEventListener('click', ()=>{
+      const n = (DATA[section] || []).length;
+      if (!n) return;
+      state[section] = (state[section] + 1) % n;
+      render(section);
+    });
+  }
+
+  // 5) 初始化
+  bind('ug'); bind('mba');  
+})();
+</script>
+{% endblock %}
+
