@@ -1,85 +1,169 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block title %}About — Fanmei Wang, PhD{% endblock %}
 
 {% block extra_css %}
-  <!-- 字体图标仅 About 需要 -->
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    .container      {max-width:1100px;margin:0 auto;padding:0 1rem;}
-    .profile-card   {display:grid;grid-template-columns:260px 1fr;gap:2rem;
-                     background:#fff;border-radius:12px;padding:2.5rem 3rem;
-                     box-shadow:0 6px 18px rgba(0,0,0,.06);}
-    .profile-card>.badge-wall{grid-column:1/-1;margin-top:1.5rem;}
-    @media(max-width:900px){
-      .profile-card{grid-template-columns:1fr}
-      .profile-photo img{margin:0 auto}
-    }
-    .profile-photo img{width:100%;border-radius:8px;object-fit:cover;
-                       box-shadow:0 4px 12px rgba(0,0,0,.12);margin-top:24px;}
-    .profile-name   {margin:0 0 1rem;font-size:2.6rem;color:var(--brand-teal,#004F59);}
-    .profile-social a{margin-right:1rem;font-size:1.3rem;color:var(--brand-teal,#004F59);
-                      transition:opacity .2s;}
-    .profile-social a:hover{opacity:.7}
-    .badge-wall     {list-style:none;padding:0;display:flex;flex-wrap:wrap;
-                     gap:1rem;align-items:center;}
-    .badge-wall img {height:38px;width:auto;object-fit:contain;}
-    .logo-wall      {list-style:none;margin:2rem 0 0;padding:0;
-                     display:flex;flex-wrap:wrap;gap:1.5rem 2rem;
-                     justify-content:center;}
-    .logo-wall img  {max-height:80px;flex:0 0 auto;}
-  </style>
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root{ --brand-teal:#004F59; }
+
+  .container      {max-width:1100px;margin:0 auto;padding:0 1rem;}
+  .profile-card   {display:grid;grid-template-columns:260px 1fr;gap:2rem;
+                   background:#fff;border-radius:12px;padding:2.5rem 3rem;
+                   box-shadow:0 6px 18px rgba(0,0,0,.06);}
+  .profile-card>.badge-wall{grid-column:1/-1;margin-top:1.5rem;}
+  @media(max-width:900px){
+    .profile-card{grid-template-columns:1fr}
+    .profile-photo img{margin:0 auto}
+  }
+
+  .profile-photo img{width:100%;border-radius:8px;object-fit:cover;
+                     box-shadow:0 4px 12px rgba(0,0,0,.12);margin-top:24px;}
+  .profile-name   {margin:0 0 1rem;font-size:2.4rem;color:var(--brand-teal);}
+  .profile-social a{margin-right:1rem;font-size:1.3rem;color:var(--brand-teal);
+                    transition:opacity .2s;}
+  .profile-social a:hover{opacity:.75}
+
+  .badge-wall     {list-style:none;padding:0;display:flex;flex-wrap:wrap;
+                   gap:1rem;align-items:center;}
+  .badge-wall img {height:38px;width:auto;object-fit:contain;}
+
+  .logo-wall      {list-style:none;margin:2rem 0 0;padding:0;
+                   display:flex;flex-wrap:wrap;gap:1.5rem 2rem;
+                   justify-content:center;}
+  .logo-wall img  {max-height:80px;flex:0 0 auto;}
+
+  /* ===== 两侧缓慢竖向滚动 LOGO 轨道（桌面显示，悬停暂停） ===== */
+  .rail-edge{
+    position:fixed; top:80px; bottom:80px; width:120px;
+    pointer-events:none; z-index:1; /* 不挡中间内容点击 */
+  }
+  .rail-edge.left{  left:0; }
+  .rail-edge.right{ right:0; }
+
+  .rail-track{ position:absolute; inset:0; overflow:hidden; }
+  .rail-run{
+    display:flex; flex-direction:column; gap:10px;
+    animation:railScroll 90s linear infinite;   /* 速度：90s 一轮（可调） */
+    filter:grayscale(.05) brightness(.98);
+  }
+  .rail-edge.right .rail-run{ animation-direction:reverse; }
+
+  .rail-logo{
+    width:100px; height:100px; object-fit:contain; background:#fff;
+    border-radius:10px; box-shadow:0 6px 16px rgba(0,0,0,.10);
+    padding:10px;
+  }
+
+  @media(hover:hover){
+    .rail-edge:hover .rail-run{ animation-play-state:paused; }
+  }
+
+  @keyframes railScroll{ to{ transform:translateY(-50%); } }
+
+  /* 小屏不显示两侧轨道，避免遮挡正文 */
+  @media(max-width:1100px){
+    .rail-edge{ display:none; }
+    .container{ padding-left:1rem; padding-right:1rem; }
+  }
+
+  /* 若只想显示两侧轨道，把下一行解除注释即可 */
+  /* .logo-wall{ display:none; } */
+</style>
 {% endblock %}
 
 {% block content %}
-  <main class="container">
+<main class="container">
 
-    <!-- ===== Profile Card ===== -->
-    <section class="profile-card">
-      <div class="profile-photo">
-        <img src="{{ url_for('static', filename='img/about/profile1.png') }}"
-             alt="Fanmei Wang">
+  <!-- ===== Profile Card ===== -->
+  <section class="profile-card">
+    <div class="profile-photo">
+      <img src="{{ url_for('static', filename='img/about/profile1.png') }}"
+           alt="Fanmei Wang">
+    </div>
+
+    <div class="profile-text">
+      <h1 class="profile-name">Fanmei&nbsp;Wang, PhD</h1>
+
+      <p>Engaging and creative data analyst, and a Certified Human Resources Professional, currently working for the Government of Canada. Prior to this role, I accumulated over 15&nbsp;years of experience teaching and conducting research in HRM at universities and world-renowned research institutions. In addition to my subject-matter expertise, I have taught both quantitative and qualitative methods at the graduate level. My research focuses on diversity and cultural sensitivity; ethnic and racial minority experiences in HRM fields; and related policies.</p>
+
+      <p>Now, I am dedicated to AI applications across various HR domains, leveraging my extensive expertise in HRM alongside machine learning, deep learning, NLP, and conversational AI to enhance data-driven insights, support policy development, and improve employee engagement through interactive feedback tools.</p>
+
+      <p><em>Flagship project:</em> I conceived, coded, and deployed the
+         <strong>Language Competency Evaluation &amp; Training Tool (v 2.3)</strong> — a Python / Flask application that assesses bilingual proficiency and recommends tailored micro-learning paths. Built and hosted on Render, the tool propelled our cross-agency team into the <strong>Top 4 finalists of the 2025 Public Service Data &amp; AI Challenge</strong>.</p>
+
+      <p>As the 2024-2025 Brand Ambassador for CRA, I am honored to represent and promote our brand both internally and externally.</p>
+
+      <p class="profile-handle">@reallygreatsite</p>
+
+      <div class="profile-social">
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#"><i class="fab fa-github"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
       </div>
+    </div>
 
-      <div class="profile-text">
-        <h1 class="profile-name">Fanmei&nbsp;Wang, PhD</h1>
-
-        <p>Engaging and creative data analyst, and a Certified Human Resources Professional, currently working for the Government of Canada. Prior to this role, I accumulated over 15&nbsp;years of experience teaching and conducting research in HRM at universities and world-renowned research institutions. In addition to my subject-matter expertise, I have taught both quantitative and qualitative methods at the graduate level. My research focuses on diversity and cultural sensitivity; ethnic and racial minority experiences in HRM fields; and related policies.</p>
-
-        <p>Now, I am dedicated to AI applications across various HR domains, leveraging my extensive expertise in HRM alongside machine learning, deep learning, NLP, and conversational AI to enhance data-driven insights, support policy development, and improve employee engagement through interactive feedback tools.</p>
-
-        <p><em>Flagship project:</em> I conceived, coded, and deployed the
-           <strong>Language Competency Evaluation & Training Tool (v 2.3)</strong> — a Python / Flask application that assesses bilingual proficiency and recommends tailored micro-learning paths. Built and hosted on Render, the tool propelled our cross-agency team into the <strong>Top 4 finalists of the 2025 Public Service Data & AI Challenge</strong>.</p>
-
-        <p>As the 2024-2025 Brand Ambassador for CRA, I am honored to represent and promote our brand both internally and externally.</p>
-
-        <p class="profile-handle">@reallygreatsite</p>
-
-        <div class="profile-social">
-          <a href="#"><i class="fab fa-linkedin-in"></i></a>
-          <a href="#"><i class="fab fa-github"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
-        </div>
-      </div>
-
-      <!-- ===== Badges ===== -->
-      <ul class="badge-wall">
-        {% for b in ['python','flask','deep_learning','machine_learning','generative_ai',
-                     'sas','spss','nvivo','sql','power_bi'] %}
-          <li><img src="{{ url_for('static', filename='img/badges/' ~ b ~ '.png') }}"
-                   alt="{{ b }}"></li>
-        {% endfor %}
-      </ul>
-    </section>
-
-    <!-- ===== Partner / University Logos ===== -->
-    <ul class="logo-wall">
-      {% for logo in ['pku','ustb','georgian','laurentian','fairbank','hrpa','psdata'] %}
-        <li><img src="{{ url_for('static', filename='img/logos/' ~ logo ~ '.png') }}"
-                 alt="{{ logo }}"></li>
+    <!-- ===== Badges ===== -->
+    <ul class="badge-wall">
+      {% for b in [
+        'python','flask','deep_learning','machine_learning','generative_ai',
+        'sas','spss','nvivo','sql','power_bi'
+      ] %}
+        <li>
+          <img src="{{ url_for('static', filename='img/badges/' ~ b ~ '.png') }}"
+               alt="{{ b }}">
+        </li>
       {% endfor %}
     </ul>
+  </section>
 
-  </main>
+  <!-- ===== Partner / University Logos（底部整排，保留） ===== -->
+  <ul class="logo-wall">
+    {% for logo in ['pku','ustb','georgian','laurentian','fairbank','hrpa','psdata'] %}
+      <li>
+        <img src="{{ url_for('static', filename='img/logos/' ~ logo ~ '.png') }}"
+             alt="{{ logo }}">
+      </li>
+    {% endfor %}
+  </ul>
+
+</main>
+
+{# ===== 两侧竖向滚动轨道：与底部同一批 LOGO，做两遍无缝循环 ===== #}
+{% set edge_logos = [
+  'img/logos/pku.png',
+  'img/logos/ustb.png',
+  'img/logos/georgian.png',
+  'img/logos/laurentian.png',
+  'img/logos/fairbank.png',
+  'img/logos/hrpa.png',
+  'img/logos/psdata.png'
+] %}
+
+<aside class="rail-edge left" aria-hidden="true">
+  <div class="rail-track">
+    <div class="rail-run">
+      {% for f in edge_logos %}
+        <img class="rail-logo" src="{{ url_for('static', filename=f) }}" alt="">
+      {% endfor %}
+      {% for f in edge_logos %}
+        <img class="rail-logo" src="{{ url_for('static', filename=f) }}" alt="">
+      {% endfor %}
+    </div>
+  </div>
+</aside>
+
+<aside class="rail-edge right" aria-hidden="true">
+  <div class="rail-track">
+    <div class="rail-run">
+      {% for f in edge_logos %}
+        <img class="rail-logo" src="{{ url_for('static', filename=f) }}" alt="">
+      {% endfor %}
+      {% for f in edge_logos %}
+        <img class="rail-logo" src="{{ url_for('static', filename=f) }}" alt="">
+      {% endfor %}
+    </div>
+  </div>
+</aside>
 {% endblock %}
