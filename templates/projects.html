@@ -71,6 +71,30 @@ body{background:var(--page);}
 @media(min-width:1101px){
   .projects-frame{padding-left:140px;padding-right:140px;}
 }
+  /* ① 非‑AI 卡片的头部颜色更浅（学术/咨询/公共服务） */
+.card--gold  .card-hero{  /* Academic Research */
+  background:linear-gradient(180deg,#FFF5D6 0%, #F2E3BD 100%);
+}
+.card--tan   .card-hero{  /* Corporate Consulting */
+  background:linear-gradient(180deg,#FAEDE2 0%, #E8D3C0 100%);
+}
+.card--sand  .card-hero{  /* Public‑Service Analytics */
+  background:linear-gradient(180deg,#F7ECD8 0%, #E7D8C0 100%);
+}
+/* （AI 卡保持原来的深色强调） */
+
+/* ② 卡片更矮：整体与头部高度下调，标题略收紧 */
+.projects-grid{ gap:1.5rem; }             /* 行列间距略收紧 */
+.proj-card{ min-height:240px; }           /* 原来约 300px → 240px */
+.card-hero{ min-height:128px; padding:18px 14px; }
+.card-hero h2{ font-size:1.7rem; }        /* 原来更大，稍微收一档 */
+.page-title{ margin:44px 0 18px; }        /* 页标题上下间距缩小 */
+
+/* 小屏再短一点，帮助首屏看到页脚 */
+@media (max-width:640px){
+  .proj-card{ min-height:220px; }
+  .card-hero{ min-height:112px; }
+}
 </style>
 {% endblock %}
 
@@ -151,3 +175,4 @@ body{background:var(--page);}
   </div>
 </div>
 {% endblock %}
+
