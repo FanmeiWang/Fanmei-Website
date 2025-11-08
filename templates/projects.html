@@ -3,156 +3,151 @@
 
 {% block extra_css %}
 <style>
-/* ───────── 色板与基底（与 Teaching / Publications 统一） ───────── */
 :root{
-  --brand:#004F59;
-  --ink:#14343A;
-  --page:#F2EEE6;
-
-  --shadow:    0 12px 32px rgba(0,0,0,.10);
-  --shadow-lg: 0 18px 42px rgba(0,0,0,.12);
-
-  /* 白卡顶部“纸感”高光 */
-  --paper-glow: linear-gradient(180deg, rgba(255,247,220,.55), rgba(255,247,220,0) 46%, transparent);
-
-  /* 卡片头部渐变（浅金 / 浅褐） */
-  --hero-gold-top:#FFE4AC;  --hero-gold-btm:#E8C066;   /* Academic */
-  --hero-tan-top :#EBD3B6;  --hero-tan-btm :#C9A178;   /* Consulting */
-  --hero-honey-top:#FFDDA4; --hero-honey-btm:#E3B25F;  /* Public Service */
-  --hero-sand-top:#F0D8B0;  --hero-sand-btm:#CFA170;   /* 备用 */
-
-  /* AI：现代褐金（更深一些） */
-  --ai-top:#2C2A27; --ai-mid:#7B5A29; --ai-gold:#D6A84F;
+  /* 暖金/褐 + 现代深色，用于卡片头部渐变 */
+  --gold-top:#FFE4AC;   --gold-btm:#E7BF6A;   /* 基础金色 */
+  --tan-top:#EBD3B6;    --tan-btm:#C9A178;    /* 暖褐 */
+  --honey-top:#FFDDA4;  --honey-btm:#E3B25F;  /* 蜂蜜金 */
+  --sand-top:#F0D8B0;   --sand-btm:#CFA170;   /* 砂金 */
+  --ai-top:#2B2620;     --ai-btm:#A77A2A;    /* AI（深色到金） */
+  --ink:#123B40;
+  --page:#CCC7BC33; /* 与 Teaching/Publication 接近的暖灰米色背景 */
 }
 
-/* 页面骨架 */
-body{ background:var(--page); }
-.page-title{ text-align:center; color:var(--brand); margin:56px 0 28px; }
+/* ===== 两侧滚动相册（固定在视口两边） ===== */
+.proj-rail{position:fixed;top:0;bottom:0;width:120px;overflow:hidden;pointer-events:none;z-index:-1;}
+.proj-rail.left{left:0;} .proj-rail.right{right:0;}
+@media(max-width:1100px){ .proj-rail{display:none;} }
 
-/* 进入动画 */
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none}}
-.reveal{opacity:0; animation:fadeUp .55s ease both; animation-delay:var(--d,0s)}
-@media (prefers-reduced-motion:reduce){ .reveal{animation:none;opacity:1} }
+.rail-inner{display:flex;flex-direction:column;gap:8px;animation:projScroll 60s linear infinite;}
+.proj-rail.right .rail-inner{animation-direction:reverse;}
+.rail-inner img{width:120px;height:120px;object-fit:cover;border-radius:8px;filter:grayscale(.08) contrast(1.02) brightness(.98);}
+@keyframes projScroll{to{transform:translateY(-50%);}}
 
-/* ───────── 侧边滚动照片墙（两边上下滚动） ───────── */
-.rail{ position:fixed; top:0; bottom:0; width:120px; pointer-events:none; z-index:-1; }
-.rail.left{ left:0; } .rail.right{ right:0; }
-.rail-inner{ display:flex; flex-direction:column; gap:8px; animation:railScroll 60s linear infinite; }
-.rail.right .rail-inner{ animation-direction:reverse; }
-.rail img{ width:120px; height:120px; object-fit:cover; border-radius:6px; filter:brightness(.95) saturate(.9); }
-@keyframes railScroll{ to{ transform:translateY(-50%);} }
-@media (max-width:1000px){ .rail{ display:none; } }
+/* ===== 页面框架 ===== */
+body{background:var(--page);}
+.projects-frame{max-width:1220px;margin:0 auto 70px;padding:0 1rem;}
+.page-title{margin:56px 0 28px;text-align:center;color:#004F59;letter-spacing:.2px}
 
-/* 给正文留出与侧轨同宽的左右内边距 */
-.rail-pad{ padding:0 110px; }
-@media (max-width:1000px){ .rail-pad{ padding:0 1rem; } }
-
-/* ───────── 卡片栅格（白卡 + 彩色头） ───────── */
-.proj-grid{
-  max-width:1160px; margin:0 auto 80px;
-  display:grid; gap:1.6rem;
-  grid-template-columns:repeat(4,minmax(0,1fr));
+/* ===== 两列竖排（每列两张卡） ===== */
+.split{
+  display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;
 }
-@media (max-width:1100px){ .proj-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
-@media (max-width:640px){  .proj-grid{ grid-template-columns:1fr; } }
+.tower{display:grid;gap:1.6rem;}
+@media(max-width:992px){ .split{grid-template-columns:1fr;} }
 
+/* ===== 项目卡 ===== */
 .proj-card{
-  display:block; text-decoration:none; color:#1f2e33;
-  border-radius:22px; overflow:hidden; background:#fff;
-  box-shadow:var(--shadow); transition:transform .25s, box-shadow .25s;
-  min-height:380px; position:relative;
+  display:block;text-decoration:none;color:var(--ink);
+  background:#fff;border-radius:22px;overflow:hidden;
+  box-shadow:0 12px 32px rgba(0,0,0,.10);
+  transition:transform .25s, box-shadow .25s;
+  min-height:320px;
 }
-.proj-card:hover{ transform:translateY(-8px); box-shadow:var(--shadow-lg); }
+.proj-card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,.14);}
 
-/* 顶部彩色头：居中标题，占比>一半 */
-.proj-card .hero{
-  height: 200px;
-  display:flex; align-items:center; justify-content:center; text-align:center;
+/* 彩色头（≥ 一半高度），标题置中 */
+.card-hero{
+  min-height:180px;display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:28px 20px;border-radius:22px 22px 12px 12px;
   background:linear-gradient(180deg,var(--hero-top),var(--hero-btm));
-  border-radius:22px 22px 12px 12px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.35);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.38);
 }
-.proj-card .hero-title{
-  margin:0; font-weight:900; letter-spacing:.3px;
-  font-size:1.6rem; line-height:1.12; color:#1f2e33;
-  text-shadow:0 1px 0 rgba(255,255,255,.35);
+.card-hero h2{
+  margin:0;font:900 2rem/1.15 ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial;
+  letter-spacing:.3px;color:#1e2b2e;text-shadow:0 1px 0 rgba(255,255,255,.35);
 }
 
-/* 下半区简要说明（可选） */
-.proj-card .body{ padding:18px 20px 22px; color:#2D4B4F; line-height:1.55; }
+/* AI Projects：更现代、对比更强，标题白色 */
+.card-hero.is-ai{background:linear-gradient(180deg,var(--ai-top),var(--ai-btm));}
+.card-hero.is-ai h2{color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.25);}
 
-/* 白卡顶部纸感 */
-.proj-card::before{
-  content:""; position:absolute; inset:0; border-radius:22px; pointer-events:none;
-  background:var(--paper-glow); mix-blend-mode:multiply; opacity:.6;
-}
+/* 简介行 */
+.card-body{padding:16px 20px 20px;}
+.card-desc{margin:0;color:#2F4A4F;font-size:1.04rem;line-height:1.55;}
+.card-desc .jump{font-weight:800;color:#0f5d66;text-decoration:underline;text-underline-offset:2px}
 
-/* 配色：为每张卡定义头部渐变 */
-.card--academic{ --hero-top:var(--hero-gold-top);  --hero-btm:var(--hero-gold-btm); }
-.card--consult { --hero-top:var(--hero-tan-top);   --hero-btm:var(--hero-tan-btm); }
-.card--public  { --hero-top:var(--hero-honey-top); --hero-btm:var(--hero-honey-btm); }
-
-/* AI Projects：更现代的褐金，并加“光带”动画与白字 */
-.card--ai   .hero{ 
-  background:linear-gradient(135deg,var(--ai-top) 0%, var(--ai-mid) 55%, var(--ai-gold) 100%);
-  position:relative; overflow:hidden;
+/* 给主体左右留出“边距”，避免压到滚动相册 */
+@media(min-width:1101px){
+  .projects-frame{padding-left:140px;padding-right:140px;}
 }
-.card--ai   .hero-title{ color:#fff; text-shadow:0 1px 0 rgba(0,0,0,.35); }
-.card--ai   .hero::after{
-  content:""; position:absolute; inset:-20%;
-  background:linear-gradient(120deg, transparent 45%, rgba(255,255,255,.35) 55%, transparent 65%);
-  transform:translateX(-120%); animation:sheen 6s ease-in-out infinite;
-}
-@keyframes sheen { 0%{transform:translateX(-120%)} 55%{transform:translateX(120%)} 100%{transform:translateX(120%)} }
 </style>
 {% endblock %}
 
 {% block content %}
+{# 左右滚动相册：直接在模板内列出你给的文件名 #}
+{% set WALL = [
+  'harvard1.jpg','jinshan.jpeg','jinshan2.jpg','jinshan3.jpg','jinshan3.png',
+  'jinshan4.png','jinshan5.png','neimeng1.jpg','neimeng2.jpg','p7.jpg','xizang.jpg'
+] %}
 
-/* ------- 侧轨用到的图片清单：把文件名换成你在 static/img/projects_wall/ 下的实际文件 ------- */
-{% set wall_files = ['p1.jpg','p2.jpg','p3.jpg','p4.jpg','p5.jpg','p6.jpg','p7.jpg','p8.jpg'] %}
-
-<!-- 左/右两侧滚动照片墙 -->
-<div class="rail left">
+<!-- Side scrolling rails -->
+<div class="proj-rail left">
   <div class="rail-inner">
-    {% for f in wall_files %}<img src="{{ url_for('static', filename='img/projects_wall/' ~ f) }}" alt="">{% endfor %}
-    {% for f in wall_files %}<img src="{{ url_for('static', filename='img/projects_wall/' ~ f) }}" alt="">{% endfor %}
+    {% for f in WALL %}<img src="{{ url_for('static', filename='img/projects_wall/' ~ f) }}" alt="project photo">{% endfor %}
+    {% for f in WALL %}<img src="{{ url_for('static', filename='img/projects_wall/' ~ f) }}" alt="project photo">{% endfor %}
   </div>
 </div>
-<div class="rail right">
+<div class="proj-rail right">
   <div class="rail-inner">
-    {% for f in wall_files %}<img src="{{ url_for('static', filename='img/projects_wall/' ~ f) }}" alt="">{% endfor %}
-    {% for f in wall_files %}<img src="{{ url_for('static', filename='img/projects_wall/' ~ f) }}" alt="">{% endfor %}
+    {% for f in WALL %}<img src="{{ url_for('static', filename='img/projects_wall/' ~ f) }}" alt="project photo">{% endfor %}
+    {% for f in WALL %}<img src="{{ url_for('static', filename='img/projects_wall/' ~ f) }}" alt="project photo">{% endfor %}
   </div>
 </div>
 
-<div class="rail-pad">
+<div class="projects-frame">
   <h1 class="page-title">Projects</h1>
 
-  <section class="proj-grid">
-    <!-- Academic Research -->
-    <a class="proj-card card--academic reveal" href="{{ url_for('projects_academic') }}">
-      <div class="hero"><h2 class="hero-title">Academic Research</h2></div>
-      <div class="body"></div>
-    </a>
+  <div class="split">
+    <!-- 左列：AI + Public‑Service -->
+    <div class="tower">
+      <a class="proj-card" href="{{ url_for('projects_ai') }}">
+        <div class="card-hero is-ai">
+          <h2>AI Projects</h2>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            Applied analytics & AI demos (dashboards, NLP, modeling). <span class="jump">Explore →</span>
+          </p>
+        </div>
+      </a>
 
-    <!-- Corporate Consulting -->
-    <a class="proj-card card--consult reveal" href="{{ url_for('projects_consulting') }}">
-      <div class="hero"><h2 class="hero-title">Corporate Consulting</h2></div>
-      <div class="body"></div>
-    </a>
+      <a class="proj-card" href="{{ url_for('projects_public_service') }}">
+        <div class="card-hero" style="--hero-top:var(--honey-top);--hero-btm:var(--honey-btm);">
+          <h2>Public‑Service Analytics</h2>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            Survey analytics and internal consulting highlights. <span class="jump">See projects →</span>
+          </p>
+        </div>
+      </a>
+    </div>
 
-    <!-- AI Projects（去掉 HR；现代褐金，突出） -->
-    <a class="proj-card card--ai reveal" href="{{ url_for('projects_ai') }}">
-      <div class="hero"><h2 class="hero-title">AI Projects</h2></div>
-      <div class="body"></div>
-    </a>
+    <!-- 右列：Academic + Corporate -->
+    <div class="tower">
+      <a class="proj-card" href="{{ url_for('projects_academic') }}">
+        <div class="card-hero" style="--hero-top:var(--gold-top);--hero-btm:var(--gold-btm);">
+          <h2>Academic Research</h2>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            Grants, fieldwork and publications stemming from research. <span class="jump">View details →</span>
+          </p>
+        </div>
+      </a>
 
-    <!-- Public‑Service Analytics -->
-    <a class="proj-card card--public reveal" href="{{ url_for('projects_public_service') }}">
-      <div class="hero"><h2 class="hero-title">Public‑Service Analytics</h2></div>
-      <div class="body"></div>
-    </a>
-  </section>
+      <a class="proj-card" href="{{ url_for('projects_consulting') }}">
+        <div class="card-hero" style="--hero-top:var(--tan-top);--hero-btm:var(--tan-btm);">
+          <h2>Corporate Consulting</h2>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">
+            Enterprise engagements on HR, culture and performance. <span class="jump">Case list →</span>
+          </p>
+        </div>
+      </a>
+    </div>
+  </div>
 </div>
 {% endblock %}
