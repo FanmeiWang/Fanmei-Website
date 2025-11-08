@@ -1,30 +1,162 @@
 {% extends "base.html" %}
-{% block title %}Public-Service Analytics Projects{% endblock %}
+{% block title %}Public‑Service Analytics Projects{% endblock %}
+
+{% block extra_css %}
+<style>
+  :root{
+    --brand:#004F59;
+    --ink:#12363C;
+    --card:#fff;
+    --muted:#647079;
+    --ring:0 0 0 3px rgba(0,79,89,.25);
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:40px 16px 80px}
+  .page-title{margin:8px 0 22px;color:var(--brand)}
+
+  /* 两张分类卡片并排 */
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media (max-width:880px){ .twocol{grid-template-columns:1fr} }
+
+  .cat-card{
+    background:var(--card); border-radius:14px; padding:22px 20px;
+    box-shadow:0 12px 28px rgba(0,0,0,.08);
+  }
+  .cat-card h2{margin:0 0 6px;font-size:1.25rem;color:var(--ink)}
+  .cat-card .sub{margin:0 0 8px;color:var(--muted)}
+  .cat-cta{
+    display:inline-flex;align-items:center;gap:.5rem;
+    border:1px solid #e1e7ec;border-radius:10px;background:#f8fbfc;
+    padding:.6rem .9rem;cursor:pointer;
+  }
+  .cat-cta:focus-visible{outline:none;box-shadow:var(--ring)}
+
+  /* 抽屉 + 遮罩 */
+  .overlay{position:fixed;inset:0;background:rgba(17,24,39,.45);
+           opacity:0;pointer-events:none;transition:opacity .2s;z-index:50}
+  .overlay[data-open="true"]{opacity:1;pointer-events:auto}
+
+  .drawer{position:fixed;top:0;bottom:0;width:min(520px,100%);
+          background:#fff;z-index:60;overflow:auto;
+          box-shadow:24px 0 48px rgba(0,0,0,.18);
+          transform:translateX(100%);transition:transform .35s ease}
+  .drawer.left{left:0;box-shadow:-24px 0 48px rgba(0,0,0,.18);
+               transform:translateX(-100%)}
+  .drawer.right{right:0}
+  .drawer[aria-hidden="false"]{transform:translateX(0)}
+
+  .drawer header{
+    position:sticky;top:0;background:#fff;border-bottom:1px solid #eef2f6;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 16px;z-index:1
+  }
+  .drawer h2{margin:0;font-size:1.1rem;color:var(--ink)}
+  .close{border:0;background:transparent;font-size:1.25rem;cursor:pointer}
+
+  /* 列表 */
+  .proj-ul{list-style:none;margin:0;padding:0}
+  .proj-li{padding:14px 16px;border-bottom:1px solid #eef2f6}
+  .proj-li h3{margin:.2rem 0 .35rem;font-size:1.05rem;color:var(--ink)}
+  .proj-li .meta{color:var(--muted);font-size:.94rem}
+</style>
+{% endblock %}
 
 {% block content %}
-<h1 class="page-title">Public-Service&nbsp;Analytics</h1>
+<main class="wrap">
+  <h1 class="page-title">Public‑Service Analytics</h1>
 
-<h2 class="section-title">Survey & Operational-Data Projects</h2>
-<ul class="proj-list">
-  {% for p in surveys %}
-    <li class="proj-item">
-      <div class="proj-body">
-        <h3>{{ p.title }}</h3>
-        <p class="meta">{{ p.role }} · {{ p.period }}</p>
-      </div>
-    </li>
-  {% endfor %}
-</ul>
+  <div class="twocol" role="region" aria-label="Project categories">
+    <!-- 左：内部数据项目 -->
+    <section class="cat-card">
+      <h2>Survey &amp; Operational‑Data Projects</h2>
+      <p class="sub">内部数据项目 · 共 {{ surveys|length }} 项</p>
+      <button class="cat-cta" aria-controls="drawer-survey" aria-expanded="false"
+              data-target="#drawer-survey">查看全部</button>
+    </section>
 
-<h2 class="section-title">Consulting & Methodology Engagements</h2>
-<ul class="proj-list">
-  {% for p in consults %}
-    <li class="proj-item">
-      <div class="proj-body">
-        <h3>{{ p.title }}</h3>
-        <p class="meta">{{ p.role }} · {{ p.period }}</p>
-      </div>
-    </li>
-  {% endfor %}
-</ul>
+    <!-- 右：内部咨询项目 -->
+    <section class="cat-card">
+      <h2>Consulting &amp; Methodology Engagements</h2>
+      <p class="sub">内部咨询项目 · 共 {{ consults|length }} 项</p>
+      <button class="cat-cta" aria-controls="drawer-consult" aria-expanded="false"
+              data-target="#drawer-consult">查看全部</button>
+    </section>
+  </div>
+
+  <!-- 遮罩 -->
+  <div class="overlay" id="drawer-overlay" aria-hidden="true"></div>
+
+  <!-- 左侧抽屉：内部数据项目 -->
+  <aside id="drawer-survey" class="drawer left" role="dialog"
+         aria-labelledby="drawer-survey-title" aria-hidden="true">
+    <header>
+      <h2 id="drawer-survey-title">Survey &amp; Operational‑Data Projects</h2>
+      <button class="close" data-close="#drawer-survey" aria-label="关闭">✕</button>
+    </header>
+    <ol class="proj-ul">
+      {% for p in surveys %}
+        <li class="proj-li">
+          <h3>{{ p.title }}</h3>
+          <div class="meta">{{ p.role }} · {{ p.period }}</div>
+        </li>
+      {% endfor %}
+    </ol>
+  </aside>
+
+  <!-- 右侧抽屉：内部咨询项目 -->
+  <aside id="drawer-consult" class="drawer right" role="dialog"
+         aria-labelledby="drawer-consult-title" aria-hidden="true">
+    <header>
+      <h2 id="drawer-consult-title">Consulting &amp; Methodology Engagements</h2>
+      <button class="close" data-close="#drawer-consult" aria-label="关闭">✕</button>
+    </header>
+    <ol class="proj-ul">
+      {% for p in consults %}
+        <li class="proj-li">
+          <h3>{{ p.title }}</h3>
+          <div class="meta">{{ p.role }} · {{ p.period }}</div>
+        </li>
+      {% endfor %}
+    </ol>
+  </aside>
+</main>
+
+<script>
+(function(){
+  const overlay = document.getElementById('drawer-overlay');
+
+  function toggle(drawer, open){
+    drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
+    overlay.dataset.open = open ? 'true' : 'false';
+    overlay.setAttribute('aria-hidden', open ? 'false' : 'true');
+    const btn = document.querySelector('[aria-controls="'+drawer.id+'"]');
+    if(btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if(open){ const closeBtn = drawer.querySelector('.close'); closeBtn && closeBtn.focus(); }
+  }
+
+  document.querySelectorAll('.cat-cta').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const drawer = document.querySelector(btn.dataset.target);
+      if(drawer) toggle(drawer, true);
+    });
+  });
+
+  document.querySelectorAll('.close').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const sel = btn.dataset.close || ('#'+btn.closest('.drawer').id);
+      const drawer = document.querySelector(sel);
+      if(drawer) toggle(drawer, false);
+    });
+  });
+
+  overlay.addEventListener('click', ()=>{
+    document.querySelectorAll('.drawer[aria-hidden="false"]').forEach(d=>toggle(d,false));
+  });
+
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape'){
+      document.querySelectorAll('.drawer[aria-hidden="false"]').forEach(d=>toggle(d,false));
+    }
+  });
+})();
+</script>
 {% endblock %}
