@@ -1,171 +1,30 @@
 {% extends "base.html" %}
-{% block title %}Teaching & Training – Fanmei Wang{% endblock %}
-
-{% block extra_css %}
-<style>
-/* ────────────────── 设计变量（浅金/浅褐） ────────────────── */
-:root{
-  --brand:#004F59;      /* 标题主色 */
-  --ink:#14343A;        /* 正文深色 */
-  --page:#F2EEE6;       /* 暖米色页面底 */
-
-  --shadow-lg:0 18px 42px rgba(0,0,0,.12);
-  --shadow:   0 12px 32px rgba(0,0,0,.10);
-
-  /* 白卡顶部“纸感”高光 */
-  --paper-glow: linear-gradient(180deg, rgba(255,247,220,.55), rgba(255,247,220,0) 46%, transparent 100%);
-
-  /* 四张卡头部渐变（浅金/浅褐） */
-  --hero-gold-top:#FFE4AC;  --hero-gold-btm:#E8C066;   /* Academic */
-  --hero-tan-top :#EBD3B6;  --hero-tan-btm :#C9A178;   /* Corporate */
-  --hero-honey-top:#FFDDA4; --hero-honey-btm:#E3B25F;  /* Awards */
-  --hero-sand-top:#F0D8B0;  --hero-sand-btm:#CFA170;   /* Thesis */
-}
-
-/* ────────────────── 页面骨架 ────────────────── */
-body{ background:var(--page); }
-.page-wrap{ max-width:1220px; margin:0 auto; padding:0 1rem 72px; }
-.page-title{ text-align:center; color:var(--brand); margin:56px 0 28px; }
-
-/* 进入动画 */
-@keyframes fadeUp{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
-.reveal{ opacity:0; animation:fadeUp .55s ease both; animation-delay:var(--d,0s) }
-@media (prefers-reduced-motion: reduce){ .reveal{ animation:none; opacity:1 } }
-
-/* ────────────────── 顶部四张卡（上半区彩色 ≥ 1/2） ────────────────── */
-.cards{
-  display:grid; grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:2.2rem;                                   /* 卡与卡间距更大 */
-}
-@media (max-width:1100px){ .cards{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
-@media (max-width:640px){  .cards{ grid-template-columns:1fr; } }
-
-.color-card{
-  position:relative; display:flex; flex-direction:column;
-  min-height:440px;                               /* 更瘦长 */
-  border-radius:22px; overflow:hidden;
-  background:#fff; box-shadow:var(--shadow);
-}
-/* 白卡顶部极淡“纸感”高光 */
-.color-card::before{
-  content:""; position:absolute; inset:0; border-radius:22px; pointer-events:none;
-  background:var(--paper-glow); mix-blend-mode:multiply; opacity:.6;
-}
-
-/* 顶部彩色头（至少一半） */
-.card-hero{
-  flex:1 0 62%;                                   /* ≥ 1/2；更高可调到 66% */
-  display:flex; align-items:center; justify-content:center; text-align:center;
-  padding:22px 18px; border-radius:22px 22px 12px 12px;
-  background:linear-gradient(180deg,var(--hero-top),var(--hero-btm));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.35);
-}
-.hero-title{
-  margin:0; font-weight:900; letter-spacing:.3px;
-  font-size:2.2rem; line-height:1.12; color:#1f2e33;
-  text-shadow:0 1px 0 rgba(255,255,255,.35);
-}
-
-/* 下半区简介 */
-.card-desc{
-  flex:1 0 38%; padding:18px 22px 22px;
-  color:#2D4B4F; line-height:1.6; margin:0;
-}
-
-/* 不同卡片的头部颜色（浅金/浅褐四档） */
-.card--gold  { --hero-top:var(--hero-gold-top);  --hero-btm:var(--hero-gold-btm); }
-.card--tan   { --hero-top:var(--hero-tan-top);   --hero-btm:var(--hero-tan-btm); }
-.card--honey { --hero-top:var(--hero-honey-top); --hero-btm:var(--hero-honey-btm); }
-.card--sand  { --hero-top:var(--hero-sand-top);  --hero-btm:var(--hero-sand-btm); }
-
-/* 入场延迟 */
-.cards > .reveal:nth-child(1){ --d:.00s }
-.cards > .reveal:nth-child(2){ --d:.08s }
-.cards > .reveal:nth-child(3){ --d:.16s }
-.cards > .reveal:nth-child(4){ --d:.24s }
-
-/* ───────── Teaching Philosophy（白底·紧凑·2×2） ───────── */
-.philo{
-  max-width:1220px; margin:32px auto 0;
-  padding:0; background:transparent; border:0; box-shadow:none;
-}
-/* 标题稍微大一点 */
-.philo h2{
-  margin:0 0 14px; text-align:center; color:#1f2e33;
-  font-size:1.6rem; font-weight:900; letter-spacing:.2px;
-}
-/* 两列布局：横向有间距，纵向更紧凑 */
-.philo-grid{
-  display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
-  column-gap:2rem; row-gap:.9rem;
-}
-@media (max-width:640px){ .philo-grid{ grid-template-columns:1fr; } }
-/* 白底紧凑块：更矮、更干净，文字略放大 */
-.point{
-  display:flex; align-items:center; justify-content:center; text-align:center;
-  min-height:68px; padding:.75rem 1rem;
-  border-radius:12px; background:#fff; color:#1f2e33;
-  font-size:1.06rem; font-weight:800; text-decoration:none;
-  border:1px solid #ECE3D6; box-shadow:0 8px 18px rgba(0,0,0,.08);
-  opacity:0; transform:translateY(8px); animation:fadeUp .45s ease forwards;
-}
-/* 依次淡入 */
-.philo-grid .point:nth-child(1){ animation-delay:.08s }
-.philo-grid .point:nth-child(2){ animation-delay:.14s }
-.philo-grid .point:nth-child(3){ animation-delay:.20s }
-.philo-grid .point:nth-child(4){ animation-delay:.26s }
-</style>
-{% endblock %}
+{% block title %}Public-Service Analytics Projects{% endblock %}
 
 {% block content %}
-{% set DOSSIER = url_for('static', filename='docs/teaching_dossier.pdf') %}
-{% set PAGES = [6,10,14,18] %}
+<h1 class="page-title">Public-Service&nbsp;Analytics</h1>
 
-<div class="page-wrap">
-  <h1 class="page-title">Teaching &amp; Training</h1>
+<h2 class="section-title">Survey & Operational-Data Projects</h2>
+<ul class="proj-list">
+  {% for p in surveys %}
+    <li class="proj-item">
+      <div class="proj-body">
+        <h3>{{ p.title }}</h3>
+        <p class="meta">{{ p.role }} · {{ p.period }}</p>
+      </div>
+    </li>
+  {% endfor %}
+</ul>
 
-  <!-- 顶部四张卡：上半区彩色，标题居中；下半区简介 -->
-  <div class="cards">
-    <section class="color-card card--gold reveal">
-      <div class="card-hero"><h3 class="hero-title">Academic Courses</h3></div>
-      <p class="card-desc">Undergraduate, MBA &amp; EMBA syllabi I designed and taught.</p>
-    </section>
-
-    <section class="color-card card--tan reveal">
-      <div class="card-hero"><h3 class="hero-title">Corporate Training</h3></div>
-      <p class="card-desc">Inhouse workshops on HR analytics, culture and performance.</p>
-    </section>
-
-    <section class="color-card card--honey reveal">
-      <div class="card-hero"><h3 class="hero-title">Teaching Awards</h3></div>
-      <p class="card-desc">Institutional accolades recognising instructional excellence.</p>
-    </section>
-
-    <section class="color-card card--sand reveal">
-      <div class="card-hero"><h3 class="hero-title">Thesis Supervision</h3></div>
-      <p class="card-desc">Supervision provided to 50-plus bachelor’s &amp; master’s dissertations.</p>
-    </section>
-  </div>
-
-  <!-- Teaching Philosophy：白底 2×2 紧凑块 -->
-  <section class="philo reveal" style="--d:.36s">
-    <h2>Teaching Philosophy</h2>
-    <div class="philo-grid">
-      <a class="point" href="{{ DOSSIER }}#page={{ PAGES[0] }}" target="_blank" rel="noopener">
-        Linking Theory &amp; Real‑World Application
-      </a>
-      <a class="point" href="{{ DOSSIER }}#page={{ PAGES[1] }}" target="_blank" rel="noopener">
-        Proactive &amp; Interactive Learning
-      </a>
-      <a class="point" href="{{ DOSSIER }}#page={{ PAGES[2] }}" target="_blank" rel="noopener">
-        Valuing Students’ Voices
-      </a>
-      <a class="point" href="{{ DOSSIER }}#page={{ PAGES[3] }}" target="_blank" rel="noopener">
-        Teaching as Continual Growth
-      </a>
-    </div>
-  </section>
-</div>
+<h2 class="section-title">Consulting & Methodology Engagements</h2>
+<ul class="proj-list">
+  {% for p in consults %}
+    <li class="proj-item">
+      <div class="proj-body">
+        <h3>{{ p.title }}</h3>
+        <p class="meta">{{ p.role }} · {{ p.period }}</p>
+      </div>
+    </li>
+  {% endfor %}
+</ul>
 {% endblock %}
-
-{% block content_scripts %}{% endblock %}
