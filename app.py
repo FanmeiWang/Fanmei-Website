@@ -496,7 +496,7 @@ def presentations():
     ]
 
     # 顶部两张海报（放在 static/img/presentation/）
-    posters = ["Harvard_presentation_adv1.jpg", "Harvard_presentation_adv2.jpg"]
+    posters = ["Harvard_presentation_adv1.jpg", "Harvard_presentation_adv2.png"]
 
     # 左右各 3 张配图（按你的要求）
     left_photos  = ["presentation1.jpg", "presentation6.jpg", "presentation7.jpg"]
@@ -515,6 +515,7 @@ def presentations():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
