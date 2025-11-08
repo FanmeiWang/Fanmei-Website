@@ -3,61 +3,91 @@
 
 {% block extra_css %}
 <style>
-:root{ --ink:#14343A; --brand:#004F59; --muted:#617176; --tile:#fff; }
-.page-wrap{max-width:1000px;margin:0 auto;padding:0 1rem 48px}
-.page-title{ color:var(--brand); text-align:center; margin:56px 0 20px; }
-.lead{ color:var(--brand); background:linear-gradient(180deg,#FFF6C7 0%,#FFFBE6 100%);
-       border-left:5px solid var(--brand); border-radius:12px; padding:.75rem .9rem; }
-.section{ margin-top:22px; }
-.h3{ font-size:1.35rem; font-weight:900; color:var(--ink); margin:0 0 .6rem; }
+/* 页面栅格：左侧海报列（固定宽）| 中间列表（自适应）| 右侧海报列（固定宽） */
+.pres-layout{
+  display:grid;
+  grid-template-columns: 320px minmax(0,1fr) 320px;
+  gap: 18px;
+  align-items: start;
+}
 
-/* talk list */
-.talks{ list-style:none; padding:0; margin:0; display:grid; gap:.75rem; }
-.talk{ background:var(--tile); border-radius:12px; padding:.85rem 1rem;
-       box-shadow:0 10px 22px rgba(0,0,0,.08); }
-.talk .t{ font-weight:800; color:var(--ink); margin:0 0 .25rem; }
-.talk .m{ color:var(--muted); font-size:.96rem; }
+/* 边栏海报与其下的小图库 */
+.poster-col .poster{
+  width:100%; border-radius:12px; display:block;
+  box-shadow:0 12px 28px rgba(0,0,0,.12);
+  background:#fff;
+}
+.thumb-strip{
+  margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;
+}
+.thumb-strip img{
+  width:calc((320px - 20px) / 2); /* 两列小图 */
+  height:110px; object-fit:cover; border-radius:8px;
+  box-shadow:0 6px 16px rgba(0,0,0,.10);
+}
 
-/* gallery */
-.grid{ display:grid; gap:14px; grid-template-columns:repeat(3,minmax(0,1fr)); }
-@media(max-width:900px){ .grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
-@media(max-width:560px){ .grid{ grid-template-columns:1fr; } }
-.card{ background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 10px 22px rgba(0,0,0,.08); }
-.card img{ width:100%; aspect-ratio:4/3; object-fit:cover; display:block; }
-.cap{ padding:.7rem 1rem; color:var(--ink); }
+/* 中间的完整列表更宽一些，避免“瘦长” */
+.talks{
+  background:#fff; border-radius:14px;
+  box-shadow:0 12px 28px rgba(0,0,0,.10);
+  padding:14px 18px;
+}
+.talk{ padding:12px 10px; border-bottom:1px solid rgba(0,0,0,.06); }
+.talk:last-child{ border-bottom:0 }
+.talk h3{ margin:0 0 6px; font-size:1.12rem; line-height:1.35; color:#12363C; }
+.talk .meta{ color:#5C6A6E; font-size:.98rem; }
 </style>
 {% endblock %}
 
 {% block content %}
-{% set talks = talks or [] %}
-{% set images = images or [] %}
+{% set posters = posters|default(ads|default([])) %}    {# 兼容 ads 或 posters #}
+{% set gallery = gallery|default(images|default([])) %} {# 兼容 images 或 gallery #}
+{% set BASE = 'img/presentation/' %}
 
 <div class="page-wrap">
   <h1 class="page-title">Presentations</h1>
-  <p class="lead">Selected invited talks and lectures.</p>
 
-  <section class="section">
-    <h3 class="h3">Selected Talks</h3>
-    <ul class="talks">
-      {% for k in talks %}
-      <li class="talk">
-        <div class="t">{{ k.title }}</div>
-        <div class="m">{{ k.venue }} &nbsp;•&nbsp; {{ k.date }} &nbsp;•&nbsp; {{ k.city }}</div>
-      </li>
-      {% endfor %}
-    </ul>
-  </section>
+  <div class="pres-layout">
 
-  <section class="section">
-    <h3 class="h3">Photos</h3>
-    <div class="grid">
-      {% for p in images %}
-      <figure class="card">
-        <img src="{{ url_for('static', filename='img/presentations/' ~ p.file) }}" alt="{{ p.alt or 'presentation photo' }}">
-        <figcaption class="cap">{{ p.alt or '' }}</figcaption>
-      </figure>
+    {# ===== 左侧：海报 + 左侧三张小图（presentation1/6/7） ===== #}
+    <aside class="poster-col">
+      {% if posters|length > 0 %}
+        <img class="poster" src="{{ url_for('static', filename=BASE ~ posters[0]) }}" alt="Harvard poster left">
+      {% endif %}
+
+      <div class="thumb-strip" aria-label="Left photos">
+        {% for f in ['presentation1.jpg','presentation6.jpg','presentation7.jpg'] %}
+          <img src="{{ url_for('static', filename=BASE ~ f) }}" alt="Presentation photo {{ loop.index }}">
+        {% endfor %}
+      </div>
+    </aside>
+
+    {# ===== 中间：完整列表（保持你已有的 talks 数据） ===== #}
+    <main class="talks">
+      {% for t in talks %}
+        <article class="talk">
+          <h3>{{ t.title }}</h3>
+          <div class="meta">
+            {{ t.venue }} — {{ t.city }} · {{ t.date }}
+          </div>
+          {% if t.desc %}<p class="meta">{{ t.desc }}</p>{% endif %}
+        </article>
       {% endfor %}
-    </div>
-  </section>
+    </main>
+
+    {# ===== 右侧：海报 + 右侧三张小图（Harvard_presentation1/2/3） ===== #}
+    <aside class="poster-col">
+      {% if posters|length > 1 %}
+        <img class="poster" src="{{ url_for('static', filename=BASE ~ posters[1]) }}" alt="Harvard poster right">
+      {% endif %}
+
+      <div class="thumb-strip" aria-label="Right photos">
+        {% for f in ['Harvard_presentation1.jpg','Harvard_presentation2.jpg','Harvard_presentation3.jpg'] %}
+          <img src="{{ url_for('static', filename=BASE ~ f) }}" alt="Harvard presentation photo {{ loop.index }}">
+        {% endfor %}
+      </div>
+    </aside>
+
+  </div>
 </div>
 {% endblock %}
