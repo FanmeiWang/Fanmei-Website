@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}Corporate Consulting — Fanmei Wang{% endblock %}
+
+{% block extra_css %}
+<style>
+:root{
+  --brand:#004F59;
+  --ink:#153E42;
+  --page:#F2EEE6;
+  --gold-0:#FFF7E6;
+  --gold-1:#F7E0B2;
+  --gold-2:#E8C678;
+  --chip:#C89B43;
+  --shadow:0 10px 28px rgba(0,0,0,.10);
+}
+body{ background:var(--page); }
+.page-wrap{ max-width:1100px; margin:0 auto; padding:0 1rem 70px; }
+.page-title{ text-align:center; color:var(--brand); margin:54px 0 18px; }
+
+/* 说明条 */
+.lead{
+  color:var(--brand);
+  background:linear-gradient(180deg,#FFF6C7 0%, #FFFBE6 100%);
+  border-left:5px solid var(--brand);
+  border-radius:12px;
+  padding:.75rem .95rem; margin:.25rem 0 1.1rem;
+  font-size:1.08rem; font-weight:650;
+}
+
+/* 网格 */
+.grid{
+  display:grid; gap:1.3rem;
+  grid-template-columns:repeat(2, minmax(0,1fr));
+}
+@media (max-width:880px){ .grid{ grid-template-columns:1fr; } }
+
+/* 卡片 */
+.card{
+  border-radius:20px; overflow:hidden; background:#fff; box-shadow:var(--shadow);
+  display:flex; flex-direction:column;
+}
+.hero{
+  min-height:170px; background:#ddd center/cover no-repeat; position:relative;
+  background-image:linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.18));
+}
+.hero::after{             /* 顶部淡金边 */
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, transparent, rgba(0,0,0,.18));
+}
+.badge{
+  position:absolute; left:14px; top:12px; z-index:2;
+  font-weight:800; font-size:.82rem; color:#5a3d00;
+  padding:.32rem .6rem; border-radius:999px;
+  background:linear-gradient(135deg,#F9CF56,#E3A940);
+  box-shadow:0 6px 12px rgba(0,0,0,.14), inset 0 1px 0 rgba(255,255,255,.65);
+}
+
+/* 主体 */
+.body{ padding:1rem 1rem 1.1rem; color:var(--ink); }
+.title{ margin:.1rem 0 .35rem; font-size:1.25rem; color:#0e2f34; font-weight:900; }
+.meta{ margin:0 0 .55rem; color:#59686b; font-size:.98rem; }
+.scope{ margin:.15rem 0 0 1rem; padding:0; }
+.scope li{ margin:.25rem 0; }
+
+/* CTA */
+.cta{
+  margin-top:.7rem; display:inline-block; text-decoration:none; font-weight:800;
+  color:var(--brand);
+  background:linear-gradient(180deg,#FFF6DE 0%, #FBE4B4 100%);
+  border-radius:12px; padding:.55rem .9rem;
+  box-shadow:0 2px 0 rgba(0,0,0,.05), inset 0 0 0 1px rgba(0,0,0,.08);
+}
+.cta:hover{ text-decoration:underline; }
+
+/* 相关培训 */
+.extras{ margin-top:1.4rem; background:linear-gradient(180deg,var(--gold-0), #FFF); border-radius:16px; padding:1rem; box-shadow:var(--shadow); }
+.h3{ margin:.2rem 0 .6rem; font-size:1.18rem; color:#0e2f34; font-weight:900; }
+.bullets{ margin:.1rem 0 0 1.2rem; }
+.bullets li{ margin:.24rem 0; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+  <h1 class="page-title">Corporate Consulting</h1>
+
+  <p class="lead">
+    I worked as an HRM consultant to help enterprises <strong>optimize HR systems, re‑establish corporate culture, and improve performance evaluation & compensation schemes</strong>.
+    The funded enterprise projects below are compiled from my CV and portfolio.
+  </p>
+
+  <div class="grid">
+    {% for p in projects %}
+    <article class="card">
+      <div class="hero" style="background-image:
+            url('{{ url_for('static', filename='img/cover/' ~ (p.cover or 'consulting.jpg')) }}'),
+            linear-gradient(180deg,#0000,#0000);">
+        <span class="badge">Enterprise Project</span>
+      </div>
+      <div class="body">
+        <h2 class="title">{{ p.title }}</h2>
+        <p class="meta">
+          <strong>Client:</strong> {{ p.client }} &nbsp;·&nbsp;
+          <strong>Period:</strong> {{ p.period }} &nbsp;·&nbsp;
+          <strong>Budget:</strong> {{ p.amount }}
+        </p>
+        <ul class="scope">
+          {% if 'Huabiao' in p.client %}<li>End‑to‑end HRM system optimization for the power T&D industry.</li>{% endif %}
+          {% if 'Hohhot Victory' in p.client %}<li>Staffing/position study for teaching & admin personnel in Inner Mongolia.</li>{% endif %}
+          {% if 'Hainan Hongta' in p.client %}<li>Performance management redesign and corporate‑culture alignment.</li>{% endif %}
+          {% if 'Ri-Chang' in p.client %}<li>Compensation architecture and performance‑management system build‑out.</li>{% endif %}
+        </ul>
+        <a class="cta" href="{{ url_for('projects') }}">← Back to Projects</a>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+
+  <section class="extras">
+    <h3 class="h3">Related corporate training (selected)</h3>
+    <ul class="bullets">
+      <li>Corporate Culture — Sinopec; BBMG; MCC Sea Water Desalination (2014–2016)</li>
+      <li>Performance Management — HBIS Group; Wuyang Iron & Steel; Tangshan Xinbaotai (2010–2015)</li>
+      <li>Human Resources Management — China National Tobacco; Chengde Iron & Steel; Shandong Gold Group; Guangdong Topway Network (2010–2015)</li>
+    </ul>
+  </section>
+</div>
+{% endblock %}
