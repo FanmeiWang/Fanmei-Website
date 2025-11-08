@@ -428,10 +428,10 @@ def teaching_thesis():
         grad_theses=data.get("graduate", []),
     )
 
-# ---- Presentations (唯一路由；其它同名路由请删除) ----
+# ---- Presentations（唯一路由）----
 @app.route("/presentations")
 def presentations():
-    # ---- 中间完整列表（按你的 CV）----
+    # 中间 FULL LIST（来自你的 CV / Teaching Dossier）
     talks = [
         {
             "title": "How to Conduct Human Resources Management-Related Studies in China? (Chinese)",
@@ -441,14 +441,14 @@ def presentations():
             "desc": ""
         },
         {
-            "title": "Human Resource Management for Ethnic Minority Employees in Organizations in Chinese Minority‑inhabited Regions: A Case Study in the Tibetan Autonomous Region (Chinese)",
+            "title": "Human Resource Management for Ethnic Minority Employees in Organizations in Chinese Minority-inhabited Regions: A Case Study in the Tibetan Autonomous Region (Chinese)",
             "venue": "Institute for Advanced Study in Humanities & Social Sciences, Zhejiang University",
             "city": "Hangzhou, Zhejiang, China",
             "date": "Apr 29, 2019",
             "desc": ""
         },
         {
-            "title": "A New Perspective in Analyzing China Ethnic‑related Employment Issues (English)",
+            "title": "A New Perspective in Analyzing China Ethnic-related Employment Issues (English)",
             "venue": "Fairbank Center Visiting Scholar Presentations, Fairbank Center for Chinese Studies, Harvard University",
             "city": "Boston, MA",
             "date": "May 1, 2018",
@@ -463,7 +463,7 @@ def presentations():
         },
         {
             "title": "Chinese Ethnic Policies: An International Comparative Perspective (English)",
-            "venue": "Guest lecture in Ethics in Public Affair and Corporate Decision‑Making seminar course, Schwarzman College, Tsinghua University",
+            "venue": "Guest lecture, Ethics in Public Affair and Corporate Decision-Making seminar course, Schwarzman College, Tsinghua University",
             "city": "Beijing, China",
             "date": "Feb 2, 2017",
             "desc": ""
@@ -483,7 +483,7 @@ def presentations():
             "desc": ""
         },
         {
-            "title": "Cross‑Cultural Management (English)",
+            "title": "Cross-Cultural Management (English)",
             "venue": "MBA seminar, Manchester Metropolitan University Business School, School of Economics and Management, USTB",
             "city": "Beijing, China",
             "date": "Jun 9, 2016",
@@ -505,54 +505,35 @@ def presentations():
         },
     ]
 
-    # ---- 两侧海报（放在 static/img/presentation/ 下）----
+    # 两侧海报（存放在 static/img/presentation/）
     posters = [
         "Harvard_presentation_adv1.jpg",
         "Harvard_presentation_adv2.jpg",
     ]
 
-    # ---- 页底/备用相册（同目录）----
+    # 页底/备用相册（同目录；已按你给的文件名大小写）
     gallery = [
-        "Harvard_presentation1.jpg", "Harvard_presentation2.jpg", "Harvard_presentation3.jpg",
-        "presentation1.jpg", "presentation5.jpg", "presentation6.jpg", "presentation7.jpg",
-        "Presentation8.jpg", "Presentation10.jpg",
+        "Harvard_presentation1.jpg",
+        "Harvard_presentation2.jpg",
+        "Harvard_presentation3.jpg",
+        "presentation1.jpg",
+        "presentation5.jpg",
+        "presentation6.jpg",
+        "presentation7.jpg",
+        "Presentation8.jpg",
+        "Presentation10.jpg",
     ]
 
-    return render_template("presentations.html",
-                           talks=talks,
-                           posters=posters,
-                           gallery=gallery)
-# ===================================================================
+    return render_template(
+        "presentations.html",
+        talks=talks,
+        posters=posters,
+        gallery=gallery
+    )
 
-#（可保留，不影响）
-presentation_data = [
-    {
-        "title": "Innovation, AI and HR Analytics",
-        "venue": "Harvard University Fairbank Center",
-        "date":  "2023-11-18",
-        "type":  "Keynote",
-        "link":  "https://fairbank.fas.harvard.edu/event/ai-hr-analytics/",
-        "cover": "harvard_ai_talk.jpg"
-    },
-    {
-        "title": "Ethnicity & HRM Practice in Minority Regions",
-        "venue": "Zhejiang University IAS",
-        "date":  "2024-03-12",
-        "type":  "Invited Talk",
-        "link":  "https://ias.zju.edu.cn/talk/67890",
-        "cover": "zju_ethnicity.jpg"
-    },
-    {
-        "title": "Public-Service Employee Survey Deep Dive",
-        "venue": "Treasury Board of Canada",
-        "date":  "2024-05-02",
-        "type":  "Internal Webinar",
-        "link":  "",
-        "cover": ""
-    },
-]
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
