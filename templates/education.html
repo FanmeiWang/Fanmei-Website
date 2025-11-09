@@ -1,70 +1,194 @@
 {% extends "base.html" %}
-{% block title %}Education — Fanmei Wang, PhD{% endblock %}
+{% block title %}Education | Fanmei Wang{% endblock %}
 
 {% block extra_css %}
 <style>
   :root{
-    --brand:#004F59; --ink:#1c2e32; --muted:#64727a; --paper:#fff;
-    --chip:#F3B21F;
-  }
-  body{ background:#cfc9bd; }                          /* 与站内其它页统一 */
-  .wrap{ max-width:1100px; margin:0 auto; padding:0 1rem 64px; }
-  .page-title{ color:var(--brand); text-align:center; margin:56px 0 20px; }
-
-  /* 列表容器 */
-  .edu-list{ display:grid; gap:16px; }
-
-  /* 单条教育经历 = 白卡 */
-  .edu-item{
-    display:grid; grid-template-columns:100px 1fr; gap:16px;
-    align-items:center; background:var(--paper); border-radius:14px;
-    border:1px solid #ECEFF3; box-shadow:0 12px 24px rgba(0,0,0,.08);
-    padding:16px; animation:fadeUp .45s ease both;
-  }
-  @media (max-width:620px){
-    .edu-item{ grid-template-columns:72px 1fr; }
+    --ink:#0f3a3f;
+    --accent:#0B6B74;
+    --card:#FFF6DA;          /* 浅黄色卡片底色 */
+    --sep:#e9ecef;
+    --shadow:0 6px 16px rgba(0,0,0,.06);
   }
 
+  .page{ max-width:1100px; margin:48px auto 72px; padding:0 1rem; }
+  .page-title{
+    text-align:center; color:var(--accent); font-weight:900;
+    font-size:2.2rem; margin:0 0 18px;
+  }
+
+  /* 列表整体间距更紧凑 */
+  .edu-list{ display:flex; flex-direction:column; gap:14px; margin:0 0 20px; }
+
+  /* —— 无课程的普通卡片 —— */
+  .edu-card{
+    display:flex; gap:14px; align-items:flex-start;
+    background:var(--card); border-radius:14px; box-shadow:var(--shadow);
+    padding:14px 16px;
+  }
+
+  /* LOGO：不再有外框，仅图片本身占位对齐 */
   .edu-logo{
-    width:100%; aspect-ratio:1/1; object-fit:contain; background:#fff;
-    border-radius:10px; box-shadow:0 6px 16px rgba(0,0,0,.08);
+    width:96px; display:flex; align-items:center; justify-content:center; flex-shrink:0;
   }
+  .edu-logo img{ max-width:96px; max-height:64px; display:block; }
 
-  .edu-text h3{ margin:0 0 6px; color:var(--ink); }
-  .edu-text p{ margin:0; color:var(--muted); line-height:1.55; font-size:1.02rem; }
-
-  /* 状态/标签（Ongoing 等） */
-  .tag{
-    display:inline-block; margin-left:.3rem; padding:.18rem .45rem;
-    border-radius:8px; background:var(--chip); color:#fff; font-weight:800;
-    font-size:.85rem;
+  .edu-body{ flex:1; }
+  .school{
+    margin:0 0 2px; color:#12363C; font-weight:900;
+    font-size:1.45rem;            /* 学校更大 */
+    letter-spacing:.2px;
   }
+  .degree-line{ display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; margin:0 0 2px; }
+  .degree{
+    font-weight:900; color:#234047;
+    font-size:1.12rem;            /* 学位更大 */
+  }
+  .detail{ margin:0; color:#4b5d61; font-style:italic; font-size:.98rem; }
 
-  /* 小入场动画 */
-  @keyframes fadeUp { from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:none } }
+  .badge{
+    display:inline-block; padding:.16rem .46rem; border-radius:999px;
+    font-size:.8rem; font-weight:800;
+  }
+  .badge--ongoing{ background:#FFE0A8; border:1px solid #E5C07A; color:#744F12; }
+  .badge--done{ background:#DFF3E7; border:1px solid #9BD5B7; color:#0d5d3b; }
+
+  /* —— 有课程的卡片：点击抽屉，右侧出现列表 —— */
+  details.drawer-side{
+    background:var(--card); border-radius:14px; box-shadow:var(--shadow);
+    display:grid; grid-template-columns: 1fr 320px; overflow:hidden;
+  }
+  details.drawer-side > summary{
+    grid-column:1 / 2;
+    list-style:none; cursor:pointer; user-select:none;
+    padding:14px 16px;                    /* 上下留白更窄 */
+    display:grid; grid-template-columns:96px 1fr 20px; gap:14px; align-items:center;
+  }
+  details.drawer-side > summary::-webkit-details-marker{ display:none; }
+  .chev{ width:18px; height:18px; color:#7f8f93; transition:transform .2s ease; }
+  details.drawer-side[open] .chev{ transform:rotate(180deg); }
+
+  .side-panel{
+    grid-column:2 / 3;
+    padding:12px 14px;
+    border-left:1px solid var(--sep);
+    background:#FFF9E8;                   /* 略浅一点的侧栏黄 */
+    display:none;
+  }
+  details.drawer-side[open] .side-panel{ display:block; }
+
+  /* 简单列表（无黄色胶囊） */
+  .list-plain{ margin:0; padding-left:1.1rem; }
+  .list-plain li{ margin:.16rem 0; color:#2c4449; line-height:1.35; }
+  .muted{ color:#667c80; font-weight:600; font-size:.9rem; }
+
+  /* HRPA 的 Logo 不再强制圆形 */
+  .hrpa-card .edu-logo{ }
+
+  /* 移动端：改为上下展开，间距再收窄一点 */
+  @media (max-width:900px){
+    details.drawer-side{ grid-template-columns:1fr; }
+    details.drawer-side .side-panel{ border-left:0; border-top:1px solid var(--sep); }
+    details.drawer-side > summary{ grid-template-columns:88px 1fr 20px; }
+    .edu-logo{ width:88px; }
+  }
+  @media (max-width:600px){
+    .page{ margin:40px auto 56px; }
+    .school{ font-size:1.3rem; }
+    .degree{ font-size:1.04rem; }
+  }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="wrap">
+<main class="page">
   <h1 class="page-title">Education</h1>
 
-  <section class="edu-list" aria-label="Education history">
-    {% for item in edu_list %}
-      <article class="edu-item" style="animation-delay: {{ (loop.index0 * 0.08) | round(2) }}s">
-        <img class="edu-logo"
-             src="{{ url_for('static', filename='img/logos/' ~ item.logo) }}"
-             alt="{{ item.school }} logo" loading="lazy" decoding="async">
-        <div class="edu-text">
-          <h3>{{ item.school }}</h3>
-          <p>
-            <strong>{{ item.degree }}</strong>
-            {% if item.status %}<span class="tag">{{ item.status }}</span>{% endif %}
-            {% if item.detail %}<br><em>{{ item.detail }}</em>{% endif %}
-          </p>
-        </div>
-      </article>
-    {% endfor %}
+  <!-- Ⅰ. 正规教育 -->
+  <section aria-label="Formal education">
+    <div class="edu-list">
+      {% for e in edu_list %}
+        {% if e.courses and e.courses|length > 0 %}
+          <!-- 抽屉：点击卡片，右侧出现简单列表 -->
+          <details class="drawer-side">
+            <summary>
+              <div class="edu-logo">
+                <img src="{{ url_for('static', filename='img/logos/' ~ e.logo) }}"
+                     alt="{{ e.school }} logo" loading="lazy"
+                     onerror="this.style.display='none'">
+              </div>
+              <div class="edu-body">
+                <h3 class="school">{{ e.school }}</h3>
+                <div class="degree-line">
+                  <span class="degree">{{ e.degree }}</span>
+                  {% if e.status %}<span class="badge badge--ongoing">{{ e.status }}</span>{% endif %}
+                </div>
+                {% if e.detail %}<p class="detail">{{ e.detail }}</p>{% endif %}
+              </div>
+              <svg class="chev" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </summary>
+            <div class="side-panel">
+              <ul class="list-plain">
+                {% for c in e.courses %}
+                  <li>{{ c.title }}{% if c.status %} <span class="muted">({{ c.status }})</span>{% endif %}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          </details>
+        {% else %}
+          <!-- 无课程：普通卡片（也用浅黄色 & 紧凑留白） -->
+          <article class="edu-card">
+            <div class="edu-logo">
+              <img src="{{ url_for('static', filename='img/logos/' ~ e.logo) }}"
+                   alt="{{ e.school }} logo" loading="lazy"
+                   onerror="this.style.display='none'">
+            </div>
+            <div class="edu-body">
+              <h3 class="school">{{ e.school }}</h3>
+              <div class="degree-line">
+                <span class="degree">{{ e.degree }}</span>
+              </div>
+              {% if e.detail %}<p class="detail">{{ e.detail }}</p>{% endif %}
+            </div>
+          </article>
+        {% endif %}
+      {% endfor %}
+    </div>
   </section>
-</div>
+
+  <!-- Ⅱ. HRPA（非学历） -->
+  {% if hrpa %}
+  <section aria-label="Professional coursework">
+    <details class="drawer-side hrpa-card">
+      <summary>
+        <div class="edu-logo">
+          {% if hrpa.logo %}
+            <img src="{{ url_for('static', filename='img/logos/' ~ hrpa.logo) }}"
+                 alt="HRPA logo" loading="lazy"
+                 onerror="this.style.display='none'">
+          {% endif %}
+        </div>
+        <div class="edu-body">
+          <h3 class="school">Human Resources Professionals Association</h3>
+          <div class="degree-line">
+            <span class="degree">HRPA Academic Program — 9 HRM Courses</span>
+            {% if hrpa.status %}<span class="badge badge--done">{{ hrpa.status }}</span>{% endif %}
+          </div>
+          <p class="detail">Non‑degree coursework through HRPA’s OAP; satisfies CHRP academic requirement.</p>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </summary>
+      <div class="side-panel">
+        <ul class="list-plain">
+          {% for c in hrpa.courses %}<li>{{ c }}</li>{% endfor %}
+        </ul>
+      </div>
+    </details>
+  </section>
+  {% endif %}
+</main>
 {% endblock %}
