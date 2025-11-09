@@ -6,142 +6,121 @@
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-  /* ===== 页面布局 / 个人卡片 ===== */
   :root{
     --brand-teal:#004F59;
-    --badge-h: 34px;      /* 图标高度（行内统一控制） */
-    --badge-gap: 14px;    /* 图标间距 */
+    --badge-h: 38px;      /* 软件图标高度 */
+    --org-h:   44px;      /* 机构 LOGO 高度 */
+    --gap:     14px;
   }
-  .container      {max-width:1100px;margin:0 auto;padding:0 1rem;}
-  .profile-card   {display:grid;grid-template-columns:260px 1fr;gap:2rem;
-                   background:#fff;border-radius:12px;padding:2.5rem 3rem;
-                   box-shadow:0 6px 18px rgba(0,0,0,.06);}
-  .profile-card>.skills-section{ grid-column:1 / -1; margin-top:1.2rem; }
-  @media(max-width:900px){
+
+  /* ===== 基础布局 ===== */
+  .container    {max-width:1100px;margin:0 auto;padding:0 1rem;}
+  .profile-card {display:grid;grid-template-columns:260px 1fr;gap:2rem;
+                 background:#fff;border-radius:12px;padding:2.2rem 3rem;
+                 box-shadow:0 6px 18px rgba(0,0,0,.06);margin-top:1rem;}
+  @media (max-width: 900px){
     .profile-card{grid-template-columns:1fr}
     .profile-photo img{margin:0 auto}
   }
-  .profile-photo img{width:100%;border-radius:8px;object-fit:cover;
-                     box-shadow:0 4px 12px rgba(0,0,0,.12);margin-top:24px;}
-  .profile-name   {margin:0 0 1rem;font-size:2.6rem;color:var(--brand-teal);}
+  .profile-photo img{width:100%;border-radius:10px;object-fit:cover;
+                     box-shadow:0 4px 12px rgba(0,0,0,.12);}
+  .profile-name {margin:0 0 1rem;font-size:2.6rem;color:var(--brand-teal);}
   .profile-social a{margin-right:1rem;font-size:1.3rem;color:var(--brand-teal);
                     transition:opacity .2s;}
   .profile-social a:hover{opacity:.7}
 
-  /* ===== 技能分组：每组一行，必要时可横向滑动 ===== */
-  .skills-section{ display:flex; flex-direction:column; gap:.6rem; }
-  .skills-group{ display:flex; flex-direction:column; gap:.4rem; }
-  .skills-title{
-    font-size:.9rem; letter-spacing:.02em; color:#3a4b4f; opacity:.9;
-    font-weight:600;
+  /* ===== 软件图标：单排水平循环（从左到右），悬停暂停 ===== */
+  .soft-wrap{ margin:28px 0 18px 0; }
+  .marquee-strip{
+    position:relative; overflow:hidden; width:100%;
+    background:linear-gradient(180deg,#fff, #fbfdfd);
+    border-radius:12px; padding:.6rem 0;
+    box-shadow:0 4px 12px rgba(0,0,0,.05) inset;
   }
-  .skills-row{
-    display:flex; align-items:center; gap:var(--badge-gap);
-    overflow-x:auto; flex-wrap:nowrap; padding:.25rem 0;
-    -webkit-overflow-scrolling: touch; scrollbar-width:thin;
+  .marquee-run{
+    display:flex; align-items:center; gap:var(--gap);
+    /* 关键：双份内容 + 水平位移实现无缝循环 */
+    animation: marqueeX 60s linear infinite;
+    filter:grayscale(.25) opacity(.95);
   }
-  .skills-row::-webkit-scrollbar{ height:6px; }
-  .skills-row::-webkit-scrollbar-thumb{
-    background:rgba(0,0,0,.18); border-radius:3px;
-  }
+  .marquee-strip:hover .marquee-run{ animation-play-state: paused; filter:none; }
+  /* 从左到右循环 */
+  .marquee-strip.ltr .marquee-run{ animation-direction: reverse; }
 
-  .skill-badge{
-    flex:0 0 auto;
-    display:inline-flex; align-items:center; justify-content:center;
-    background:#fff; border-radius:10px;
-    box-shadow:0 3px 8px rgba(0,0,0,.08);
-    padding:6px;
-    filter:grayscale(.55) opacity(.95);
+  @keyframes marqueeX { to{ transform: translateX(-50%); } }
+
+  .soft-badge{
+    flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center;
+    background:#fff; border-radius:12px; padding:8px 10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
     transition:transform .12s ease, filter .2s ease;
   }
-  .skill-badge:hover{ transform:translateY(-2px) scale(1.03); filter:none; }
-  .skill-badge img{
-    max-width:100%; max-height:100%;
-    height:var(--badge-h); width:auto; object-fit:contain;
-  }
-  /* 图片缺失 → 文字兜底（不在表达式里写注释，避免语法错误） */
-  .skill-badge .label{ display:none; font-size:.8rem; color:var(--brand-teal); padding:0 .4rem; }
-  .skill-badge.fallback{
-    padding:0 .6rem; border:1px dashed rgba(0,0,0,.18); background:#f7fbfb;
-  }
-  .skill-badge.fallback .label{ display:inline-block; }
+  .soft-badge:hover{ transform:translateY(-2px) scale(1.03); }
+  .soft-badge img{ height:var(--badge-h); width:auto; object-fit:contain; }
 
-  /* ===== 两侧竖向滚动 LOGO 轨道（慢速，可悬停暂停） ===== */
-  .rail-edge{
-    position: fixed; top: 80px; bottom: 80px; width: 120px;
-    z-index: 2;
-    pointer-events: none;
+  /* 图片缺失 → 文字兜底 */
+  .soft-badge .label{ display:none; font-size:.8rem; color:var(--brand-teal); padding:0 .4rem; }
+  .soft-badge.fallback{
+    padding:0 .6rem; border:1px dashed rgba(0,0,0,.18); background:#f6fbfb;
   }
-  .rail-edge.left{  left: 0; }
-  .rail-edge.right{ right: 0; }
+  .soft-badge.fallback .label{ display:inline-block; }
 
-  .rail-track{ position:absolute; inset:0; overflow:hidden; }
-  .rail-run{
-    display:flex; flex-direction:column; gap:10px;
-    animation: railScroll 90s linear infinite;
-    filter: grayscale(.05) brightness(.98);
+  /* ===== 机构 LOGO 底部一排（不换行；窄屏横向滑动） ===== */
+  .org-strip{
+    display:flex; align-items:center; gap:18px;
+    flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling: touch;
+    padding:12px 0; margin:8px 0 40px 0;
   }
-  .rail-edge.right .rail-run{ animation-direction: reverse; }
-
-  .rail-logo{
-    width: 100px; height: 100px; object-fit: contain; background:#fff;
-    border-radius:10px; box-shadow:0 6px 16px rgba(0,0,0,.10);
-    padding:10px;
-  }
-  @media (hover:hover){
-    .rail-edge:hover .rail-run{ animation-play-state: paused; }
-  }
-  @keyframes railScroll{ to{ transform: translateY(-50%); } }
-
-  /* 小屏不显示两侧轨道，避免遮挡 */
-  @media (max-width: 1100px){
-    .rail-edge{ display: none; }
-    .page-wrap, .container{ padding-left: 1rem; padding-right: 1rem; }
+  .org-logo{
+    flex:0 0 auto; height:var(--org-h); width:auto; object-fit:contain;
+    background:#fff; border-radius:10px; padding:8px 10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
   }
 
-  /* 小屏技能图标略小 */
+  /* 动画可器官偏好：降低动态时停用循环 */
+  @media (prefers-reduced-motion: reduce){
+    .marquee-run{ animation: none; }
+  }
+
+  /* 小屏适配 */
   @media (max-width: 640px){
-    :root{ --badge-h: 28px; --badge-gap: 12px; }
+    :root{ --badge-h: 32px; --org-h: 38px; --gap: 12px; }
   }
 </style>
 {% endblock %}
 
 {% block content %}
 
-{# 两侧轨道 LOGO（与文件名大小写一致；HRPA 为大写） #}
-{% set LOGOS = ['pku','ustb','georgian','laurentian','fairbank','HRPA','psdata'] %}
+{# ====== 数据：文件名严格使用你现有的命名 ====== #}
+{% set SOFTWARE = [
+  {'label':'HTML5','file':'html5.png'},
+  {'label':'CSS3','file':'css3.png'},
+  {'label':'Jinja2','file':'jinja2.png'},
+  {'label':'Flask','file':'flask.png'},
+  {'label':'Git','file':'git.png'},
+  {'label':'GitHub','file':'github.png'},
+  {'label':'Python','file':'python.png'},
+  {'label':'Jupyter','file':'jupyter.png'},
+  {'label':'NumPy','file':'numpy.png'},
+  {'label':'Pandas','file':'pandas.png'},
+  {'label':'scikit‑learn','file':'sklearn.png'},
+  {'label':'SQL','file':'sql.png'},
+  {'label':'Spyder','file':'spyder.jpeg'},
+  {'label':'PyTorch','file':'pytorch.png'},
+  {'label':'TensorFlow','file':'tensorflow.png'},
+  {'label':'Hugging Face','file':'huggingface.png'},
+  {'label':'OpenAI','file':'openai.png'},
+  {'label':'Power BI','file':'powerbi.png'},
+  {'label':'SPSS','file':'spss.png'},
+  {'label':'SAS','file':'sas.png'},
+  {'label':'NVivo','file':'nvivo.png'},
+  {'label':'ML','file':'ml.png'},
+  {'label':'DL','file':'dl.png'},
+  {'label':'Generative AI','file':'Generative_AI.png'}
+] %}
 
-{# ===== 技能清单：每类一行（文件名按你目录最终版本） ===== #}
-{% set SKILL_GROUPS = [
-  ('Web & Dev', [
-    {'label':'HTML5',  'file':'html5.png'},
-    {'label':'CSS3',   'file':'css3.png'},
-    {'label':'Jinja2', 'file':'jinja2.png'},
-    {'label':'Flask',  'file':'flask.png'},
-    {'label':'Git',    'file':'git.png'},
-    {'label':'GitHub', 'file':'github.png'}
-  ]),
-  ('Python & Data', [
-    {'label':'Python',   'file':'python.png'},
-    {'label':'Jupyter',  'file':'jupyter.png'},
-    {'label':'NumPy',    'file':'numpy.png'},
-    {'label':'Pandas',   'file':'pandas.png'},
-    {'label':'scikit‑learn', 'file':'sklearn.png'},
-    {'label':'SQL',      'file':'sql.png'},
-    {'label':'Spyder',   'file':'spyder.jpeg'}
-  ]),
-  ('ML & Generative AI', [
-    {'label':'PyTorch',      'file':'pytorch.png'},
-    {'label':'TensorFlow',   'file':'tensorflow.png'},
-    {'label':'Hugging Face', 'file':'huggingface.png'},
-    {'label':'OpenAI',       'file':'openai.png'},
-  ]),
-  ('Analytics', [
-    {'label':'Power BI', 'file':'powerbi.png'},
-    {'label':'SPSS',     'file':'spss.png'},
-    {'label':'SAS',      'file':'sas.png'},
-    {'label':'NVivo',    'file':'nvivo.png'}
-  ])
+{% set LOGOS = [
+  'pku.png','ustb.png','georgian.png','laurentian.png','fairbank.png','HRPA.png','psdata.png'
 ] %}
 
 <main class="container">
@@ -167,65 +146,49 @@ apps and APIs, and shipping ML/NLP features that improve insights, policy and en
         (1) <strong>Language Competency Evaluation &amp; Training Tool (v2.3 and earlier)</strong> — a bilingual‑skills recommender that I built and maintain as the <strong>sole developer</strong> (Top‑4 finalist, 2025 Public Service Data &amp; AI Challenge);
         (2) <strong>Python, YAML contract–driven ETL</strong> to automate the employee‑month data pipeline (ingest → transform → curated). <em>Data‑quality reporting and policy‑gated releases</em> are <strong>planned</strong>.
       </p>
+    </div>
+  </section>
 
-      <div class="profile-social">
-        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
-        <a href="#" aria-label="Twitter / X"><i class="fab fa-twitter"></i></a>
+  <!-- ===== 软件图标：一排水平循环 ===== -->
+  <section class="soft-wrap" aria-label="Software & tools (marquee)">
+    <div class="marquee-strip ltr">
+      <div class="marquee-run">
+        {% for s in SOFTWARE %}
+          <span class="soft-badge" title="{{ s.label }}">
+            <img
+              src="{{ url_for('static', filename='img/badges/' ~ s.file) }}"
+              alt="{{ s.label }}"
+              onerror="this.parentElement.classList.add('fallback');
+                       this.parentElement.querySelector('.label').style.display='inline-block';
+                       this.remove();">
+            <span class="label">{{ s.label }}</span>
+          </span>
+        {% endfor %}
+        {% for s in SOFTWARE %}
+          <span class="soft-badge" title="{{ s.label }}">
+            <img
+              src="{{ url_for('static', filename='img/badges/' ~ s.file) }}"
+              alt="{{ s.label }}"
+              onerror="this.parentElement.classList.add('fallback');
+                       this.parentElement.querySelector('.label').style.display='inline-block';
+                       this.remove();">
+            <span class="label">{{ s.label }}</span>
+          </span>
+        {% endfor %}
       </div>
     </div>
+  </section>
 
-    <!-- ===== Skills：分组展示，每组一行 ===== -->
-    <div class="skills-section" aria-label="Technical skills grouped by category">
-      {% for title, items in SKILL_GROUPS %}
-        <div class="skills-group">
-          <div class="skills-title">{{ title }}</div>
-          <div class="skills-row" role="list" aria-label="{{ title }}">
-            {% for s in items %}
-              <span class="skill-badge" role="listitem" title="{{ s.label }}">
-                <img
-                  src="{{ url_for('static', filename='img/badges/' ~ s.file) }}"
-                  alt="{{ s.label }}"
-                  onerror="this.parentElement.classList.add('fallback');
-                           this.parentElement.querySelector('.label').style.display='inline-block';
-                           this.remove();">
-                <span class="label">{{ s.label }}</span>
-              </span>
-            {% endfor %}
-          </div>
-        </div>
+  <!-- ===== 机构 LOGO：底部一排（不换行） ===== -->
+  <section class="orgs-wrap" aria-label="Affiliations & organizations" style="margin-top: 10px;">
+    <div class="org-strip">
+      {% for f in LOGOS %}
+        <img class="org-logo"
+             src="{{ url_for('static', filename='img/logos/' ~ f) }}"
+             alt="">
       {% endfor %}
     </div>
   </section>
 
 </main>
-
-<!-- ===== 左侧滚动 LOGO 轨道 ===== -->
-<aside class="rail-edge left" aria-hidden="true">
-  <div class="rail-track">
-    <div class="rail-run">
-      {% for f in LOGOS %}
-        <img class="rail-logo" src="{{ url_for('static', filename='img/logos/' ~ f ~ '.png') }}" alt="">
-      {% endfor %}
-      {% for f in LOGOS %}
-        <img class="rail-logo" src="{{ url_for('static', filename='img/logos/' ~ f ~ '.png') }}" alt="">
-      {% endfor %}
-    </div>
-  </div>
-</aside>
-
-<!-- ===== 右侧滚动 LOGO 轨道（反向滚动） ===== -->
-<aside class="rail-edge right" aria-hidden="true">
-  <div class="rail-track">
-    <div class="rail-run">
-      {% for f in LOGOS %}
-        <img class="rail-logo" src="{{ url_for('static', filename='img/logos/' ~ f ~ '.png') }}" alt="">
-      {% endfor %}
-      {% for f in LOGOS %}
-        <img class="rail-logo" src="{{ url_for('static', filename='img/logos/' ~ f ~ '.png') }}" alt="">
-      {% endfor %}
-    </div>
-  </div>
-</aside>
 {% endblock %}
-
