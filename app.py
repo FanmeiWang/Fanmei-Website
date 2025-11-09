@@ -375,13 +375,12 @@ teaching_photos = [
 def list_teaching_photos():
     """读取 static/img/teaching/ 下常见图片并排序。"""
     folder = os.path.join(app.static_folder, "img", "teaching")
-    exts = {".png", ".jpg", ".jpeg", ".webp"}
+    exts = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
     if not os.path.isdir(folder):
         return []
     files = [f for f in os.listdir(folder) if os.path.splitext(f)[1].lower() in exts]
     return sorted(set(files), key=str.lower)
 
-# ---- Teaching Overview 页面 ----
 # Teaching 入口（/teaching）
 @app.route("/teaching")
 def teaching_overview():
@@ -393,8 +392,6 @@ def teaching_overview():
     return render_template("teaching_overview.html",
                            photos=photos,
                            academic=teaching_data)
-
-
 @app.route("/teaching/scroll")
 def teaching_scroll():
     return render_template("teaching.html",
@@ -544,6 +541,7 @@ def presentations():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
