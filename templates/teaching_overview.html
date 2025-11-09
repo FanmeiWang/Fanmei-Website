@@ -41,22 +41,21 @@ body{ background:var(--page); }
 .card--honey { --hero-top:var(--hero-honey-top); --hero-btm:var(--hero-honey-btm); }
 .card--sand  { --hero-top:var(--hero-sand-top);  --hero-btm:var(--hero-sand-btm); }
 
-/* ───── Teaching Philosophy（变浅的褐金两层） ───── */
+/* ───── Teaching Philosophy（浅褐金两层，增强可读性） ───── */
 .philo{ max-width:1200px; margin:28px auto 0; }
 .philo h2{ text-align:center; color:var(--ink); margin:0 0 12px; font-weight:900; font-size:1.6rem; letter-spacing:.2px; }
-/* 外层浅褐金带 + 内阴影，底色变浅不发黑 */
+
 .philo-band{
-  background: linear-gradient(180deg,#F7EAD0 0%, #F1E0B8 100%);
+  background: linear-gradient(180deg,#F8EDD1 0%, #F3E3BB 100%);
   border-radius:12px; padding:14px 16px;
   box-shadow: 0 8px 24px rgba(0,0,0,.06) inset, 0 6px 18px rgba(0,0,0,.06);
 }
-/* 链接改为深青色，提高可读性 */
 .philo-list{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:10px 28px; }
 @media (max-width: 720px){ .philo-list{ grid-template-columns: 1fr; } }
 .philo-item{
   display:flex; align-items:center; gap:.6rem;
   color:#1c3f44; text-decoration:none;
-  font-size:1.16rem; font-weight:600; line-height:1.38; padding:8px 2px;
+  font-size:1.16rem; font-weight:650; line-height:1.38; padding:8px 2px;
 }
 .philo-item:hover{ text-decoration: underline; }
 .philo-item:focus-visible{ outline:2px solid rgba(0,79,89,.35); outline-offset:2px; border-radius:4px; }
@@ -66,43 +65,34 @@ body{ background:var(--page); }
   box-shadow: 0 2px 6px rgba(0,0,0,.25); flex:0 0 16px;
 }
 
-/* ───── 背景“漂浮的记忆泡泡”（更可见 + 更有动感 + 仅两侧） ───── */
-/* 不挡交互；位于内容之下 */
+/* ───── 背景“记忆泡泡”（只在两侧、可见度↑、仅浮动、不重叠） ───── */
 .bubble-sky{ position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
-/* 主体与导航在上层 */
 nav{ position:relative; z-index:3; }
 .page-wrap{ position:relative; z-index:2; }
 
-/* 用容器裁圆，内部 <img> 再次圆角保证边沿清晰 */
+/* 圆形裁剪容器 + 阴影；无旋转，仅 translate 动画 */
 .bubble{
   position:absolute;
   width:var(--size,140px); height:var(--size,140px);
   left:var(--left, 0px); top:var(--top, 0px);
   border-radius:50%; overflow:hidden;
   box-shadow:0 14px 40px rgba(0,0,0,.12);
-  transform: translate(0,0) rotate(var(--rot0,0deg));
-  animation: bob var(--dur,24s) ease-in-out var(--delay,0s) infinite alternate;
+  transform: translate(var(--dx0,0px), var(--dy0,0px));
+  animation: bob var(--dur,22s) ease-in-out var(--delay,0s) infinite alternate;
   will-change: transform;
 }
 .bubble>img{
   width:100%; height:100%; object-fit:cover; display:block; border-radius:50%;
-  opacity:var(--op, .50);                 /* ← 更可见：0.42 ~ 0.58 */
-  filter: saturate(1.00) contrast(1.00);  /* ← 不再发灰变淡 */
-  animation: roll var(--spin, 80s) linear infinite;
-  transform-origin:50% 50%;
+  opacity:var(--op, .64);                  /* ← 更高不透明度：0.56–0.72 之间 */
+  filter: none;                            /* ← 不做去饱和/降亮 */
 }
 
-/* 明显的摆动与微旋转（强度↑） */
+/* 只做缓慢的 x/y 漂移（无 rotate） */
 @keyframes bob{
-  to{
-    transform:
-      translate(var(--hx, 40px), var(--vy, 36px))
-      rotate(var(--rot1, 10deg));
-  }
+  to{ transform: translate(var(--dx1, 30px), var(--dy1, 30px)); }
 }
-@keyframes roll{ to{ transform: rotate(360deg); } }
 
-/* ❗️始终启用动画：不再随 prefers-reduced-motion 关闭 */
+/* 不提供 prefers-reduced-motion 的静止分支，以确保动效始终存在 */
 </style>
 {% endblock %}
 
@@ -136,7 +126,7 @@ nav{ position:relative; z-index:3; }
     </a>
   </div>
 
-  <!-- Teaching Philosophy（已变浅） -->
+  <!-- Teaching Philosophy（浅色） -->
   {% set DOSSIER = url_for('static', filename='docs/teaching_dossier.pdf') %}
   {% set PAGES   = [6,10,14,18] %}
   <section class="philo">
@@ -150,18 +140,16 @@ nav{ position:relative; z-index:3; }
       </nav>
     </div>
   </section>
-
-  {# 按你的要求：已移除底部横向相册 .gallery #}
 </div>
 
-<!-- 背景泡泡脚本：只在左右两侧生成、随机大小/位置/速度/旋转 -->
+<!-- 背景泡泡脚本：仅在两侧，摆幅受限；生成时保证全程不重叠 -->
 <script>
 (function(){
   const sky  = document.getElementById('bubble-sky');
   const wrap = document.querySelector('.page-wrap');
   if(!sky || !wrap) return;
 
-  // 1) 图片清单（来自后端 /teaching 路由）→ 生成完整 URL
+  // 1) 图片列表（来自后端 /teaching 路由）→ 生成完整 URL
   const FILES = {{ (photos if photos is defined else []) | tojson }};
   const BASE  = {{ url_for('static', filename='img/teaching/') | tojson }};
   const SRC   = (FILES.length ? FILES : [
@@ -170,70 +158,116 @@ nav{ position:relative; z-index:3; }
     'teaching7.png','teaching8.png','teaching9.png'
   ]).map(f => BASE + f);
 
-  // 2) 数量：桌面 14、平板 10、手机 6（上限不超过 2×素材）
-  const count = () => Math.min((innerWidth<680)?6:(innerWidth<1200)?10:14, SRC.length*2);
-
+  // 2) 工具函数
   const rnd  = (a,b)=> a + Math.random()*(b-a);
   const pick = arr => arr[(Math.random()*arr.length)|0];
 
-  function placeInSideGutters(size){
-    // 计算内容区域与左右“安全侧边”
+  // 3) 布局参数：两侧“安全侧边”
+  function gutters(){
     const r  = wrap.getBoundingClientRect();
-    const vw = innerWidth, vh = innerHeight;
-    const pad = 24;                 // 与内容保持 24px 缓冲
-    const leftMax  = Math.max(0, r.left - pad);
-    const rightMin = Math.min(vw, r.right + pad);
-
-    // 选择左侧或右侧
-    const side = Math.random() < 0.5 ? 'L' : 'R';
-    let leftPx;
-    if (side === 'L'){
-      if (leftMax < size) { leftPx = rnd(0, Math.max(0, vw*0.15 - size)); }
-      else { leftPx = rnd(0, leftMax - size); }
-    }else{
-      if (rightMin > vw - size) { leftPx = rnd(vw - Math.max(size, vw*0.15), vw - size); }
-      else { leftPx = rnd(rightMin, vw - size); }
-    }
-    const topPx = rnd(16, vh - size - 16);  // 避开上下边缘
-    return { leftPx, topPx };
+    const vw = innerWidth, vh = innerHeight, pad = 24;
+    const leftBound  = 0;
+    const leftMax    = Math.max(0, r.left - pad);   // 左侧安全区右边界
+    const rightMin   = Math.min(vw, r.right + pad); // 右侧安全区左边界
+    const rightBound = vw;
+    return { vw, vh, leftBound, leftMax, rightMin, rightBound };
   }
 
+  // 4) 非重叠放置（考虑摆幅）：用“扩张半径”检测
   function populate(){
     sky.innerHTML = '';
-    const N = count();
+    const G = gutters();
+    // 桌面 14、平板 10、手机 6；上限不超过 2×素材
+    const N = Math.min((innerWidth<680)?6:(innerWidth<1200)?10:14, SRC.length*2);
+
+    /** 已放置圆（中心坐标+扩张半径） */
+    const placed = [];
+    let attemptsTotal = 0;
+
+    function fits(cx, cy, Rexp){
+      for(const p of placed){
+        const dx = p.cx - cx, dy = p.cy - cy;
+        if (Math.hypot(dx, dy) < (p.Rexp + Rexp + 8)) return false; // +8 像素缓冲
+      }
+      return true;
+    }
 
     for(let i=0;i<N;i++){
-      const box = document.createElement('div');
-      box.className = 'bubble';
+      let tries = 0, ok = false, side, size, cx, cy, ax, ay, dx0, dx1, dy0, dy1, Rexp;
 
-      // 尺寸更可见
-      const size = (innerWidth<680) ? rnd(80,130) : rnd(100,190);
-      box.style.setProperty('--size', size + 'px');
+      while(tries < 60 && !ok){
+        tries++; attemptsTotal++;
 
-      // 只在两侧漂浮
-      const pos = placeInSideGutters(size);
-      box.style.setProperty('--left', pos.leftPx + 'px');
-      box.style.setProperty('--top',  pos.topPx  + 'px');
+        // 选择侧边 + 尺寸 + 目标不透明度
+        side = Math.random() < 0.5 ? 'L' : 'R';
+        size = (innerWidth<680) ? rnd(90,140) : rnd(110,190);
+        const r  = size/2;
+        const op = rnd(0.56, 0.72).toFixed(2);
 
-      // 动画强度：更大的摆幅与旋转
-      box.style.setProperty('--hx',   rnd(24, 60).toFixed(1) + 'px');  // 左右摆动
-      box.style.setProperty('--vy',   rnd(22, 48).toFixed(1) + 'px');  // 上下摆动
-      box.style.setProperty('--rot0', rnd(-12,-4).toFixed(2) + 'deg');
-      box.style.setProperty('--rot1', rnd(  4,12).toFixed(2) + 'deg');
+        // 侧边范围（以“中心点”算）
+        let xMin, xMax;
+        if (side === 'L'){
+          xMin = r;                       // 不能越过左边界
+          xMax = Math.max(r, G.leftMax - r);
+        }else{
+          xMin = Math.min(G.rightBound - r, G.rightMin + r);
+          xMax = G.rightBound - r;
+        }
+        if (xMax <= xMin) continue;       // 该侧没有足够空间
 
-      const dur = rnd(16, 28);
-      box.style.setProperty('--dur',   dur.toFixed(2) + 's');
-      box.style.setProperty('--delay', (-rnd(0, dur)).toFixed(2) + 's'); // 负延时 → 错峰
-      box.style.setProperty('--op',    rnd(0.42, 0.58).toFixed(2));
-      box.style.setProperty('--spin',  rnd(60, 120).toFixed(2) + 's');   // 内部图片缓慢自转
+        const yMin = r + 16;
+        const yMax = G.vh - r - 16;
+        if (yMax <= yMin) continue;
 
-      // 图片
-      const img = new Image();
-      img.src = pick(SRC);
-      img.alt = ''; img.loading='lazy'; img.decoding='async';
+        // 随机中心点（基准位）
+        cx = rnd(xMin, xMax);
+        cy = rnd(yMin, yMax);
 
-      box.appendChild(img);
-      sky.appendChild(box);
+        // 计算可用摆幅（保证动画中也不越界、不进主体）
+        const hSlack = Math.min(cx - xMin, xMax - cx);
+        const vSlack = Math.min(cy - yMin, yMax - cy);
+
+        ax = Math.min(rnd(18, 40), hSlack);   // 水平幅度
+        ay = Math.min(rnd(16, 36), vSlack);   // 垂直幅度
+
+        // 在 keyframe 中我们做从 (dx0,dy0) → (dx1,dy1) 的往返
+        dx0 = -ax; dx1 = ax;
+        dy0 = -ay; dy1 = ay;
+
+        // 扩张半径（保证全程不重叠）
+        Rexp = r + Math.max(ax, ay);
+
+        if (!fits(cx, cy, Rexp)) continue;  // 与已放置的“运动范围”相交 → 重试
+        ok = true;
+
+        // 创建元素
+        const box = document.createElement('div');
+        box.className = 'bubble';
+        box.style.setProperty('--size',  size + 'px');
+        box.style.setProperty('--left', (cx - r) + 'px');
+        box.style.setProperty('--top',  (cy - r) + 'px');
+
+        // 动画参数：往返；负延时错峰
+        const dur = rnd(16, 26);
+        box.style.setProperty('--dx0', dx0.toFixed(1) + 'px');
+        box.style.setProperty('--dy0', dy0.toFixed(1) + 'px');
+        box.style.setProperty('--dx1', dx1.toFixed(1) + 'px');
+        box.style.setProperty('--dy1', dy1.toFixed(1) + 'px');
+        box.style.setProperty('--dur',  dur.toFixed(2) + 's');
+        box.style.setProperty('--delay',(-rnd(0, dur)).toFixed(2) + 's');
+
+        const img = new Image();
+        img.src = pick(SRC);
+        img.alt = ''; img.loading='lazy'; img.decoding='async';
+        img.style.setProperty('--op', op);
+
+        box.appendChild(img);
+        sky.appendChild(box);
+
+        placed.push({ cx, cy, Rexp });
+      }
+      // 如果多次尝试仍放不下，就减少数量，避免卡死
+      if (!ok) break;
     }
   }
 
