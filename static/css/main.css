@@ -1438,3 +1438,16 @@ ul.timeline li::before{
 .card-consult{background:linear-gradient(135deg,#ec008c 0%,#fc6767 100%)}
 @media(max-width:640px){.proj-card{height:140px;font-size:1.25rem}}
 
+/* === Calibri/Carlito 全站字体统一（放在 main.css 最后） === */
+:root{
+  --font-sans: Calibri, 'Carlito', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+}
+html, body,
+h1, h2, h3, h4, h5, h6,
+.page-title,
+.nav-links a,
+.brand,
+.edu-item, .edu-text h3, .edu-text p {
+  font-family: var(--font-sans) !important;
+}
+
