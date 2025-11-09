@@ -418,16 +418,16 @@ def teaching_awards():
 @app.route("/teaching/thesis")
 def teaching_thesis():
     import json
-    # 从项目根目录读取 theses.json
     try:
         with open("theses.json", "r", encoding="utf-8") as f:
             data = json.load(f)
     except Exception:
         data = {}
 
-    # 原始键名映射
-    ug = data.get("undergrad", []) or data.get("ug", []) or []
-    pg = data.get("grad", [])      or data.get("pg", []) or []
+    ug = (data.get("undergrad") or data.get("ug") or
+          data.get("undergraduate") or [])
+    pg = (data.get("grad") or data.get("pg") or
+          data.get("graduate") or [])
 
     return render_template("teaching_thesis.html",
                            ug_theses=ug, grad_theses=pg)
@@ -520,6 +520,7 @@ def presentations():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
