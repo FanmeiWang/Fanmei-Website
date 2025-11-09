@@ -3,96 +3,71 @@
 
 {% block extra_css %}
 <style>
+  /* —— 页面基调（暖灰底） —— */
   :root{ --brand:#004F59; --ink:#17343A; --muted:#6A7880; --card:#fff; }
-  .page-wrap{ max-width:1100px; margin:0 auto; padding:0 1rem 64px; }
-  .page-title{ color:var(--brand); text-align:center; margin:52px 0 18px; }
+  body{ background:#C9C4B8; }               /* 更深一些的暖灰，可改成 #C7C1B5/#D0CAC0 */
+  .page-wrap{ max-width:1240px; margin:0 auto; padding:0 1rem 64px; }
+  .page-title{ color:var(--brand); text-align:center; margin:54px 0 18px; }
 
-  /* 三列：左证书｜清单｜右证书 */
-  .awards-grid{
-    display:grid; grid-template-columns:280px 1fr 280px; gap:1.25rem;
+  /* —— 区块标题 —— */
+  .section-heading{
+    margin:12px 0 10px; color:var(--ink);
+    font-size:1.55rem; font-weight:900; letter-spacing:.2px;
   }
-  /* 小屏：单列堆叠；左证书到最上，右证书到最后 */
+
+  /* —— National：左证书 | 清单 | 右证书 —— */
+  .national-grid{
+    display:grid; gap:1.5rem 2rem;
+    grid-template-columns:240px 1fr 240px;   /* 中间更宽，两侧紧凑 */
+  }
   @media (max-width:1100px){
-    .awards-grid{ grid-template-columns:1fr; }
+    .national-grid{ grid-template-columns:1fr; }
     .featured{ position:static; }
-    .featured:first-of-type{ order:-1; }
-    .featured:last-of-type{ order:1; }
+    .featured:first-of-type{ order:-1; }     /* 左证书到最上 */
+    .featured:last-of-type{ order:1; }       /* 右证书到最后 */
   }
 
-  /* 侧边证书卡片 */
-  .featured{ position:sticky; top:92px; align-self:start; }
+  .featured{ position:sticky; top:86px; align-self:start; }
   .featured .card{ background:var(--card); border-radius:14px;
                    box-shadow:0 10px 22px rgba(0,0,0,.10); overflow:hidden; }
   .featured img{ width:100%; display:block; aspect-ratio:4/5; object-fit:cover; }
-  .featured .cap{ padding:.65rem .8rem .8rem; color:var(--muted); font-size:.92rem; }
+  .featured .cap{ padding:.65rem .8rem .85rem; color:var(--muted); font-size:.92rem; }
 
-  /* 中间清单 */
-  .list{ background:var(--card); border-radius:14px;
-         box-shadow:0 10px 22px rgba(0,0,0,.08); padding:1rem; }
-  .section-top{ margin: .5rem .4rem .25rem; color:var(--ink); font-weight:900; font-size:1.25rem; }
-  ul.awards{ list-style:none; margin:.25rem .5rem 1rem; padding:0; display:grid; row-gap:.35rem; }
-  li.award{ padding:.5rem .5rem; border-bottom:1px solid #eef2f6; }
-  li.award:last-child{ border-bottom:none; }
-  .award .line{ margin:0; color:var(--ink); }
-  .award .meta{ margin:0; color:var(--muted); font-size:.95rem; }
-  .badge{
-    display:inline-block; margin-right:.5rem; padding:.1rem .5rem; border-radius:999px;
-    background:#FFF5D6; border:1px solid #F1E0B8; font-weight:800; font-size:.78rem; color:#584f2c;
+  /* —— 通用清单卡（白卡，可滚动） —— */
+  .card-list{
+    background:var(--card); border-radius:14px;
+    box-shadow:0 10px 22px rgba(0,0,0,.08);
+    border:1px solid #eceff3; padding:1rem 1.1rem;
   }
-  /* —— 页面底色换成柔和灰 —— */
-body{ background:#F3F4F6; } /* 你也可以调成 #F0F2F5 或 #EFEDEA */
+  .scroll{ max-height:calc(100vh - 220px); overflow:auto; scrollbar-gutter:stable both-edges; }
+  @media (max-width:1100px){ .scroll{ max-height:none; overflow:visible; } }
 
-/* —— 整体放宽：中央列更大 —— */
-.page-wrap{ max-width:1280px; } /* 原 1100px → 1280px，居中不挤 */
+  /* —— 两列（University | Scholarships） —— */
+  .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
+  @media (max-width:900px){ .two-col{ grid-template-columns:1fr; } }
 
-.awards-grid{
-  /* 左/右证书列 240–320px 自适应；中间列至少 720px，尽量占满 */
-  grid-template-columns:
-    clamp(240px, 22vw, 320px)
-    minmax(720px, 1fr)
-    clamp(240px, 22vw, 320px);
-  gap:1.5rem 2rem;
-}
+  /* —— 奖项条目 —— */
+  .section-top{ margin:.25rem .2rem .5rem; color:var(--ink); font-weight:900; font-size:1.25rem; }
+  ul.awards{ list-style:none; margin:.25rem .2rem .5rem; padding:0; display:grid; row-gap:.45rem; }
+  li.award{ padding:.65rem .4rem; border-bottom:1px solid #edf1f5; }
+  li.award:last-child{ border-bottom:none; }
+  .award .line{ margin:0; display:flex; align-items:center; gap:.75rem; color:var(--ink); font-size:1.05rem; }
+  .award .meta{ margin:.15rem 0 0; color:var(--muted); font-size:.95rem; }
 
-/* —— 中央奖项清单：限定视窗高度内滚动 —— */
-.list{
-  max-height:calc(100vh - 210px);   /* 视口内留出标题/外边距 */
-  overflow:auto;
-  padding:1rem 1.25rem;
-  scrollbar-gutter:stable both-edges;  /* 防止内容抖动 */
-  overscroll-behavior:contain;         /* 滚动不把整页带走 */
-  background:#fff; border-radius:14px; /* 继续用白卡 */
-}
+  /* —— 年份徽章（更大更醒目） —— */
+  .badge{
+    display:inline-flex; align-items:center; justify-content:center;
+    min-width:3.2rem; padding:.22rem .68rem;
+    font-size:.9rem; font-weight:800; letter-spacing:.15px;
+    border-radius:999px; color:#5b4a14;
+    background:linear-gradient(180deg,#FFE9B5 0%, #F5D27A 100%);
+    border:1px solid #E7C46A;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.65), 0 1px 2px rgba(0,0,0,.05);
+  }
 
-/*（可选）更好看的滚动条（Chrome/Edge/Safari）*/
-.list::-webkit-scrollbar{ width:10px; }
-.list::-webkit-scrollbar-thumb{ background:rgba(0,0,0,.18); border-radius:8px; }
-.list::-webkit-scrollbar-thumb:hover{ background:rgba(0,0,0,.28); }
-
-/* —— 年份徽章：更大一点、略加质感 —— */
-.badge{
-  display:inline-block;
-  padding:.18rem .6rem;               /* 原来更窄 → 现在更宽 */
-  font-size:.88rem; font-weight:800; letter-spacing:.2px;
-  background:linear-gradient(180deg,#FFF6C1 0%, #FFE59A 100%);
-  border:1px solid #EFD27B; color:#5a4a11;
-  border-radius:999px;
-}
-
-/* 小标题再大一点，层次更清楚 */
-.section-top{ font-size:1.35rem; margin:.25rem .2rem .35rem; }
-
-li.award{ padding:.65rem .5rem; border-bottom:1px solid #ecf0f3; }
-.award .line{ font-size:1.05rem; }
-
-/* 顶部吸附稍降一点，避免太贴导航（按你的导航高度调） */
-.featured{ top:84px; }
-
-/* 窄屏：单列展示，不做内部滚动，交给整页滚动即可 */
-@media (max-width:1100px){
-  .list{ max-height:none; overflow:visible; }
-}
-
+  /* —— 更好看的滚动条（可选，WebKit） —— */
+  .scroll::-webkit-scrollbar{ width:10px; }
+  .scroll::-webkit-scrollbar-thumb{ background:#d7dde3; border-radius:999px; }
 </style>
 {% endblock %}
 
@@ -100,60 +75,76 @@ li.award{ padding:.65rem .5rem; border-bottom:1px solid #ecf0f3; }
 <div class="page-wrap">
   <h1 class="page-title">Teaching Awards &amp; Honours</h1>
 
-  <div class="awards-grid">
-    <!-- 左侧“重点证书” -->
-    <aside class="featured">
-      <figure class="card">
-        <img src="{{ url_for('static', filename=featured_left) }}"
-             alt="{{ featured_left_alt or 'Award certificate' }}"
-             loading="lazy" decoding="async">
-        <figcaption class="cap">{{ featured_left_caption or '' }}</figcaption>
-      </figure>
-    </aside>
+  {# ===== Section 1: NATIONAL ===== #}
+  <section>
+    <h2 class="section-heading">National</h2>
+    <div class="national-grid">
+      <!-- 左侧证书 -->
+      <aside class="featured">
+        <figure class="card">
+          <img src="{{ url_for('static', filename=featured_left) }}"
+               alt="{{ featured_left_alt or 'National award certificate' }}"
+               loading="lazy" decoding="async">
+          <figcaption class="cap">{{ featured_left_caption or '' }}</figcaption>
+        </figure>
+      </aside>
 
-    <!-- 中间：清单 -->
-    <section class="list">
-      <h2 class="section-top">National</h2>
-      <ul class="awards">
-        {% for a in nat %}
-          <li class="award">
-            <p class="line"><span class="badge">{{ a.year }}</span>{{ a.title }}</p>
-            <p class="meta">{{ a.issuer }}</p>
-          </li>
-        {% endfor %}
-      </ul>
+      <!-- 中间清单（可滚动） -->
+      <section class="card-list scroll" tabindex="0" aria-label="National awards">
+        <h3 class="section-top" style="margin-top:0">Awards &amp; Honours</h3>
+        <ul class="awards">
+          {% for a in nat %}
+            <li class="award">
+              <p class="line"><span class="badge">{{ a.year }}</span>{{ a.title }}</p>
+              <p class="meta">{{ a.issuer }}</p>
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
 
-      <h2 class="section-top">University</h2>
-      <ul class="awards">
-        {% for a in univ %}
-          <li class="award">
-            <p class="line"><span class="badge">{{ a.year }}</span>{{ a.title }}</p>
-            <p class="meta">{{ a.issuer }}</p>
-          </li>
-        {% endfor %}
-      </ul>
+      <!-- 右侧证书 -->
+      <aside class="featured">
+        <figure class="card">
+          <img src="{{ url_for('static', filename=featured_right) }}"
+               alt="{{ featured_right_alt or 'National award certificate' }}"
+               loading="lazy" decoding="async">
+          <figcaption class="cap">{{ featured_right_caption or '' }}</figcaption>
+        </figure>
+      </aside>
+    </div>
+  </section>
 
-      <h2 class="section-top">Scholarships &amp; Fellowships</h2>
-      <ul class="awards">
-        {% for a in scholar %}
-          <li class="award">
-            <p class="line"><span class="badge">{{ a.year }}</span>{{ a.title }}</p>
-            <p class="meta">{{ a.issuer }}</p>
-          </li>
-        {% endfor %}
-      </ul>
-    </section>
+  {# ===== Section 2: UNIVERSITY & SCHOLARSHIPS ===== #}
+  <section style="margin-top:22px">
+    <h2 class="section-heading">University &amp; Scholarships</h2>
 
-    <!-- 右侧“重点证书” -->
-    <aside class="featured">
-      <figure class="card">
-        <img src="{{ url_for('static', filename=featured_right) }}"
-             alt="{{ featured_right_alt or 'Award certificate' }}"
-             loading="lazy" decoding="async">
-        <figcaption class="cap">{{ featured_right_caption or '' }}</figcaption>
-      </figure>
-    </aside>
-  </div>
+    <div class="two-col">
+      <!-- University 列 -->
+      <section class="card-list scroll" tabindex="0" aria-label="University awards">
+        <h3 class="section-top" style="margin-top:0">University</h3>
+        <ul class="awards">
+          {% for a in univ %}
+            <li class="award">
+              <p class="line"><span class="badge">{{ a.year }}</span>{{ a.title }}</p>
+              <p class="meta">{{ a.issuer }}</p>
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+
+      <!-- Scholarships 列 -->
+      <section class="card-list scroll" tabindex="0" aria-label="Scholarships & fellowships">
+        <h3 class="section-top" style="margin-top:0">Scholarships &amp; Fellowships</h3>
+        <ul class="awards">
+          {% for a in scholar %}
+            <li class="award">
+              <p class="line"><span class="badge">{{ a.year }}</span>{{ a.title }}</p>
+              <p class="meta">{{ a.issuer }}</p>
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+    </div>
+  </section>
 </div>
 {% endblock %}
-
