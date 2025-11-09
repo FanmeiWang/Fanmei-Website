@@ -417,24 +417,25 @@ def teaching_awards():
 
 @app.route("/teaching/thesis")
 def teaching_thesis():
-    import os, json
     data_path = os.path.join(app.root_path, "data", "theses.json")
-    print("Loading theses from:", data_path)  # 调试：启动后看控制台
 
-    ug, pg = [], []
+    # 允许没有文件时页面仍可打开
+    data = {}
     try:
         with open(data_path, encoding="utf-8") as f:
             data = json.load(f)
-        # 兼容多种键名；你现在用的是 "undergraduate" / "graduate"
-        ug = data.get("undergraduate") or data.get("undergrad") or data.get("ug") or []
-        pg = data.get("graduate") or data.get("grad") or []
-        print(f"Loaded: UG={len(ug)}  PG={len(pg)}")  # 调试：数量
-    except Exception as e:
-        print("Failed to load theses.json:", e)
+    except FileNotFoundError:
+        pass
+
+    # 兼容多种可能的键名
+    ug = (data.get("undergraduate") or data.get("undergrad") or data.get("ug") or [])
+    pg = (data.get("graduate")      or data.get("grad")      or [])
+
+    # （可选）在控制台看一眼是否读到了
+    print(f"[thesis] loaded UG={len(ug)} PG={len(pg)} from {data_path}")
 
     return render_template("teaching_thesis.html",
                            ug_theses=ug, grad_theses=pg)
-
 
 # ---- Presentations（唯一）----
 @app.route("/presentations")
@@ -523,6 +524,7 @@ def presentations():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
