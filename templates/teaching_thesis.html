@@ -148,10 +148,11 @@ body.no-scroll{overflow:hidden}
 
 <script>
 (function(){
-  // 数据（来自后端 Jinja）
+  // 1) 取后端注入的数据
   const UG = {{ ug|tojson }};
   const PG = {{ pg|tojson }};
 
+  // 2) 取节点
   const BACKDROP = document.getElementById('thesis-backdrop');
   const DRAWER   = document.getElementById('thesis-drawer');
   const TITLE    = document.getElementById('drawer-title');
@@ -163,6 +164,7 @@ body.no-scroll{overflow:hidden}
   let CURRENT = 'ug';
   let SOURCE  = UG;
 
+  // 3) 打开/关闭
   function openDrawer(section){
     CURRENT = section;
     SOURCE  = (section === 'ug') ? UG : PG;
@@ -183,11 +185,12 @@ body.no-scroll{overflow:hidden}
     document.body.classList.remove('no-scroll');
   }
 
+  // 4) 渲染列表
   function normalize(x){ return (x||'').toString().toLowerCase(); }
   function escapeHtml(x){
-  const s = (x === null || x === undefined) ? '' : String(x); // 确保数字年份先转成字符串
-  return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-}
+    const s = (x == null) ? '' : String(x);
+    return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
 
   function renderList(arr, query){
     let rows = Array.isArray(arr) ? arr.slice() : [];
@@ -216,16 +219,22 @@ body.no-scroll{overflow:hidden}
     COUNT.textContent = rows.length + ' items';
   }
 
+  // 5) 事件
   document.querySelectorAll('[data-open]').forEach(btn=>{
-  btn.addEventListener('click', (e)=>{
-    e.preventDefault();
-    openDrawer(btn.getAttribute('data-open'));
+    btn.addEventListener('click', e=>{
+      e.preventDefault();
+      openDrawer(btn.getAttribute('data-open'));
+    });
   });
-});
   BACKDROP.addEventListener('click', closeDrawer);
   CLOSE.addEventListener('click', closeDrawer);
   document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeDrawer(); });
   INPUT.addEventListener('input', ()=> renderList(SOURCE, INPUT.value));
+
+  // 6) 支持通过 URL 指定默认面板：/teaching/thesis?tab=pg 或 ?tab=ug
+  const params = new URLSearchParams(window.location.search);
+  const tab = params.get('tab');
+  if(tab === 'pg' || tab === 'ug'){ openDrawer(tab); }
 })();
 </script>
 {% endblock %}
