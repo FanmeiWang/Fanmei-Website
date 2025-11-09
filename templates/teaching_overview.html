@@ -162,10 +162,11 @@ body{ background:var(--page); }
 
     </section>
 
-    <section class="color-card card--sand reveal">
-      <div class="card-hero"><h3 class="hero-title">Thesis Supervision</h3></div>
-      <p class="card-desc">Supervision provided to 50-plus bachelor’s &amp; master’s dissertations.</p>
-    </section>
+    <a class="color-card card--sand reveal" href="{{ url_for('teaching_thesis') }}">
+  <div class="card-hero"><h3 class="hero-title">Thesis Supervision</h3></div>
+  <p class="card-desc">Supervision provided to 50-plus bachelor’s &amp; master’s dissertations.</p>
+</a>
+
   </div>
 
   <!-- Teaching Philosophy -->
@@ -215,4 +216,5 @@ body{ background:var(--page); }
 {% endblock %}
 
 {% block content_scripts %}{% endblock %}
+
 
