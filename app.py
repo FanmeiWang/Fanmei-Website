@@ -429,7 +429,28 @@ def teaching_thesis():
 
     return render_template("teaching_thesis.html",
                            ug_theses=ug, grad_theses=pg)
+    
+@app.route("/teaching/thesis")
+def teaching_thesis():
+    # 读取 data/theses.json，把两组数据塞给模板
+    import os, json
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    data_path = os.path.join(base_dir, "data", "theses.json")
 
+    ug_theses, grad_theses = [], []
+    try:
+        with open(data_path, encoding="utf-8") as f:
+            data = json.load(f)
+        ug_theses  = data.get("undergraduate", [])
+        grad_theses = data.get("graduate", [])
+    except Exception:
+        pass
+
+    return render_template(
+        "teaching_thesis.html",
+        ug_theses=ug_theses,
+        grad_theses=grad_theses
+    )
 # ---- Presentations（唯一）----
 @app.route("/presentations")
 def presentations():
@@ -517,6 +538,7 @@ def presentations():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
