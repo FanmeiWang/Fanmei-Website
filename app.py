@@ -417,25 +417,21 @@ def teaching_awards():
 
 @app.route("/teaching/thesis")
 def teaching_thesis():
-    data_path = os.path.join(app.root_path, "data", "theses.json")
-
-    # 允许没有文件时页面仍可打开
-    data = {}
+    import json
+    # 从项目根目录读取 theses.json
     try:
-        with open(data_path, encoding="utf-8") as f:
+        with open("theses.json", "r", encoding="utf-8") as f:
             data = json.load(f)
-    except FileNotFoundError:
-        pass
+    except Exception:
+        data = {}
 
-    # 兼容多种可能的键名
-    ug = (data.get("undergraduate") or data.get("undergrad") or data.get("ug") or [])
-    pg = (data.get("graduate")      or data.get("grad")      or [])
-
-    # （可选）在控制台看一眼是否读到了
-    print(f"[thesis] loaded UG={len(ug)} PG={len(pg)} from {data_path}")
+    # 原始键名映射
+    ug = data.get("undergrad", []) or data.get("ug", []) or []
+    pg = data.get("grad", [])      or data.get("pg", []) or []
 
     return render_template("teaching_thesis.html",
                            ug_theses=ug, grad_theses=pg)
+
 
 # ---- Presentations（唯一）----
 @app.route("/presentations")
@@ -524,6 +520,7 @@ def presentations():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
