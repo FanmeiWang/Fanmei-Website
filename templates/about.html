@@ -16,7 +16,7 @@
   .profile-card   {display:grid;grid-template-columns:260px 1fr;gap:2rem;
                    background:#fff;border-radius:12px;padding:2.5rem 3rem;
                    box-shadow:0 6px 18px rgba(0,0,0,.06);}
-  .profile-card>.skills-wrap{ grid-column:1/-1; margin-top:1.2rem; }
+  .profile-card>.skills-groups{ grid-column:1/-1; margin-top:1.2rem; }
   @media(max-width:900px){
     .profile-card{grid-template-columns:1fr}
     .profile-photo img{margin:0 auto}
@@ -28,7 +28,17 @@
                     transition:opacity .2s;}
   .profile-social a:hover{opacity:.7}
 
-  /* ===== 技能图标（一排、可横向滚动） ===== */
+  /* ===== 技能分组（每类一行；标题 + 横向滚动条） ===== */
+  .skills-groups{ display:flex; flex-direction:column; gap:.5rem; }
+  .skills-row{
+    display:grid; grid-template-columns: 180px 1fr; align-items:center; column-gap:12px;
+    padding:.35rem 0; border-bottom:1px dashed rgba(0,0,0,.06);
+  }
+  .skills-row:last-child{ border-bottom:none; }
+  .skills-title{
+    font-size:.9rem; font-weight:700; color:var(--brand-teal);
+    letter-spacing:.3px; text-transform:uppercase; white-space:nowrap;
+  }
   .skills-strip{
     display:flex; align-items:center; gap:var(--badge-gap);
     overflow-x:auto; flex-wrap:nowrap; padding:.25rem 0;
@@ -53,17 +63,18 @@
     max-width:100%; max-height:100%;
     height:var(--badge-h); width:auto; object-fit:contain;
   }
+  /* 图片缺失 → 文字兜底 */
   .skill-badge .label{ display:none; font-size:.8rem; color:var(--brand-teal); padding:0 .4rem; }
   .skill-badge.fallback{
     padding:0 .6rem; border:1px dashed rgba(0,0,0,.18); background:#f7fbfb;
   }
   .skill-badge.fallback .label{ display:inline-block; }
 
-  /* 分组细分隔（仍然一排） */
-  .skill-sep{
-    flex:0 0 auto; width:1px; height:24px; margin:0 4px;
-    background:linear-gradient(180deg,transparent,rgba(0,0,0,.25),transparent);
-    opacity:.5;
+  /* 小屏：标题置顶、图标一行横滑 */
+  @media (max-width: 640px){
+    :root{ --badge-h: 28px; --badge-gap: 12px; }
+    .skills-row{ grid-template-columns: 1fr; }
+    .skills-title{ margin-bottom:.25rem; }
   }
 
   /* ===== 两侧竖向滚动 LOGO 轨道（慢速，可悬停暂停） ===== */
@@ -99,49 +110,47 @@
     .rail-edge{ display: none; }
     .page-wrap, .container{ padding-left: 1rem; padding-right: 1rem; }
   }
-
-  /* 小屏技能图标略小 */
-  @media (max-width: 640px){
-    :root{ --badge-h: 28px; --badge-gap: 12px; }
-  }
 </style>
 {% endblock %}
 
 {% block content %}
 {# 两侧轨道用到的 LOGO 文件（位于 static/img/logos/ 下） #}
-{% set LOGOS = ['pku','ustb','georgian','laurentian','fairbank','hrpa','psdata'] %}
+{% set LOGOS = ['pku','ustb','georgian','laurentian','fairbank','HRPA','psdata'] %}
 
-{# 技能按组：Web → Python/DS → ML/AI → Analytics（仅用于组织输出，实际渲染仍是一排） #}
+{# ===== 技能清单（按你的文件名逐一列出；缺图时自动文字兜底） ===== #}
 {% set SKILL_GROUPS = [
   ('Web', [
-    {'id':'html5','label':'HTML5'},
-    {'id':'css3','label':'CSS3'},
-    {'id':'jinja2','label':'Jinja2'},
-    {'id':'flask','label':'Flask'},
-    {'id':'git','label':'Git'},
-    {'id':'github','label':'GitHub'}
+    {'id':'html5','label':'HTML5','file':'html5.png'},
+    {'id':'css3','label':'CSS3','file':'css3.png'},
+    {'id':'jinja2','label':'Jinja2','file':'jinja2.png'},
+    {'id':'flask','label':'Flask','file':'flask.png'},
+    {'id':'git','label':'Git','file':'git.png'},
+    {'id':'github','label':'GitHub','file':'github.png'}
   ]),
-  ('Python/DS', [
-    {'id':'python','label':'Python'},
-    {'id':'jupyter','label':'Jupyter'},
-    {'id':'pandas','label':'Pandas'},
-    {'id':'numpy','label':'NumPy'}
+  ('Python & Data', [
+    {'id':'python','label':'Python','file':'python.png'},
+    {'id':'jupyter','label':'Jupyter','file':'jupyter.png'},
+    {'id':'pandas','label':'Pandas','file':'pandas.png'},
+    {'id':'numpy','label':'NumPy','file':'numpy.png'},
+    {'id':'sklearn','label':'scikit‑learn','file':'sklearn.png'},
+    {'id':'spyder','label':'Spyder','file':'spyder.jpeg'}
   ]),
-  ('ML/AI', [
-    {'id':'sklearn','label':'scikit‑learn'},
-    {'id':'pytorch','label':'PyTorch'},
-    {'id':'tensorflow','label':'TensorFlow'},
-    {'id':'keras','label':'Keras'},
-    {'id':'huggingface','label':'Hugging Face'},
-    {'id':'openai','label':'OpenAI'},
-    {'id':'langchain','label':'LangChain'}
+  ('ML & AI', [
+    {'id':'pytorch','label':'PyTorch','file':'pytorch.png'},
+    {'id':'tensorflow','label':'TensorFlow','file':'tensorflow.png'},
+    {'id':'huggingface','label':'Hugging Face','file':'huggingface.png'},
+    {'id':'openai','label':'OpenAI API','file':'openai.png'},
+    {# 你也保存了三枚“概念型”图标——按你的意愿保留在行尾 #}
+    {'id':'ml','label':'Machine Learning','file':'ml.png'},
+    {'id':'dl','label':'Deep Learning','file':'dl.png'},
+    {'id':'generative_ai','label':'Generative AI','file':'Generative_AI.png'}
   ]),
-  ('Analytics', [
-    {'id':'sql','label':'SQL'},
-    {'id':'power_bi','label':'Power BI'},
-    {'id':'spss','label':'SPSS'},
-    {'id':'sas','label':'SAS'},
-    {'id':'nvivo','label':'NVivo'}
+  ('Analytics & BI', [
+    {'id':'sql','label':'SQL','file':'sql.png'},
+    {'id':'powerbi','label':'Power BI','file':'powerbi.png'},
+    {'id':'spss','label':'SPSS','file':'spss.png'},
+    {'id':'sas','label':'SAS','file':'sas.png'},
+    {'id':'nvivo','label':'NVivo','file':'nvivo.png'}
   ])
 ] %}
 
@@ -176,26 +185,26 @@ apps and APIs, and shipping ML/NLP features that improve insights, policy and en
       </div>
     </div>
 
-    <!-- ===== Skills: 一排图标（按组输出、可横向滚动） ===== -->
-    <div class="skills-wrap">
-      <div class="skills-strip" role="list" aria-label="Technical skills">
-        {% for group, items in SKILL_GROUPS %}
-          {% for s in items %}
-            <span class="skill-badge" role="listitem" title="{{ s.label }}">
-              <img
-                src="{{ url_for('static', filename='img/badges/' ~ s.id ~ '.png') }}"
-                alt="{{ s.label }}"
-                onerror="this.parentElement.classList.add('fallback');
-                         this.parentElement.querySelector('.label').style.display='inline-block';
-                         this.remove();">
-              <span class="label">{{ s.label }}</span>
-            </span>
-          {% endfor %}
-          {% if not loop.last %}
-            <span class="skill-sep" aria-hidden="true"></span>
-          {% endif %}
-        {% endfor %}
-      </div>
+    <!-- ===== Skills（每类一行） ===== -->
+    <div class="skills-groups" role="list" aria-label="Technical skills">
+      {% for group, items in SKILL_GROUPS %}
+        <div class="skills-row" role="listitem">
+          <div class="skills-title">{{ group }}</div>
+          <div class="skills-strip">
+            {% for s in items %}
+              <span class="skill-badge" title="{{ s.label }}">
+                <img
+                  src="{{ url_for('static', filename='img/badges/' ~ s.get('file', s.id ~ '.png')) }}"
+                  alt="{{ s.label }}"
+                  onerror="this.parentElement.classList.add('fallback');
+                           this.parentElement.querySelector('.label').style.display='inline-block';
+                           this.remove();">
+                <span class="label">{{ s.label }}</span>
+              </span>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
     </div>
   </section>
 
@@ -229,6 +238,7 @@ apps and APIs, and shipping ML/NLP features that improve insights, policy and en
   </div>
 </aside>
 {% endblock %}
+
 
 
 
