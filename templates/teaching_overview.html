@@ -1,27 +1,27 @@
 {% extends "base.html" %}
-{% block title %}Teaching & Training – Fanmei Wang{% endblock %}
+{% block title %}Teaching & Training — Fanmei Wang{% endblock %}
 
 {% block extra_css %}
 <style>
 /* ────────────────── 设计变量（浅金/浅褐） ────────────────── */
 :root{
-  --brand:#004F59;      /* 标题主色 */
-  --ink:#14343A;        /* 正文深色 */
-  --page:#F2EEE6;       /* 暖米色底 */
+  --brand:#004F59; /* 标题主色 */
+  --ink:#14343A;   /* 正文深色 */
+  --page:#F2EEE6;  /* 暖米色底 */
   --shadow-lg:0 18px 42px rgba(0,0,0,.12);
-  --shadow:   0 12px 32px rgba(0,0,0,.10);
+  --shadow: 0 12px 32px rgba(0,0,0,.10);
 
   /* 白卡顶部“纸感”高光 */
   --paper-glow: linear-gradient(180deg, rgba(255,247,220,.55), rgba(255,247,220,0) 46%, transparent);
 
   /* 顶部卡片的头部渐变 */
-  --hero-gold-top:#FFE4AC;  --hero-gold-btm:#E8C066;   /* Academic */
-  --hero-tan-top :#EBD3B6;  --hero-tan-btm :#C9A178;   /* Corporate */
-  --hero-honey-top:#FFDDA4; --hero-honey-btm:#E3A940;  /* Awards */
-  --hero-sand-top:#F0D8B0;  --hero-sand-btm:#CFA170;   /* Thesis */
+  --hero-gold-top:#FFE4AC; --hero-gold-btm:#E8C066; /* Academic */
+  --hero-tan-top :#EBD3B6; --hero-tan-btm :#C9A178; /* Corporate */
+  --hero-honey-top:#FFDDA4; --hero-honey-btm:#E3A940; /* Awards */
+  --hero-sand-top:#F0D8B0;  --hero-sand-btm:#CFA170;  /* Thesis */
 
   /* 哲学区配色 */
-  --philo-band:#2f3a3f;      /* 深灰绿：做背景带，提高白字对比 */
+  --philo-band:#2f3a3f; /* 深灰绿：做背景带，提高白字对比 */
 }
 
 /* ────────────────── 页面骨架 ────────────────── */
@@ -36,38 +36,28 @@ body{ background:var(--page); }
 
 /* ────────────────── 顶部四张卡 ────────────────── */
 .cards{
-  display:grid; grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:2.2rem;
+  display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:2.2rem;
 }
 @media (max-width:1100px){ .cards{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
-@media (max-width:640px){  .cards{ grid-template-columns:1fr; } }
+@media (max-width:640px){ .cards{ grid-template-columns:1fr; } }
 
 .color-card{
   position:relative; display:flex; flex-direction:column;
-  min-height:440px;
-  border-radius:22px; overflow:hidden;
-  background:#fff; box-shadow:var(--shadow);
+  min-height:440px; border-radius:22px; overflow:hidden; background:#fff;
+  box-shadow:var(--shadow); text-decoration:none; color:inherit;
 }
-
 /* 头部 */
 .card-hero{
-  flex:1 0 62%;
-  display:flex; align-items:center; justify-content:center;
-  text-align:center; padding:22px 18px;
-  border-radius:22px 22px 12px 12px;
+  flex:1 0 62%; display:flex; align-items:center; justify-content:center;
+  text-align:center; padding:22px 18px; border-radius:22px 22px 12px 12px;
   background:linear-gradient(180deg,var(--hero-top),var(--hero-btm));
   box-shadow:inset 0 1px 0 rgba(255,255,255,.35);
 }
 .hero-title{ margin:0; font-weight:900; font-size:2.2rem; line-height:1.12; color:#1f2e33; text-shadow:0 1px 0 rgba(255,255,255,.35); }
-
 /* 下半区简介 */
 .card-desc{ flex:1 0 38%; padding:18px 22px 22px; color:#2D4B4F; line-height:1.6; margin:0; }
-
 /* 顶部纸感 */
-.color-card::before{
-  content:""; position:absolute; inset:0; border-radius:22px; pointer-events:none;
-  background:var(--paper-glow); mix-blend-mode:multiply; 
-}
+.color-card::before{ content:""; position:absolute; inset:0; border-radius:22px; pointer-events:none; background:var(--paper-glow); mix-blend-mode:multiply; }
 
 /* 每张卡的头部色 */
 .card--gold  { --hero-top:var(--hero-gold-top);  --hero-btm:var(--hero-gold-btm); }
@@ -77,96 +67,107 @@ body{ background:var(--page); }
 
 /* ────────────────── Teaching Philosophy ────────────────── */
 .philo{ max-width:1200px; margin:28px auto 0; }
-.philo h2{
-  text-align:center; color:var(--ink); margin:0 0 12px;
-  font-weight:900; font-size:1.6rem; letter-spacing:.2px;
-}
-.philo-band{
-  background: var(--philo-band);
-  border-radius:10px;
-  padding:14px 16px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.08) inset, 0 6px 18px rgba(0,0,0,.06);
-}
-.philo-list{
-  display:grid;
-  grid-template-columns: repeat(2, minmax(0,1fr));
-  gap:10px 28px;
-}
+.philo h2{ text-align:center; color:var(--ink); margin:0 0 12px; font-weight:900; font-size:1.6rem; letter-spacing:.2px; }
+.philo-band{ background: var(--philo-band); border-radius:10px; padding:14px 16px; box-shadow: 0 8px 24px rgba(0,0,0,.08) inset, 0 6px 18px rgba(0,0,0,.06); }
+.philo-list{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:10px 28px; }
 @media (max-width: 720px){ .philo-list{ grid-template-columns: 1fr; } }
-.philo-item{
-  display:flex; align-items:center; gap:.6rem;
-  color:#fff; text-decoration:none;
-  font-size:1.18rem; font-weight:500; line-height:1.35;
-  padding:8px 2px;
-}
+.philo-item{ display:flex; align-items:center; gap:.6rem; color:#fff; text-decoration:none; font-size:1.18rem; font-weight:500; line-height:1.35; padding:8px 2px; }
 .philo-item:hover{ text-decoration: underline; }
 .philo-item:focus-visible{ outline:2px solid rgba(255,255,255,.6); outline-offset:2px; border-radius:4px; }
 .philo-item::before{
-  content:"";
-  width:16px; height:16px; border-radius:50%;
+  content:""; width:16px; height:16px; border-radius:50%;
   background: radial-gradient(circle at 35% 35%, #fff8cc 20%, #F2B300 60%, #D49600 100%);
-  box-shadow: 0 2px 6px rgba(0,0,0,.25);
-  flex:0 0 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.25); flex:0 0 16px;
 }
 
-/* ────────────────── 教学图片横向滚动（恢复原来那组） ────────────────── */
+/* ────────────────── 教学图片横向滚动（保留原组） ────────────────── */
 .gallery{ max-width:1200px; margin:18px auto 0; }
-.marquee{
-  position:relative; overflow:hidden;
-  border-radius:14px; background:#ffffffcc;
-  box-shadow:0 10px 26px rgba(0,0,0,.08);
-  padding:12px 0;
-}
-.marquee .track{
-  display:flex; align-items:center; gap:14px;
-  width:max-content;
-  animation: scrollLeft 38s linear infinite;
-}
+.marquee{ position:relative; overflow:hidden; border-radius:14px; background:#ffffffcc; box-shadow:0 10px 26px rgba(0,0,0,.08); padding:12px 0; }
+.marquee .track{ display:flex; align-items:center; gap:14px; width:max-content; animation: scrollLeft 38s linear infinite; }
 .marquee:hover .track{ animation-play-state: paused; } /* 悬停暂停 */
 @keyframes scrollLeft{ from{transform:translateX(0)} to{transform:translateX(-50%)} }
-.marquee img{
-  height:120px; width:auto; object-fit:cover;
-  border-radius:10px; box-shadow:0 4px 14px rgba(0,0,0,.10);
-  filter:saturate(1.02);
-}
+.marquee img{ height:120px; width:auto; object-fit:cover; border-radius:10px; box-shadow:0 4px 14px rgba(0,0,0,.10); filter:saturate(1.02); }
 @media(max-width:760px){ .marquee img{ height:88px; } }
 @media (prefers-reduced-motion: reduce){ .marquee .track{ animation:none; } }
+
+/* ────────────────── 背景“记忆泡泡” ────────────────── */
+/* 固定覆盖全屏；不阻挡交互；在内容层之下 */
+.bubble-field{
+  position: fixed; inset: 0; overflow: hidden;
+  pointer-events: none; z-index: 0;
+}
+/* 让导航与主体浮在气泡之上（不改布局） */
+nav, .page-wrap{ position: relative; z-index: 1; }
+
+/* 单个圆形气泡 */
+.bubble{
+  position: absolute;
+  left: var(--x, 50%); top: var(--y, 50%);
+  width: var(--s, 120px); height: var(--s, 120px);
+  border-radius: 50%; object-fit: cover;
+  opacity: var(--o, .22);                          /* 半透明 */
+  filter: saturate(1.02) contrast(.98) brightness(.98);
+  transform:
+    translate(-50%, -50%)
+    translate(var(--dx0, 0px), var(--dy0, 0px))
+    rotate(var(--r0, 0deg));
+  animation: bubbleBob var(--dur, 24s) ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* 缓慢摆动 + 微旋转（只动 transform，性能友好） */
+@keyframes bubbleBob{
+  to{
+    transform:
+      translate(-50%, -50%)
+      translate(var(--dx1, 0px), var(--dy1, 0px))
+      rotate(var(--r1, 5deg));
+  }
+}
+
+/* 无障碍：尊重“减少动画” */
+@media (prefers-reduced-motion: reduce){
+  .bubble{ animation: none; }
+}
+
+/* 如希望只保留背景泡泡，隐藏横向画廊可开启这行 */
+/* .gallery{ display:none; } */
 </style>
 {% endblock %}
 
 {% block content %}
 {% set DOSSIER = url_for('static', filename='docs/teaching_dossier.pdf') %}
-{% set PAGES = [6,10,14,18] %}
+{% set PAGES   = [6,10,14,18] %}
+
+<!-- 背景漂浮泡泡层（装饰；不参与交互） -->
+<div class="bubble-field" aria-hidden="true"></div>
 
 <div class="page-wrap">
   <h1 class="page-title">Teaching &amp; Training</h1>
 
   <!-- 顶部四张卡片 -->
   <div class="cards">
-    <section class="color-card card--gold reveal">
+    <section class="color-card card--gold reveal" style="--d:.02s">
       <div class="card-hero"><h3 class="hero-title">Academic Courses</h3></div>
       <p class="card-desc">Undergraduate, MBA &amp; EMBA syllabi I designed and taught.</p>
     </section>
 
-    <section class="color-card card--tan reveal">
+    <section class="color-card card--tan reveal" style="--d:.05s">
       <div class="card-hero"><h3 class="hero-title">Corporate Training</h3></div>
       <p class="card-desc">In-house workshops on HR analytics, culture and performance.</p>
     </section>
 
-    <section class="color-card card--honey reveal">
-      <!-- Teaching Awards 卡片（点击跳转到 /teaching/awards 页面） -->
-<a class="color-card card--honey reveal" href="{{ url_for('teaching_awards') }}">
-  <div class="card-hero"><h3 class="hero-title">Teaching Awards</h3></div>
-  <p class="card-desc">Institutional accolades recognising instructional excellence.</p>
-</a>
+    <!-- Teaching Awards（点击跳转） -->
+    <a class="color-card card--honey reveal" style="--d:.08s" href="{{ url_for('teaching_awards') }}">
+      <div class="card-hero"><h3 class="hero-title">Teaching Awards</h3></div>
+      <p class="card-desc">Institutional accolades recognising instructional excellence.</p>
+    </a>
 
-    </section>
-
-    <a class="color-card card--sand reveal" href="{{ url_for('teaching_thesis') }}">
-  <div class="card-hero"><h3 class="hero-title">Thesis Supervision</h3></div>
-  <p class="card-desc">Supervision provided to 50-plus bachelor’s &amp; master’s dissertations.</p>
-</a>
-
+    <!-- Thesis Supervision（点击跳转） -->
+    <a class="color-card card--sand reveal" style="--d:.11s" href="{{ url_for('teaching_thesis') }}">
+      <div class="card-hero"><h3 class="hero-title">Thesis Supervision</h3></div>
+      <p class="card-desc">Supervision provided to 50-plus bachelor’s &amp; master’s dissertations.</p>
+    </a>
   </div>
 
   <!-- Teaching Philosophy -->
@@ -174,47 +175,118 @@ body{ background:var(--page); }
     <h2>Teaching Philosophy</h2>
     <div class="philo-band">
       <nav class="philo-list" aria-label="Teaching Philosophy principles">
-        <a class="philo-item" href="{{ DOSSIER }}#page={{ PAGES[0] }}" target="_blank" rel="noopener">
-          Linking Theory &amp; Real-World Application
-        </a>
-        <a class="philo-item" href="{{ DOSSIER }}#page={{ PAGES[1] }}" target="_blank" rel="noopener">
-          Proactive &amp; Interactive Learning
-        </a>
-        <a class="philo-item" href="{{ DOSSIER }}#page={{ PAGES[2] }}" target="_blank" rel="noopener">
-          Valuing Students’ Voices
-        </a>
-        <a class="philo-item" href="{{ DOSSIER }}#page={{ PAGES[3] }}" target="_blank" rel="noopener">
-          Teaching as Continual Growth
-        </a>
+        <a class="philo-item" href="{{ DOSSIER }}#page={{ PAGES[0] }}" target="_blank" rel="noopener">Linking Theory &amp; Real-World Application</a>
+        <a class="philo-item" href="{{ DOSSIER }}#page={{ PAGES[1] }}" target="_blank" rel="noopener">Proactive &amp; Interactive Learning</a>
+        <a class="philo-item" href="{{ DOSSIER }}#page={{ PAGES[2] }}" target="_blank" rel="noopener">Valuing Students’ Voices</a>
+        <a class="philo-item" href="{{ DOSSIER }}#page={{ PAGES[3] }}" target="_blank" rel="noopener">Teaching as Continual Growth</a>
       </nav>
     </div>
   </section>
 
-  <!-- 教学图片（恢复成教学目录的图片；不混入 Presentations） -->
+  <!-- 教学图片（保留你原来的横向画廊；需要时可上方一行隐藏） -->
   {% set gallery_imgs = [
-    'teacching8.jpg','teaching1.png','teaching2.png',
-    'teaching4.jpg','teaching5.png','teaching7.jpg','teaching9.jpg'
+    'teaching1.png','teaching2.png','teaching3.png',
+    'teaching4.png','teaching5.png','teaching6.png',
+    'teaching7.png','teaching8.png','teaching9.png'
   ] %}
   <section class="gallery" aria-label="Teaching photos">
     <div class="marquee">
       <div class="track">
         {# 第一组 #}
         {% for f in gallery_imgs %}
-          <img src="{{ url_for('static', filename='img/teaching/' ~ f) }}"
-               alt="Teaching photo {{ loop.index }}">
+          <img src="{{ url_for('static', filename='img/teaching/' ~ f) }}" alt="Teaching photo {{ loop.index }}">
         {% endfor %}
         {# 第二组（用于无缝循环） #}
         {% for f in gallery_imgs %}
-          <img src="{{ url_for('static', filename='img/teaching/' ~ f) }}"
-               alt="" aria-hidden="true">
+          <img src="{{ url_for('static', filename='img/teaching/' ~ f) }}" alt="" aria-hidden="true">
         {% endfor %}
       </div>
     </div>
   </section>
-
 </div>
+
+<!-- 背景泡泡脚本（放在 content 里，因 base.html 无 content_scripts 块） -->
+<script>
+(function(){
+  const field = document.querySelector('.bubble-field');
+  if(!field) return;
+
+  // 1) 图片清单：优先后端传入的 photos（来自 /teaching 路由）
+  const PHOTOS = {{ (photos if photos is defined else [
+    'teaching1.png','teaching2.png','teaching3.png',
+    'teaching4.png','teaching5.png','teaching6.png',
+    'teaching7.png','teaching8.png','teaching9.png'
+  ]) | tojson }};
+
+  // 静态目录前缀（/static/img/teaching/）
+  const BASE = {{ url_for('static', filename='img/teaching/') | tojson }};
+
+  // 2) 容量：随视口宽度自适应
+  function bubbleCount(){
+    const w = window.innerWidth || document.documentElement.clientWidth;
+    if (w < 640)  return 5;   // 手机
+    if (w < 1100) return 8;   // 平板
+    return 12;                // 桌面
+  }
+
+  // 工具函数
+  const rand = (min, max) => Math.random()*(max-min)+min;
+  const pick = arr => arr[Math.floor(Math.random()*arr.length)] || arr[0];
+
+  // 3) 生成/重排
+  function populate(){
+    field.innerHTML = '';
+    const N = bubbleCount();
+
+    for(let i=0; i<N; i++){
+      const img = document.createElement('img');
+      img.className = 'bubble';
+      img.alt = '';                         // 装饰性图像
+      img.decoding = 'async';
+      img.loading  = 'lazy';
+
+      img.src = BASE + pick(PHOTOS);
+
+      // 随机位置（避开边缘）
+      img.style.setProperty('--x', rand(6, 94) + '%');
+      img.style.setProperty('--y', rand(8, 92) + '%');
+
+      // 尺寸（手机略小）
+      const small = window.innerWidth < 640;
+      const size = small ? rand(64, 120) : rand(86, 160);
+      img.style.setProperty('--s', size + 'px');
+
+      // 轻摆范围与旋转：起/终值
+      const dx  = rand(-14, 14),   dy  = rand(-18, 18);
+      const dx2 = dx*rand(0.6,1.4), dy2 = dy*rand(0.6,1.4);
+      const r0  = rand(-6, 6),     r1  = r0 + rand(-6, 6);
+
+      img.style.setProperty('--dx0', dx + 'px');
+      img.style.setProperty('--dy0', dy + 'px');
+      img.style.setProperty('--dx1', dx2 + 'px');
+      img.style.setProperty('--dy1', dy2 + 'px');
+      img.style.setProperty('--r0',  r0 + 'deg');
+      img.style.setProperty('--r1',  r1 + 'deg');
+
+      // 时长与相位（负延时让它们不同步）
+      const dur = rand(16, 30);
+      img.style.setProperty('--dur', dur + 's');
+      img.style.animationDelay = (-rand(0, dur)).toFixed(2) + 's';
+
+      // 透明度（0.14～0.28）
+      img.style.opacity = rand(0.14, 0.28).toFixed(2);
+
+      field.appendChild(img);
+    }
+  }
+
+  // 初次渲染 + 视口变化时重排（防抖）
+  populate();
+  let t = null;
+  window.addEventListener('resize', ()=>{
+    clearTimeout(t);
+    t = setTimeout(populate, 200);
+  });
+})();
+</script>
 {% endblock %}
-
-{% block content_scripts %}{% endblock %}
-
-
