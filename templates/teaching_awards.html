@@ -1,14 +1,104 @@
 {% extends "base.html" %}
-{% block content %}
-<h1 class="page-title">Teaching Awards</h1>
-<p class="lead">
-  Institutional accolades recognising my commitment to instructional excellence,
-  pedagogical innovation, and student mentorship.
-</p>
+{% block title %}Teaching Awards & Honours — Fanmei Wang{% endblock %}
 
-<ul class="timeline">
-  {% for a in awards %}
-    <li><strong>{{ a.award }}</strong> — {{ a.institution }} · {{ a.year }}</li>
-  {% endfor %}
-</ul>
+{% block extra_css %}
+<style>
+  :root{ --brand:#004F59; --ink:#17343A; --muted:#6A7880; --card:#fff; }
+  .page-wrap{ max-width:1100px; margin:0 auto; padding:0 1rem 64px; }
+  .page-title{ color:var(--brand); text-align:center; margin:52px 0 18px; }
+
+  /* 三列：左证书｜清单｜右证书 */
+  .awards-grid{
+    display:grid; grid-template-columns:280px 1fr 280px; gap:1.25rem;
+  }
+  /* 小屏：单列堆叠；左证书到最上，右证书到最后 */
+  @media (max-width:1100px){
+    .awards-grid{ grid-template-columns:1fr; }
+    .featured{ position:static; }
+    .featured:first-of-type{ order:-1; }
+    .featured:last-of-type{ order:1; }
+  }
+
+  /* 侧边证书卡片 */
+  .featured{ position:sticky; top:92px; align-self:start; }
+  .featured .card{ background:var(--card); border-radius:14px;
+                   box-shadow:0 10px 22px rgba(0,0,0,.10); overflow:hidden; }
+  .featured img{ width:100%; display:block; aspect-ratio:4/5; object-fit:cover; }
+  .featured .cap{ padding:.65rem .8rem .8rem; color:var(--muted); font-size:.92rem; }
+
+  /* 中间清单 */
+  .list{ background:var(--card); border-radius:14px;
+         box-shadow:0 10px 22px rgba(0,0,0,.08); padding:1rem; }
+  .section-top{ margin: .5rem .4rem .25rem; color:var(--ink); font-weight:900; font-size:1.25rem; }
+  ul.awards{ list-style:none; margin:.25rem .5rem 1rem; padding:0; display:grid; row-gap:.35rem; }
+  li.award{ padding:.5rem .5rem; border-bottom:1px solid #eef2f6; }
+  li.award:last-child{ border-bottom:none; }
+  .award .line{ margin:0; color:var(--ink); }
+  .award .meta{ margin:0; color:var(--muted); font-size:.95rem; }
+  .badge{
+    display:inline-block; margin-right:.5rem; padding:.1rem .5rem; border-radius:999px;
+    background:#FFF5D6; border:1px solid #F1E0B8; font-weight:800; font-size:.78rem; color:#584f2c;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+  <h1 class="page-title">Teaching Awards &amp; Honours</h1>
+
+  <div class="awards-grid">
+    <!-- 左侧“重点证书” -->
+    <aside class="featured">
+      <figure class="card">
+        <img src="{{ url_for('static', filename=featured_left) }}"
+             alt="{{ featured_left_alt or 'Award certificate' }}"
+             loading="lazy" decoding="async">
+        <figcaption class="cap">{{ featured_left_caption or '' }}</figcaption>
+      </figure>
+    </aside>
+
+    <!-- 中间：清单 -->
+    <section class="list">
+      <h2 class="section-top">National</h2>
+      <ul class="awards">
+        {% for a in nat %}
+          <li class="award">
+            <p class="line"><span class="badge">{{ a.year }}</span>{{ a.title }}</p>
+            <p class="meta">{{ a.issuer }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <h2 class="section-top">University</h2>
+      <ul class="awards">
+        {% for a in univ %}
+          <li class="award">
+            <p class="line"><span class="badge">{{ a.year }}</span>{{ a.title }}</p>
+            <p class="meta">{{ a.issuer }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <h2 class="section-top">Scholarships &amp; Fellowships</h2>
+      <ul class="awards">
+        {% for a in scholar %}
+          <li class="award">
+            <p class="line"><span class="badge">{{ a.year }}</span>{{ a.title }}</p>
+            <p class="meta">{{ a.issuer }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <!-- 右侧“重点证书” -->
+    <aside class="featured">
+      <figure class="card">
+        <img src="{{ url_for('static', filename=featured_right) }}"
+             alt="{{ featured_right_alt or 'Award certificate' }}"
+             loading="lazy" decoding="async">
+        <figcaption class="cap">{{ featured_right_caption or '' }}</figcaption>
+      </figure>
+    </aside>
+  </div>
+</div>
 {% endblock %}
