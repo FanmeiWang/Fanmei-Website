@@ -39,6 +39,60 @@
     display:inline-block; margin-right:.5rem; padding:.1rem .5rem; border-radius:999px;
     background:#FFF5D6; border:1px solid #F1E0B8; font-weight:800; font-size:.78rem; color:#584f2c;
   }
+  /* —— 页面底色换成柔和灰 —— */
+body{ background:#F3F4F6; } /* 你也可以调成 #F0F2F5 或 #EFEDEA */
+
+/* —— 整体放宽：中央列更大 —— */
+.page-wrap{ max-width:1280px; } /* 原 1100px → 1280px，居中不挤 */
+
+.awards-grid{
+  /* 左/右证书列 240–320px 自适应；中间列至少 720px，尽量占满 */
+  grid-template-columns:
+    clamp(240px, 22vw, 320px)
+    minmax(720px, 1fr)
+    clamp(240px, 22vw, 320px);
+  gap:1.5rem 2rem;
+}
+
+/* —— 中央奖项清单：限定视窗高度内滚动 —— */
+.list{
+  max-height:calc(100vh - 210px);   /* 视口内留出标题/外边距 */
+  overflow:auto;
+  padding:1rem 1.25rem;
+  scrollbar-gutter:stable both-edges;  /* 防止内容抖动 */
+  overscroll-behavior:contain;         /* 滚动不把整页带走 */
+  background:#fff; border-radius:14px; /* 继续用白卡 */
+}
+
+/*（可选）更好看的滚动条（Chrome/Edge/Safari）*/
+.list::-webkit-scrollbar{ width:10px; }
+.list::-webkit-scrollbar-thumb{ background:rgba(0,0,0,.18); border-radius:8px; }
+.list::-webkit-scrollbar-thumb:hover{ background:rgba(0,0,0,.28); }
+
+/* —— 年份徽章：更大一点、略加质感 —— */
+.badge{
+  display:inline-block;
+  padding:.18rem .6rem;               /* 原来更窄 → 现在更宽 */
+  font-size:.88rem; font-weight:800; letter-spacing:.2px;
+  background:linear-gradient(180deg,#FFF6C1 0%, #FFE59A 100%);
+  border:1px solid #EFD27B; color:#5a4a11;
+  border-radius:999px;
+}
+
+/* 小标题再大一点，层次更清楚 */
+.section-top{ font-size:1.35rem; margin:.25rem .2rem .35rem; }
+
+li.award{ padding:.65rem .5rem; border-bottom:1px solid #ecf0f3; }
+.award .line{ font-size:1.05rem; }
+
+/* 顶部吸附稍降一点，避免太贴导航（按你的导航高度调） */
+.featured{ top:84px; }
+
+/* 窄屏：单列展示，不做内部滚动，交给整页滚动即可 */
+@media (max-width:1100px){
+  .list{ max-height:none; overflow:visible; }
+}
+
 </style>
 {% endblock %}
 
@@ -102,3 +156,4 @@
   </div>
 </div>
 {% endblock %}
+
