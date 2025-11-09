@@ -7,12 +7,16 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
   /* ===== 页面布局 / 个人卡片 ===== */
-  :root{ --brand-teal:#004F59; }
+  :root{
+    --brand-teal:#004F59;
+    --badge-h: 34px;      /* 技能图标高度（统一控制） */
+    --badge-gap: 14px;    /* 技能图标间距 */
+  }
   .container      {max-width:1100px;margin:0 auto;padding:0 1rem;}
   .profile-card   {display:grid;grid-template-columns:260px 1fr;gap:2rem;
                    background:#fff;border-radius:12px;padding:2.5rem 3rem;
                    box-shadow:0 6px 18px rgba(0,0,0,.06);}
-  .profile-card>.badge-wall{grid-column:1/-1;margin-top:1.5rem;}
+  .profile-card>.skills-wrap{ grid-column:1/-1; margin-top:1.2rem; }
   @media(max-width:900px){
     .profile-card{grid-template-columns:1fr}
     .profile-photo img{margin:0 auto}
@@ -23,9 +27,44 @@
   .profile-social a{margin-right:1rem;font-size:1.3rem;color:var(--brand-teal);
                     transition:opacity .2s;}
   .profile-social a:hover{opacity:.7}
-  .badge-wall     {list-style:none;padding:0;display:flex;flex-wrap:wrap;
-                   gap:1rem;align-items:center;}
-  .badge-wall img {height:38px;width:auto;object-fit:contain;}
+
+  /* ===== 技能图标（一排、可横向滚动） ===== */
+  .skills-strip{
+    display:flex; align-items:center; gap:var(--badge-gap);
+    overflow-x:auto; flex-wrap:nowrap; padding:.25rem 0;
+    -webkit-overflow-scrolling: touch; scrollbar-width:thin;
+  }
+  .skills-strip::-webkit-scrollbar{ height:6px; }
+  .skills-strip::-webkit-scrollbar-thumb{
+    background:rgba(0,0,0,.18); border-radius:3px;
+  }
+
+  .skill-badge{
+    flex:0 0 auto;
+    display:inline-flex; align-items:center; justify-content:center;
+    background:#fff; border-radius:10px;
+    box-shadow:0 3px 8px rgba(0,0,0,.08);
+    padding:6px;
+    filter:grayscale(.55) opacity(.95);
+    transition:transform .12s ease, filter .2s ease;
+  }
+  .skill-badge:hover{ transform:translateY(-2px) scale(1.03); filter:none; }
+  .skill-badge img{
+    max-width:100%; max-height:100%;
+    height:var(--badge-h); width:auto; object-fit:contain;
+  }
+  .skill-badge .label{ display:none; font-size:.8rem; color:var(--brand-teal); padding:0 .4rem; }
+  .skill-badge.fallback{
+    padding:0 .6rem; border:1px dashed rgba(0,0,0,.18); background:#f7fbfb;
+  }
+  .skill-badge.fallback .label{ display:inline-block; }
+
+  /* 分组细分隔（仍然一排） */
+  .skill-sep{
+    flex:0 0 auto; width:1px; height:24px; margin:0 4px;
+    background:linear-gradient(180deg,transparent,rgba(0,0,0,.25),transparent);
+    opacity:.5;
+  }
 
   /* ===== 两侧竖向滚动 LOGO 轨道（慢速，可悬停暂停） ===== */
   .rail-edge{
@@ -50,12 +89,9 @@
     padding:10px;
   }
 
-  /* 悬停暂停（桌面） */
   @media (hover:hover){
     .rail-edge:hover .rail-run{ animation-play-state: paused; }
   }
-
-  /* 竖向滚动关键帧：向上移动半程实现无缝 */
   @keyframes railScroll{ to{ transform: translateY(-50%); } }
 
   /* 小屏不显示两侧轨道，避免遮挡 */
@@ -63,12 +99,51 @@
     .rail-edge{ display: none; }
     .page-wrap, .container{ padding-left: 1rem; padding-right: 1rem; }
   }
+
+  /* 小屏技能图标略小 */
+  @media (max-width: 640px){
+    :root{ --badge-h: 28px; --badge-gap: 12px; }
+  }
 </style>
 {% endblock %}
 
 {% block content %}
 {# 两侧轨道用到的 LOGO 文件（位于 static/img/logos/ 下） #}
 {% set LOGOS = ['pku','ustb','georgian','laurentian','fairbank','hrpa','psdata'] %}
+
+{# 技能按组：Web → Python/DS → ML/AI → Analytics（仅用于组织输出，实际渲染仍是一排） #}
+{% set SKILL_GROUPS = [
+  ('Web', [
+    {'id':'html5','label':'HTML5'},
+    {'id':'css3','label':'CSS3'},
+    {'id':'jinja2','label':'Jinja2'},
+    {'id':'flask','label':'Flask'},
+    {'id':'git','label':'Git'},
+    {'id':'github','label':'GitHub'}
+  ]),
+  ('Python/DS', [
+    {'id':'python','label':'Python'},
+    {'id':'jupyter','label':'Jupyter'},
+    {'id':'pandas','label':'Pandas'},
+    {'id':'numpy','label':'NumPy'}
+  ]),
+  ('ML/AI', [
+    {'id':'sklearn','label':'scikit‑learn'},
+    {'id':'pytorch','label':'PyTorch'},
+    {'id':'tensorflow','label':'TensorFlow'},
+    {'id':'keras','label':'Keras'},
+    {'id':'huggingface','label':'Hugging Face'},
+    {'id':'openai','label':'OpenAI'},
+    {'id':'langchain','label':'LangChain'}
+  ]),
+  ('Analytics', [
+    {'id':'sql','label':'SQL'},
+    {'id':'power_bi','label':'Power BI'},
+    {'id':'spss','label':'SPSS'},
+    {'id':'sas','label':'SAS'},
+    {'id':'nvivo','label':'NVivo'}
+  ])
+] %}
 
 <main class="container">
 
@@ -88,33 +163,41 @@
 full‑stack delivery—designing data contracts and lakehouse ingestion, building Python/Flask
 apps and APIs, and shipping ML/NLP features that improve insights, policy and engagement.</p>
 
-<p class="highlights">
-  <em>Highlights:</em>
-  (1) <strong>Language Competency Evaluation &amp; Training Tool (v2.3 and earlier)</strong> — a bilingual‑skills recommender that I built and maintain as the <strong>sole developer</strong> (Top‑4 finalist, 2025 Public Service Data &amp; AI Challenge);
-  (2) <strong>Python, YAML contract–driven ETL</strong> to automate the employee‑month data pipeline (ingest → transform → curated). <em>Data‑quality reporting and policy‑gated releases</em> are <strong>planned</strong>.
-</p>
-
-
-      <p class="profile-handle">@reallygreatsite</p>
+      <p class="highlights">
+        <em>Highlights:</em>
+        (1) <strong>Language Competency Evaluation &amp; Training Tool (v2.3 and earlier)</strong> — a bilingual‑skills recommender that I built and maintain as the <strong>sole developer</strong> (Top‑4 finalist, 2025 Public Service Data &amp; AI Challenge);
+        (2) <strong>Python, YAML contract–driven ETL</strong> to automate the employee‑month data pipeline (ingest → transform → curated). <em>Data‑quality reporting and policy‑gated releases</em> are <strong>planned</strong>.
+      </p>
 
       <div class="profile-social">
-        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-        <a href="#"><i class="fab fa-github"></i></a>
-        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="#" aria-label="Twitter / X"><i class="fab fa-twitter"></i></a>
       </div>
     </div>
 
-    <!-- ===== Badges ===== -->
-    <ul class="badge-wall">
-      {% for b in ['python','flask','deep_learning','machine_learning','generative_ai',
-                   'sas','spss','nvivo','sql','power_bi'] %}
-        <li><img src="{{ url_for('static', filename='img/badges/' ~ b ~ '.png') }}"
-                 alt="{{ b }}"></li>
-      {% endfor %}
-    </ul>
+    <!-- ===== Skills: 一排图标（按组输出、可横向滚动） ===== -->
+    <div class="skills-wrap">
+      <div class="skills-strip" role="list" aria-label="Technical skills">
+        {% for group, items in SKILL_GROUPS %}
+          {% for s in items %}
+            <span class="skill-badge" role="listitem" title="{{ s.label }}">
+              <img
+                src="{{ url_for('static', filename='img/badges/' ~ s.id ~ '.png') }}"
+                alt="{{ s.label }}"
+                onerror="this.parentElement.classList.add('fallback');
+                         this.parentElement.querySelector('.label').style.display='inline-block';
+                         this.remove();">
+              <span class="label">{{ s.label }}</span>
+            </span>
+          {% endfor %}
+          {% if not loop.last %}
+            <span class="skill-sep" aria-hidden="true"></span>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
   </section>
-
-  {# 注意：已移除原来的 <ul class="logo-wall"> —— 不再在底部展示机构 LOGO #}
 
 </main>
 
@@ -146,6 +229,8 @@ apps and APIs, and shipping ML/NLP features that improve insights, policy and en
   </div>
 </aside>
 {% endblock %}
+
+
 
 
 
