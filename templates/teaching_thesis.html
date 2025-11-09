@@ -8,8 +8,6 @@
   --ink:  #153E42;
   --muted:#5E6E73;
 }
-
-/* 页面容器 + 说明高亮 */
 .page-wrap{max-width:1080px;margin:0 auto;padding:0 1rem 2rem}
 .lead{
   color:var(--teal);
@@ -20,8 +18,6 @@
   margin:.6rem 0 1.3rem;
   font-size:1.12rem;font-weight:650
 }
-
-/* 外框底（浅土黄绿） */
 .catalog{
   background:linear-gradient(180deg,#F7F4DF 0%, #EEF5E6 100%);
   border:1px solid rgba(0,0,0,.06);
@@ -29,13 +25,8 @@
   padding:1.2rem;
   box-shadow:0 8px 24px rgba(0,0,0,.05)
 }
-
-/* 两张大卡片（并排） */
-.thesis-panels{
-  display:grid;gap:1rem;grid-template-columns:repeat(2,minmax(0,1fr))
-}
+.thesis-panels{ display:grid;gap:1rem;grid-template-columns:repeat(2,minmax(0,1fr)) }
 @media(max-width:860px){ .thesis-panels{grid-template-columns:1fr} }
-
 .panel{
   background:linear-gradient(180deg,#FFE59A 0%, #FFF2BF 100%);
   border:1px solid rgba(0,0,0,.05);
@@ -48,14 +39,11 @@
   color:var(--teal);font-weight:800;font-size:1.38rem;letter-spacing:.2px
 }
 .panel-btn .sub{font-size:1.05rem;font-weight:700;color:#2f5b5f;opacity:.95}
-
-/* 右侧抽屉 */
 .backdrop{
   position:fixed;inset:0;background:rgba(0,0,0,.28);
   opacity:0;pointer-events:none;transition:opacity .18s ease
 }
 .backdrop.open{opacity:1;pointer-events:auto}
-
 .drawer{
   position:fixed;top:0;right:0;height:100%;width:min(560px,100%);
   background:#FFF8E6;border-left:1px solid rgba(0,0,0,.08);
@@ -75,16 +63,12 @@
   background:#fff;box-shadow:0 1px 0 rgba(0,0,0,.05), inset 0 0 0 1px rgba(0,0,0,.06);
   cursor:pointer;color:var(--teal);font-weight:800
 }
-
-/* 工具条 */
 .tools{display:flex;gap:.6rem;align-items:center;padding:.8rem 1.1rem}
 .tools input[type="search"]{
   flex:1 1 auto;padding:.6rem .7rem;border-radius:10px;border:1px solid rgba(0,0,0,.14);
   font-size:1rem;color:var(--ink);background:#fff
 }
 .tools .count{color:#3a5357;font-size:.95rem}
-
-/* 论文列表 */
 .list{flex:1 1 auto;overflow:auto;padding:0 1.1rem 1.1rem}
 .thesis-item{
   background:#FFF4D6;border:1px solid rgba(0,0,0,.06);border-left:5px solid var(--teal);
@@ -93,8 +77,6 @@
 .thesis-item h4{margin:0 0 .25rem;font-size:1.02rem;color:var(--ink)}
 .thesis-item .meta{margin:0;font-size: .95rem;color:#56696D}
 .empty{color:#7a8a8e;padding:1.2rem}
-
-/* 无障碍：抽屉打开时禁止主体滚动（移动端友好） */
 body.no-scroll{overflow:hidden}
 </style>
 {% endblock %}
@@ -107,21 +89,19 @@ body.no-scroll{overflow:hidden}
     Click a panel to browse all thesis titles.
   </p>
 
-  {# 数据兜底（如果后端暂未传入） #}
+  {# 确保模板变量存在 #}
   {% set ug = ug_theses if ug_theses is defined else [] %}
   {% set pg = grad_theses if grad_theses is defined else [] %}
 
   <div class="catalog">
     <div class="thesis-panels">
-      <!-- Undergraduate -->
       <section class="panel">
         <button class="panel-btn" data-open="ug" aria-haspopup="dialog" aria-controls="thesis-drawer">
           <span>Undergraduate Theses</span>
-          <span class="sub">43 items</span>
+          <span class="sub">{{ ug|length }} items</span>
         </button>
       </section>
 
-      <!-- Graduate / MBA / EMBA -->
       <section class="panel">
         <button class="panel-btn" data-open="pg" aria-haspopup="dialog" aria-controls="thesis-drawer">
           <span>Graduate / MBA / EMBA Theses</span>
@@ -132,7 +112,6 @@ body.no-scroll{overflow:hidden}
   </div>
 </div>
 
-<!-- 抽屉 & 蒙层 -->
 <div class="backdrop" id="thesis-backdrop" aria-hidden="true"></div>
 <aside class="drawer" id="thesis-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
   <div class="drawer-header">
@@ -148,11 +127,10 @@ body.no-scroll{overflow:hidden}
 
 <script>
 (function(){
-  // 1) 取后端注入的数据
-  const UG = {{ ug|tojson }};
-  const PG = {{ pg|tojson }};
+  // 从后端注入的数据（加 |safe 防止转义）
+  const UG = {{ ug|tojson|safe }};
+  const PG = {{ pg|tojson|safe }};
 
-  // 2) 取节点
   const BACKDROP = document.getElementById('thesis-backdrop');
   const DRAWER   = document.getElementById('thesis-drawer');
   const TITLE    = document.getElementById('drawer-title');
@@ -164,7 +142,6 @@ body.no-scroll{overflow:hidden}
   let CURRENT = 'ug';
   let SOURCE  = UG;
 
-  // 3) 打开/关闭
   function openDrawer(section){
     CURRENT = section;
     SOURCE  = (section === 'ug') ? UG : PG;
@@ -185,7 +162,6 @@ body.no-scroll{overflow:hidden}
     document.body.classList.remove('no-scroll');
   }
 
-  // 4) 渲染列表
   function normalize(x){ return (x||'').toString().toLowerCase(); }
   function escapeHtml(x){
     const s = (x == null) ? '' : String(x);
@@ -219,7 +195,6 @@ body.no-scroll{overflow:hidden}
     COUNT.textContent = rows.length + ' items';
   }
 
-  // 5) 事件
   document.querySelectorAll('[data-open]').forEach(btn=>{
     btn.addEventListener('click', e=>{
       e.preventDefault();
@@ -231,7 +206,7 @@ body.no-scroll{overflow:hidden}
   document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeDrawer(); });
   INPUT.addEventListener('input', ()=> renderList(SOURCE, INPUT.value));
 
-  // 6) 支持通过 URL 指定默认面板：/teaching/thesis?tab=pg 或 ?tab=ug
+  // 支持 URL 指定默认面板：?tab=pg 或 ?tab=ug
   const params = new URLSearchParams(window.location.search);
   const tab = params.get('tab');
   if(tab === 'pg' || tab === 'ug'){ openDrawer(tab); }
