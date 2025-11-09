@@ -154,8 +154,12 @@ body{ background:var(--page); }
     </section>
 
     <section class="color-card card--honey reveal">
-      <div class="card-hero"><h3 class="hero-title">Teaching Awards</h3></div>
-      <p class="card-desc">Institutional accolades recognising instructional excellence.</p>
+      <!-- Teaching Awards 卡片（点击跳转到 /teaching/awards 页面） -->
+<a class="color-card card--honey reveal" href="{{ url_for('teaching_awards') }}">
+  <div class="card-hero"><h3 class="hero-title">Teaching Awards</h3></div>
+  <p class="card-desc">Institutional accolades recognising instructional excellence.</p>
+</a>
+
     </section>
 
     <section class="color-card card--sand reveal">
@@ -211,3 +215,4 @@ body{ background:var(--page); }
 {% endblock %}
 
 {% block content_scripts %}{% endblock %}
+
