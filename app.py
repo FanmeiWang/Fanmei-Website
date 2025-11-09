@@ -398,8 +398,45 @@ def teaching_corporate():
 
 @app.route("/teaching/awards")
 def teaching_awards():
-    return render_template("teaching_awards.html",
-                           awards=awards_data)
+    nat = [
+        {"year": 2015,
+         "title": "China Top 100 Selected MBA Cases Award",
+         "issuer": "China National MBA Education Supervisory Committee"},
+    ]
+    univ = [
+        {"year": 2018, "title": "Undergraduate Teaching Award",
+         "issuer": "University of Science and Technology Beijing (USTB)"},
+        {"year": 2016, "title": "Best Undergraduate Class Advisor", "issuer": "USTB"},
+        {"year": 2014, "title": "Best Project — 1st Teaching Demonstration Courses Taught in English", "issuer": "USTB"},
+        {"year": 2014, "title": "Outstanding Instructor — Excellent Course Teaching Styles (Undergraduate Courses with Bright Stars)", "issuer": "USTB"},
+        {"year": 2014, "title": "Best MBA Curriculum Award — School of Economics & Management", "issuer": "USTB"},
+        {"year": 2013, "title": "Best MBA Curriculum Award — School of Economics & Management", "issuer": "USTB"},
+        {"year": 2013, "title": "1st place — 6th Postgraduate Teaching Awards", "issuer": "USTB"},
+        {"year": 2013, "title": "1st place — 13th Young Faculty Teaching Competition", "issuer": "USTB"},
+        {"year": 2013, "title": "2nd place — 1st Micro‑lecture Teaching Competition", "issuer": "USTB"},
+    ]
+    scholar = [
+        {"year": 2002, "title": "Ontario Graduate Scholarship (Institutional Award)", "issuer": "Laurentian University"},
+        {"year": 2001, "title": "LUAA‑Alumni Faculty Entrance Scholarships", "issuer": "Laurentian University"},
+    ]
+
+    # 按年份降序
+    nat.sort(key=lambda x: x["year"], reverse=True)
+    univ.sort(key=lambda x: x["year"], reverse=True)
+    scholar.sort(key=lambda x: x["year"], reverse=True)
+
+    return render_template(
+        "teaching_awards.html",
+        nat=nat, univ=univ, scholar=scholar,
+        # 两张“值钱”的证书图：把文件放到 static/img/awards/ 下即可
+        featured_left="img/awards/cert_national.jpg",
+        featured_left_alt="China Top 100 Selected MBA Cases Award (2015)",
+        featured_left_caption="China Top 100 Selected MBA Cases Award (2015)",
+        featured_right="img/awards/cert_undergrad.jpg",
+        featured_right_alt="Undergraduate Teaching Award, USTB (2018)",
+        featured_right_caption="Undergraduate Teaching Award, USTB (2018)",
+    )
+
 
 @app.route("/teaching/thesis")
 def teaching_thesis():
@@ -515,6 +552,7 @@ def presentations():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
