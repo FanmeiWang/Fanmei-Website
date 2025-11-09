@@ -417,30 +417,18 @@ def teaching_awards():
 
 @app.route("/teaching/thesis")
 def teaching_thesis():
-    import os, json
-    base_dir = os.path.dirname(os.path.abspath(__file__))
+    # 读取数据（你的仓库里已有 theses.json）
+    try:
+        with open("theses.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception:
+        data = {}
 
-    # 依次尝试这两个路径：项目/data/theses.json 和 项目根目录/theses.json
-    candidates = [
-        os.path.join(base_dir, "data", "theses.json"),
-        os.path.join(base_dir, "theses.json"),
-    ]
+    ug = data.get("undergrad", []) or data.get("ug", []) or []
+    pg = data.get("grad", [])      or data.get("pg", []) or []
 
-    data = {"undergraduate": [], "graduate": []}
-    for p in candidates:
-        if os.path.exists(p):
-            try:
-                with open(p, encoding="utf-8") as f:
-                    data = json.load(f)
-            except Exception:
-                pass
-            break  # 找到就用
-
-    return render_template(
-        "teaching_thesis.html",
-        ug_theses=data.get("undergraduate", []),
-        grad_theses=data.get("graduate", []),
-    )
+    return render_template("teaching_thesis.html",
+                           ug_theses=ug, grad_theses=pg)
 
 # ---- Presentations（唯一）----
 @app.route("/presentations")
@@ -529,6 +517,7 @@ def presentations():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
