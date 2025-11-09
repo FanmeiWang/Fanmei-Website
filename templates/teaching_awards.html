@@ -3,38 +3,29 @@
 
 {% block extra_css %}
 <style>
-  /* ===== 基调：暖灰底 + 白卡 ===== */
+  /* ===== 页面基调（与 Publications 一致的白卡 + 暖灰底） ===== */
   :root{ --brand:#004F59; --ink:#17343A; --muted:#6A7880; --card:#fff; }
-  body{ background:#C9C4B8; } /* 可按需调深浅：#CFC9BE / #BFB9AD */
+  body{ background:#C9C4B8; }  /* 可调：#BFB9AD 或更浅/更深 */
   .page-wrap{ max-width:1250px; margin:0 auto; padding:0 1rem 72px; }
   .page-title{ color:var(--brand); text-align:center; margin:56px 0 24px; }
 
-  /* ===== 顶部双标题（对齐 Publications 的 Books / Journal） ===== */
+  /* ===== 顶部双标题（模仿 Books / Journal） ===== */
   .two-head{ display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; align-items:end; }
   .two-head h2{ margin:0; color:#1c343a; font-size:1.9rem; font-weight:900; }
   @media (max-width:980px){ .two-head{ grid-template-columns:1fr; gap:.75rem; } }
 
   /* ===== 两栏主体 ===== */
-  .two-cols{ display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
-  @media (max-width:980px){ .two-cols{ grid-template-columns:1fr; } }
+  .cols{ display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+  @media (max-width:980px){ .cols{ grid-template-columns:1fr; } }
 
-  /* ===== 通用白卡（对齐 Publications 卡片观感） ===== */
+  /* ===== 通用白卡容器 ===== */
   .card{
     background:var(--card); border-radius:14px;
     box-shadow:0 12px 24px rgba(0,0,0,.08);
     border:1px solid #ECEFF3; padding:1rem 1.1rem;
   }
 
-  /* 列表容器：限定视窗高度并可滚动（像 Journal Articles） */
-  .scroll-box{
-    max-height:calc(100vh - 220px);        /* 视窗内，预留标题和外边距 */
-    overflow:auto; scrollbar-gutter:stable both-edges; overscroll-behavior:contain;
-  }
-  @media (max-width:980px){ .scroll-box{ max-height:none; overflow:visible; } }
-  .scroll-box::-webkit-scrollbar{ width:10px; }
-  .scroll-box::-webkit-scrollbar-thumb{ background:#D7DDE3; border-radius:999px; }
-
-  /* ===== “证明”图片卡（可选，上放 1~2 张） ===== */
+  /* 证书图片（可放 1~2 张） */
   .evidence{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
   .evidence figure{ margin:0; }
   .evidence img{
@@ -43,34 +34,38 @@
   }
   .evidence figcaption{ text-align:center; color:#6B757A; font-size:.92rem; margin-top:.35rem; }
 
-  /* ===== 奖项白卡列表（每条一张独立卡片 —— 单行展示） ===== */
+  /* 列内滚动（像 Journal Articles） */
+  .scroll{
+    max-height:calc(100vh - 240px);
+    overflow:auto; scrollbar-gutter:stable both-edges; overscroll-behavior:contain;
+  }
+  @media (max-width:980px){ .scroll{ max-height:none; overflow:visible; } }
+  .scroll::-webkit-scrollbar{ width:10px; }
+  .scroll::-webkit-scrollbar-thumb{ background:#D7DDE3; border-radius:999px; }
+
+  /* ===== 单条奖项卡（100% 复刻 Publications：顶部黄色标签 + 一行正文） ===== */
   .cards{ list-style:none; padding:0; margin:0; display:grid; gap:14px; }
+
   .award-card{
-    background:#fff; border-radius:12px; padding:.75rem 1rem;
-    box-shadow:0 10px 22px rgba(0,0,0,.08); border:1px solid #EEF1F5;
-
-    display:flex; align-items:center; gap:.6rem; /* 单行：标签 + 年份 + 标题 */
+    background:#fff; border-radius:12px; border:1px solid #EEF1F5;
+    box-shadow:0 10px 22px rgba(0,0,0,.08); padding:.85rem 1rem;
   }
 
-  /* —— 黄色外底 + 白色文字（更大） —— */
-  .tag{
-    display:inline-block; padding:.28rem .55rem; border-radius:8px;
-    font-weight:900; font-size:.92rem; letter-spacing:.2px; color:#fff;
-    background:linear-gradient(180deg,#F7C74D 0%, #E0A92D 100%);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.55);
-  }
-  .year{
-    display:inline-flex; align-items:center; justify-content:center;
-    min-width:3.2rem; padding:.22rem .68rem; border-radius:999px;
-    font-weight:900; font-size:.95rem; letter-spacing:.15px; color:#fff;
-    background:linear-gradient(180deg,#F9D260 0%, #E8B336 100%);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.6);
+  /* 顶部标签：黄色底 + 白字（放在卡片正文上方） */
+  .pill{
+    display:inline-block; margin:0 0 .45rem; padding:.26rem .6rem; border-radius:8px;
+    font-weight:800; font-size:.9rem; letter-spacing:.2px; color:#fff;
+    background:linear-gradient(180deg,#FFC33D 0%, #E2A52C 100%);
+    text-shadow:0 1px 0 rgba(0,0,0,.18);
   }
 
-  /* 标题更大；保持一条信息（允许自动换行） */
-  .title{
-    margin:0; color:var(--ink); font-size:1.14rem; font-weight:700; line-height:1.35;
+  /* 正文：只有一行（自动换行），不加粗，年份直接写在行内 */
+  .line{
+    margin:0; color:var(--ink); font-size:1.06rem; line-height:1.55; font-weight:400;
   }
+  .year{ color:#59686E; }               /* 年份为行内文字的次要色 */
+  .issuer{ color:#6B757A; }             /* 机构更淡一些 */
+
 </style>
 {% endblock %}
 
@@ -83,10 +78,9 @@
     <h2>University</h2>
   </div>
 
-  <!-- 两栏主体：左 National ｜ 右 University -->
-  <div class="two-cols">
+  <div class="cols">
 
-    <!-- 左栏：National（可选：证明图片） -->
+    <!-- 左栏：National（证书图 + 列表滚动） -->
     <div class="col-left">
       {% if national_evidence and national_evidence|length > 0 %}
       <section class="card" aria-label="National evidence">
@@ -102,36 +96,42 @@
       </section>
       {% endif %}
 
-      <!-- National 列表（单行卡片） -->
-      <section class="card scroll-box" aria-label="National awards list" style="margin-top:1rem">
+      <section class="card scroll" aria-label="National awards list" style="margin-top:1rem">
         <ul class="cards">
           {% for a in nat %}
           <li class="award-card">
-            <span class="tag">National</span>
-            <span class="year">{{ a.year }}</span>
-            <p class="title">{{ a.title }}</p>
+            <span class="pill">National Award</span>
+            <p class="line">
+              <span class="year">{{ a.year }}</span> — {{ a.title }}
+              {% if a.issuer %} — <span class="issuer">{{ a.issuer }}</span>{% endif %}
+            </p>
           </li>
           {% endfor %}
         </ul>
       </section>
     </div>
 
-    <!-- 右栏：University 列表（单行卡片） -->
+    <!-- 右栏：University（不重复 USTB） -->
     <div class="col-right">
-      <section class="card scroll-box" aria-label="University awards list">
+      <section class="card scroll" aria-label="University awards list">
         <ul class="cards">
           {% for a in univ %}
           <li class="award-card">
-            <span class="tag">University</span>
-            <span class="year">{{ a.year }}</span>
-            <p class="title">{{ a.title }}</p>
+            <span class="pill">University Award</span>
+            <p class="line">
+              <span class="year">{{ a.year }}</span> — {{ a.title }}
+              {# issuer 若包含 USTB 就不显示；否则追加 #}
+              {% if a.issuer and ('ustb' not in a.issuer|lower) %}
+                — <span class="issuer">{{ a.issuer }}</span>
+              {% endif %}
+            </p>
           </li>
           {% endfor %}
         </ul>
       </section>
     </div>
 
-  </div><!-- /.two-cols -->
-
+  </div>
 </div>
 {% endblock %}
+
