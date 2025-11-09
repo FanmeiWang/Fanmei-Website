@@ -9,14 +9,14 @@
   /* ===== 页面布局 / 个人卡片 ===== */
   :root{
     --brand-teal:#004F59;
-    --badge-h: 34px;      /* 技能图标高度（统一控制） */
-    --badge-gap: 14px;    /* 技能图标间距 */
+    --badge-h: 34px;      /* 图标高度（行内统一控制） */
+    --badge-gap: 14px;    /* 图标间距 */
   }
   .container      {max-width:1100px;margin:0 auto;padding:0 1rem;}
   .profile-card   {display:grid;grid-template-columns:260px 1fr;gap:2rem;
                    background:#fff;border-radius:12px;padding:2.5rem 3rem;
                    box-shadow:0 6px 18px rgba(0,0,0,.06);}
-  .profile-card>.skills-groups{ grid-column:1/-1; margin-top:1.2rem; }
+  .profile-card>.skills-section{ grid-column:1 / -1; margin-top:1.2rem; }
   @media(max-width:900px){
     .profile-card{grid-template-columns:1fr}
     .profile-photo img{margin:0 auto}
@@ -28,24 +28,20 @@
                     transition:opacity .2s;}
   .profile-social a:hover{opacity:.7}
 
-  /* ===== 技能分组（每类一行；标题 + 横向滚动条） ===== */
-  .skills-groups{ display:flex; flex-direction:column; gap:.5rem; }
-  .skills-row{
-    display:grid; grid-template-columns: 180px 1fr; align-items:center; column-gap:12px;
-    padding:.35rem 0; border-bottom:1px dashed rgba(0,0,0,.06);
-  }
-  .skills-row:last-child{ border-bottom:none; }
+  /* ===== 技能分组：每组一行，必要时可横向滑动 ===== */
+  .skills-section{ display:flex; flex-direction:column; gap:.6rem; }
+  .skills-group{ display:flex; flex-direction:column; gap:.4rem; }
   .skills-title{
-    font-size:.9rem; font-weight:700; color:var(--brand-teal);
-    letter-spacing:.3px; text-transform:uppercase; white-space:nowrap;
+    font-size:.9rem; letter-spacing:.02em; color:#3a4b4f; opacity:.9;
+    font-weight:600;
   }
-  .skills-strip{
+  .skills-row{
     display:flex; align-items:center; gap:var(--badge-gap);
     overflow-x:auto; flex-wrap:nowrap; padding:.25rem 0;
     -webkit-overflow-scrolling: touch; scrollbar-width:thin;
   }
-  .skills-strip::-webkit-scrollbar{ height:6px; }
-  .skills-strip::-webkit-scrollbar-thumb{
+  .skills-row::-webkit-scrollbar{ height:6px; }
+  .skills-row::-webkit-scrollbar-thumb{
     background:rgba(0,0,0,.18); border-radius:3px;
   }
 
@@ -63,25 +59,18 @@
     max-width:100%; max-height:100%;
     height:var(--badge-h); width:auto; object-fit:contain;
   }
-  /* 图片缺失 → 文字兜底 */
+  /* 图片缺失 → 文字兜底（不在表达式里写注释，避免语法错误） */
   .skill-badge .label{ display:none; font-size:.8rem; color:var(--brand-teal); padding:0 .4rem; }
   .skill-badge.fallback{
     padding:0 .6rem; border:1px dashed rgba(0,0,0,.18); background:#f7fbfb;
   }
   .skill-badge.fallback .label{ display:inline-block; }
 
-  /* 小屏：标题置顶、图标一行横滑 */
-  @media (max-width: 640px){
-    :root{ --badge-h: 28px; --badge-gap: 12px; }
-    .skills-row{ grid-template-columns: 1fr; }
-    .skills-title{ margin-bottom:.25rem; }
-  }
-
   /* ===== 两侧竖向滚动 LOGO 轨道（慢速，可悬停暂停） ===== */
   .rail-edge{
     position: fixed; top: 80px; bottom: 80px; width: 120px;
-    z-index: 2;                 /* 不遮住顶栏，但在页面内容之上 */
-    pointer-events: none;       /* 不挡住中间内容的点击 */
+    z-index: 2;
+    pointer-events: none;
   }
   .rail-edge.left{  left: 0; }
   .rail-edge.right{ right: 0; }
@@ -89,7 +78,7 @@
   .rail-track{ position:absolute; inset:0; overflow:hidden; }
   .rail-run{
     display:flex; flex-direction:column; gap:10px;
-    animation: railScroll 90s linear infinite; /* 速度：90s/圈（慢速） */
+    animation: railScroll 90s linear infinite;
     filter: grayscale(.05) brightness(.98);
   }
   .rail-edge.right .rail-run{ animation-direction: reverse; }
@@ -99,7 +88,6 @@
     border-radius:10px; box-shadow:0 6px 16px rgba(0,0,0,.10);
     padding:10px;
   }
-
   @media (hover:hover){
     .rail-edge:hover .rail-run{ animation-play-state: paused; }
   }
@@ -110,46 +98,52 @@
     .rail-edge{ display: none; }
     .page-wrap, .container{ padding-left: 1rem; padding-right: 1rem; }
   }
+
+  /* 小屏技能图标略小 */
+  @media (max-width: 640px){
+    :root{ --badge-h: 28px; --badge-gap: 12px; }
+  }
 </style>
 {% endblock %}
 
 {% block content %}
-{# 两侧轨道用到的 LOGO 文件（位于 static/img/logos/ 下） #}
+
+{# 两侧轨道 LOGO（与文件名大小写一致；HRPA 为大写） #}
 {% set LOGOS = ['pku','ustb','georgian','laurentian','fairbank','HRPA','psdata'] %}
 
-{# ===== 技能清单（按你的文件名逐一列出；缺图时自动文字兜底） ===== #}
+{# ===== 技能清单：每类一行（文件名按你目录最终版本） ===== #}
 {% set SKILL_GROUPS = [
-  ('Web', [
-    {'id':'html5','label':'HTML5','file':'html5.png'},
-    {'id':'css3','label':'CSS3','file':'css3.png'},
-    {'id':'jinja2','label':'Jinja2','file':'jinja2.png'},
-    {'id':'flask','label':'Flask','file':'flask.png'},
-    {'id':'git','label':'Git','file':'git.png'},
-    {'id':'github','label':'GitHub','file':'github.png'}
+  ('Web & Dev', [
+    {'label':'HTML5',  'file':'html5.png'},
+    {'label':'CSS3',   'file':'css3.png'},
+    {'label':'Jinja2', 'file':'jinja2.png'},
+    {'label':'Flask',  'file':'flask.png'},
+    {'label':'Git',    'file':'git.png'},
+    {'label':'GitHub', 'file':'github.png'}
   ]),
   ('Python & Data', [
-    {'id':'python','label':'Python','file':'python.png'},
-    {'id':'jupyter','label':'Jupyter','file':'jupyter.png'},
-    {'id':'pandas','label':'Pandas','file':'pandas.png'},
-    {'id':'numpy','label':'NumPy','file':'numpy.png'},
-    {'id':'sklearn','label':'scikit‑learn','file':'sklearn.png'},
-    {'id':'spyder','label':'Spyder','file':'spyder.jpeg'}
+    {'label':'Python',   'file':'python.png'},
+    {'label':'Jupyter',  'file':'jupyter.png'},
+    {'label':'NumPy',    'file':'numpy.png'},
+    {'label':'Pandas',   'file':'pandas.png'},
+    {'label':'scikit‑learn', 'file':'sklearn.png'},
+    {'label':'SQL',      'file':'sql.png'},
+    {'label':'Spyder',   'file':'spyder.jpeg'}
   ]),
-  ('ML & AI', [
-    {'id':'pytorch','label':'PyTorch','file':'pytorch.png'},
-    {'id':'tensorflow','label':'TensorFlow','file':'tensorflow.png'},
-    {'id':'huggingface','label':'Hugging Face','file':'huggingface.png'},
-    {'id':'openai','label':'OpenAI API','file':'openai.png'},
-    {'id':'ml','label':'Machine Learning','file':'ml.png'},
-    {'id':'dl','label':'Deep Learning','file':'dl.png'},
-    {'id':'generative_ai','label':'Generative AI','file':'Generative_AI.png'}
+  ('ML & Generative AI', [
+    {'label':'PyTorch',      'file':'pytorch.png'},
+    {'label':'TensorFlow',   'file':'tensorflow.png'},
+    {'label':'Hugging Face', 'file':'huggingface.png'},
+    {'label':'OpenAI',       'file':'openai.png'},
+    {'label':'ML',           'file':'ml.png'},
+    {'label':'DL',           'file':'dl.png'},
+    {'label':'Generative AI','file':'Generative_AI.png'}
   ]),
-  ('Analytics & BI', [
-    {'id':'sql','label':'SQL','file':'sql.png'},
-    {'id':'powerbi','label':'Power BI','file':'powerbi.png'},
-    {'id':'spss','label':'SPSS','file':'spss.png'},
-    {'id':'sas','label':'SAS','file':'sas.png'},
-    {'id':'nvivo','label':'NVivo','file':'nvivo.png'}
+  ('Analytics', [
+    {'label':'Power BI', 'file':'powerbi.png'},
+    {'label':'SPSS',     'file':'spss.png'},
+    {'label':'SAS',      'file':'sas.png'},
+    {'label':'NVivo',    'file':'nvivo.png'}
   ])
 ] %}
 
@@ -184,16 +178,16 @@ apps and APIs, and shipping ML/NLP features that improve insights, policy and en
       </div>
     </div>
 
-    <!-- ===== Skills（每类一行） ===== -->
-    <div class="skills-groups" role="list" aria-label="Technical skills">
-      {% for group, items in SKILL_GROUPS %}
-        <div class="skills-row" role="listitem">
-          <div class="skills-title">{{ group }}</div>
-          <div class="skills-strip">
+    <!-- ===== Skills：分组展示，每组一行 ===== -->
+    <div class="skills-section" aria-label="Technical skills grouped by category">
+      {% for title, items in SKILL_GROUPS %}
+        <div class="skills-group">
+          <div class="skills-title">{{ title }}</div>
+          <div class="skills-row" role="list" aria-label="{{ title }}">
             {% for s in items %}
-              <span class="skill-badge" title="{{ s.label }}">
+              <span class="skill-badge" role="listitem" title="{{ s.label }}">
                 <img
-                  src="{{ url_for('static', filename='img/badges/' ~ s.get('file', s.id ~ '.png')) }}"
+                  src="{{ url_for('static', filename='img/badges/' ~ s.file) }}"
                   alt="{{ s.label }}"
                   onerror="this.parentElement.classList.add('fallback');
                            this.parentElement.querySelector('.label').style.display='inline-block';
@@ -237,12 +231,3 @@ apps and APIs, and shipping ML/NLP features that improve insights, policy and en
   </div>
 </aside>
 {% endblock %}
-
-
-
-
-
-
-
-
-
