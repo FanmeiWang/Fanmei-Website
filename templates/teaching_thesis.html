@@ -3,14 +3,10 @@
 
 {% block extra_css %}
 <style>
-:root{
-  --teal: var(--brand-teal, #004F59);
-  --ink:  #153E42;
-  --muted:#5E6E73;
-}
-
+:root{ --teal: var(--brand-teal, #004F59); --ink:#153E42; --muted:#5E6E73; }
 /* 页面容器 + 说明高亮 */
 .page-wrap{max-width:1080px;margin:0 auto;padding:0 1rem 2rem}
+.page-title{ color:var(--teal); text-align:center; margin:56px 0 12px; }
 .lead{
   color:var(--teal);
   background:linear-gradient(180deg,#FFF6C7 0%, #FFFBE6 100%);
@@ -18,24 +14,18 @@
   border-radius:12px;
   padding:.8rem .95rem;
   margin:.6rem 0 1.3rem;
-  font-size:1.12rem;font-weight:650
+  font-size:1.06rem;font-weight:650
 }
-
 /* 外框底（浅土黄绿） */
 .catalog{
   background:linear-gradient(180deg,#F7F4DF 0%, #EEF5E6 100%);
   border:1px solid rgba(0,0,0,.06);
-  border-radius:28px;
-  padding:1.2rem;
+  border-radius:28px; padding:1.2rem;
   box-shadow:0 8px 24px rgba(0,0,0,.05)
 }
-
 /* 两张大卡片（并排） */
-.thesis-panels{
-  display:grid;gap:1rem;grid-template-columns:repeat(2,minmax(0,1fr))
-}
+.thesis-panels{ display:grid;gap:1rem;grid-template-columns:repeat(2,minmax(0,1fr)) }
 @media(max-width:860px){ .thesis-panels{grid-template-columns:1fr} }
-
 .panel{
   background:linear-gradient(180deg,#FFE59A 0%, #FFF2BF 100%);
   border:1px solid rgba(0,0,0,.05);
@@ -45,21 +35,18 @@
 .panel-btn{
   width:100%;display:flex;align-items:center;justify-content:space-between;
   padding:1.4rem 1.6rem;background:transparent;border:none;cursor:pointer;
-  color:var(--teal);font-weight:800;font-size:1.38rem;letter-spacing:.2px
+  color:var(--teal);font-weight:800;font-size:1.22rem;letter-spacing:.2px
 }
-.panel-btn .sub{font-size:1.05rem;font-weight:700;color:#2f5b5f;opacity:.95}
+.panel-btn .sub{font-size:1rem;font-weight:700;color:#2f5b5f;opacity:.95}
 
 /* 右侧抽屉 */
-.backdrop{
-  position:fixed;inset:0;background:rgba(0,0,0,.28);
-  opacity:0;pointer-events:none;transition:opacity .18s ease
-}
+.backdrop{ position:fixed;inset:0;background:rgba(0,0,0,.28);
+  opacity:0;pointer-events:none;transition:opacity .18s ease }
 .backdrop.open{opacity:1;pointer-events:auto}
-
 .drawer{
   position:fixed;top:0;right:0;height:100%;width:min(560px,100%);
   background:#FFF8E6;border-left:1px solid rgba(0,0,0,.08);
-  box-shadow: -10px 0 30px rgba(0,0,0,.18);
+  box-shadow:-10px 0 30px rgba(0,0,0,.18);
   transform:translateX(100%);transition:transform .22s ease;
   display:flex;flex-direction:column
 }
@@ -69,13 +56,12 @@
   padding:1rem 1.1rem;border-bottom:1px solid rgba(0,0,0,.06);
   background:linear-gradient(180deg,#FFF2BF 0%, #FFF8E6 100%)
 }
-.drawer-title{margin:0;font-size:1.25rem;color:var(--teal);font-weight:800}
+.drawer-title{margin:0;font-size:1.1rem;color:var(--teal);font-weight:800}
 .drawer-close{
   appearance:none;border:none;border-radius:12px;padding:.5rem .7rem;
   background:#fff;box-shadow:0 1px 0 rgba(0,0,0,.05), inset 0 0 0 1px rgba(0,0,0,.06);
   cursor:pointer;color:var(--teal);font-weight:800
 }
-
 /* 工具条 */
 .tools{display:flex;gap:.6rem;align-items:center;padding:.8rem 1.1rem}
 .tools input[type="search"]{
@@ -83,18 +69,16 @@
   font-size:1rem;color:var(--ink);background:#fff
 }
 .tools .count{color:#3a5357;font-size:.95rem}
-
 /* 论文列表 */
 .list{flex:1 1 auto;overflow:auto;padding:0 1.1rem 1.1rem}
 .thesis-item{
   background:#FFF4D6;border:1px solid rgba(0,0,0,.06);border-left:5px solid var(--teal);
   border-radius:14px;padding:.9rem 1rem;margin:.6rem 0;box-shadow:0 8px 18px rgba(0,0,0,.05)
 }
-.thesis-item h4{margin:0 0 .25rem;font-size:1.02rem;color:var(--ink)}
-.thesis-item .meta{margin:0;font-size: .95rem;color:#56696D}
+.thesis-item h4{margin:0 0 .25rem;font-size:1.02rem;color:var(--ink);font-weight:700}
+.thesis-item .meta{margin:0;font-size:.95rem;color:#56696D}
 .empty{color:#7a8a8e;padding:1.2rem}
-
-/* 无障碍：抽屉打开时禁止主体滚动（移动端友好） */
+/* 抽屉打开时禁止主体滚动（移动端友好） */
 body.no-scroll{overflow:hidden}
 </style>
 {% endblock %}
@@ -117,7 +101,7 @@ body.no-scroll{overflow:hidden}
       <section class="panel">
         <button class="panel-btn" data-open="ug" aria-haspopup="dialog" aria-controls="thesis-drawer">
           <span>Undergraduate Theses</span>
-          <span class="sub">43 items</span>
+          <span class="sub">{{ ug|length }} items</span>
         </button>
       </section>
 
@@ -148,11 +132,10 @@ body.no-scroll{overflow:hidden}
 
 <script>
 (function(){
-  // 1) 取后端注入的数据
+  // 数据（来自后端 Jinja）
   const UG = {{ ug|tojson }};
   const PG = {{ pg|tojson }};
 
-  // 2) 取节点
   const BACKDROP = document.getElementById('thesis-backdrop');
   const DRAWER   = document.getElementById('thesis-drawer');
   const TITLE    = document.getElementById('drawer-title');
@@ -161,14 +144,13 @@ body.no-scroll{overflow:hidden}
   const INPUT    = document.getElementById('q');
   const CLOSE    = document.getElementById('drawer-close');
 
-  let CURRENT = 'ug';
   let SOURCE  = UG;
 
-  // 3) 打开/关闭
   function openDrawer(section){
-    CURRENT = section;
     SOURCE  = (section === 'ug') ? UG : PG;
-    TITLE.textContent = (section === 'ug') ? 'Undergraduate Theses' : 'Graduate / MBA / EMBA Theses';
+    TITLE.textContent = (section === 'ug')
+      ? 'Undergraduate Theses'
+      : 'Graduate / MBA / EMBA Theses';
     INPUT.value = '';
     renderList(SOURCE, '');
     document.body.classList.add('no-scroll');
@@ -185,10 +167,9 @@ body.no-scroll{overflow:hidden}
     document.body.classList.remove('no-scroll');
   }
 
-  // 4) 渲染列表
   function normalize(x){ return (x||'').toString().toLowerCase(); }
   function escapeHtml(x){
-    const s = (x == null) ? '' : String(x);
+    const s = (x === null || x === undefined) ? '' : String(x);
     return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   }
 
@@ -219,9 +200,8 @@ body.no-scroll{overflow:hidden}
     COUNT.textContent = rows.length + ' items';
   }
 
-  // 5) 事件
   document.querySelectorAll('[data-open]').forEach(btn=>{
-    btn.addEventListener('click', e=>{
+    btn.addEventListener('click', (e)=>{
       e.preventDefault();
       openDrawer(btn.getAttribute('data-open'));
     });
@@ -230,11 +210,6 @@ body.no-scroll{overflow:hidden}
   CLOSE.addEventListener('click', closeDrawer);
   document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeDrawer(); });
   INPUT.addEventListener('input', ()=> renderList(SOURCE, INPUT.value));
-
-  // 6) 支持通过 URL 指定默认面板：/teaching/thesis?tab=pg 或 ?tab=ug
-  const params = new URLSearchParams(window.location.search);
-  const tab = params.get('tab');
-  if(tab === 'pg' || tab === 'ug'){ openDrawer(tab); }
 })();
 </script>
 {% endblock %}
