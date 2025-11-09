@@ -3,72 +3,83 @@
 
 {% block extra_css %}
 <style>
-  /* —— 页面基调（暖灰底，白卡） —— */
+  /* ===== 基调：暖灰底 + 白卡 ===== */
   :root{ --brand:#004F59; --ink:#17343A; --muted:#6A7880; --card:#fff; }
-  body{ background:#C9C4B8; }                  /* 可调深浅：#CFC9BE 或 #D4CFC5 */
+  body{ background:#C9C4B8; } /* 可调：#CFC9BE / #BFB9AD */
   .page-wrap{ max-width:1250px; margin:0 auto; padding:0 1rem 72px; }
   .page-title{ color:var(--brand); text-align:center; margin:56px 0 24px; }
 
-  /* —— 两栏页眉（像 Books / Journal 的双标题） —— */
+  /* ===== 顶部双标题（风格对齐 Publications 的 Books/Journal） ===== */
   .two-head{ display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; align-items:end; }
-  .two-head h2{ color:#1c343a; margin:0; font-size:1.9rem; font-weight:900; }
+  .two-head h2{ margin:0; color:#1c343a; font-size:1.9rem; font-weight:900; }
   @media (max-width:980px){ .two-head{ grid-template-columns:1fr; gap:.75rem; } }
 
-  /* —— 两栏主体 —— */
+  /* ===== 两栏主体 ===== */
   .two-cols{ display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
   @media (max-width:980px){ .two-cols{ grid-template-columns:1fr; } }
 
-  /* —— 通用白卡 —— */
+  /* ===== 通用白卡（对齐 Publications 卡片观感） ===== */
   .card{
     background:var(--card); border-radius:14px;
-    box-shadow:0 10px 24px rgba(0,0,0,.08);
-    border:1px solid #eceff3; padding:1rem 1.1rem;
+    box-shadow:0 12px 24px rgba(0,0,0,.08);
+    border:1px solid #ECEFF3; padding:1rem 1.1rem;
   }
 
-  /* —— National 左栏：先放“证书证明”卡，再放清单卡 —— */
-  .evidence{ display:grid; grid-template-columns:1fr 1fr; gap:.9rem; }
+  /* 列表容器：限定视窗高度并可滚动（像 Journal Articles） */
+  .scroll-box{
+    max-height:calc(100vh - 220px);   /* 视窗内，预留标题/外边距 */
+    overflow:auto; scrollbar-gutter:stable both-edges; overscroll-behavior:contain;
+  }
+  @media (max-width:980px){ .scroll-box{ max-height:none; overflow:visible; } }
+  .scroll-box::-webkit-scrollbar{ width:10px; }
+  .scroll-box::-webkit-scrollbar-thumb{ background:#D7DDE3; border-radius:999px; }
+
+  /* ===== “证明”图片卡（可选，上放 1~2 张） ===== */
+  .evidence{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
   .evidence figure{ margin:0; }
-  .evidence img{ width:100%; aspect-ratio:4/5; object-fit:cover; border-radius:10px;
-                 box-shadow:0 6px 16px rgba(0,0,0,.10); display:block; }
+  .evidence img{
+    width:100%; aspect-ratio:4/5; object-fit:cover; display:block;
+    border-radius:10px; box-shadow:0 6px 16px rgba(0,0,0,.10);
+  }
   .evidence figcaption{ text-align:center; color:#6B757A; font-size:.92rem; margin-top:.35rem; }
 
-  /* —— 清单卡里的分段标题 —— */
-  .section-top{ margin:.1rem .2rem .5rem; color:var(--ink); font-weight:900; font-size:1.25rem; }
-
-  /* —— 奖项条目（模仿 Publications 的卡片列表） —— */
-  .list{ display:grid; gap:.6rem; }
-  .item{ display:grid; grid-template-columns:auto 1fr; column-gap:.75rem;
-         padding:.75rem .4rem; border-bottom:1px solid #edf1f5; }
-  .item:last-child{ border-bottom:none; }
-  .title{ margin:0; color:var(--ink); font-size:1.05rem; }
-  .meta{ margin:.15rem 0 0; color:var(--muted); font-size:.96rem; }
-
-  /* —— 年份徽章（更大一些，金色胶囊） —— */
-  .year{
-    align-self:start; display:inline-flex; align-items:center; justify-content:center;
-    min-width:3.4rem; padding:.22rem .7rem; border-radius:999px;
-    font-weight:800; font-size:.92rem; letter-spacing:.15px; color:#5b4a14;
-    background:linear-gradient(180deg,#FFF4C7 0%, #F4D47C 100%); border:1px solid #E5C86A;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.6), 0 1px 4px rgba(0,0,0,.06);
+  /* ===== 奖项白卡列表（每条一张独立卡片） ===== */
+  .cards{ list-style:none; padding:0; margin:0; display:grid; gap:14px; }
+  .award-card{
+    background:#fff; border-radius:12px; padding:.9rem 1rem;
+    box-shadow:0 10px 22px rgba(0,0,0,.08); border:1px solid #EEF1F5;
   }
+  .card-top{ display:flex; align-items:center; gap:.5rem; margin-bottom:.35rem; }
+  .label{
+    display:inline-block; padding:.18rem .5rem; border-radius:8px;
+    font-weight:800; font-size:.82rem; letter-spacing:.15px; color:#584f2c;
+    background:linear-gradient(180deg,#FFF2B8 0%, #F2D476 100%); border:1px solid #E5C86A;
+  }
+  .year{
+    display:inline-flex; align-items:center; justify-content:center;
+    min-width:2.6rem; padding:.14rem .55rem; border-radius:999px;
+    font-weight:800; font-size:.82rem; letter-spacing:.15px; color:#5b4a14;
+    background:linear-gradient(180deg,#FFF7CC 0%, #F5D67F 100%); border:1px solid #E7C96D;
+  }
+  .title{ margin:.1rem 0 0; color:var(--ink); font-size:1.03rem; line-height:1.45; }
+  .meta{ margin:.25rem 0 0; color:var(--muted); font-size:.96rem; }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="page-wrap">
 
-  <!-- 顶部双标题（左：National，右：University & Scholarships） -->
+  <!-- 顶部双标题 -->
   <div class="two-head">
     <h2>National</h2>
-    <h2>University &amp; Scholarships</h2>
+    <h2>University</h2>
   </div>
 
-  <!-- 两栏主体 -->
+  <!-- 两栏主体：左 National ｜ 右 University -->
   <div class="two-cols">
 
-    <!-- 左栏：National -->
+    <!-- 左栏：National（证书图 + 列表） -->
     <div class="col-left">
-      <!-- 证书证明（两张图） -->
       {% if national_evidence and national_evidence|length > 0 %}
       <section class="card" aria-label="National evidence">
         <div class="evidence">
@@ -83,56 +94,41 @@
       </section>
       {% endif %}
 
-      <!-- National 清单 -->
-      <section class="card" aria-label="National awards list" style="margin-top:1rem">
-        <h3 class="section-top" style="margin-top:0">Awards &amp; Honours</h3>
-        <div class="list">
+      <section class="card scroll-box" aria-label="National awards list" style="margin-top:1rem">
+        <ul class="cards">
           {% for a in nat %}
-          <div class="item">
-            <div class="year">{{ a.year }}</div>
-            <div>
-              <p class="title">{{ a.title }}</p>
-              <p class="meta">{{ a.issuer }}</p>
+          <li class="award-card">
+            <div class="card-top">
+              <span class="label">National Award</span>
+              <span class="year">{{ a.year }}</span>
             </div>
-          </div>
+            <p class="title">{{ a.title }}</p>
+            <p class="meta">{{ a.issuer }}</p>
+          </li>
           {% endfor %}
-        </div>
+        </ul>
       </section>
     </div>
 
-    <!-- 右栏：University & Scholarships（两个清单卡） -->
+    <!-- 右栏：University（只有清单，不含 Scholarships） -->
     <div class="col-right">
-      <section class="card" aria-label="University awards">
-        <h3 class="section-top" style="margin-top:0">University</h3>
-        <div class="list">
+      <section class="card scroll-box" aria-label="University awards list">
+        <ul class="cards">
           {% for a in univ %}
-          <div class="item">
-            <div class="year">{{ a.year }}</div>
-            <div>
-              <p class="title">{{ a.title }}</p>
-              <p class="meta">{{ a.issuer }}</p>
+          <li class="award-card">
+            <div class="card-top">
+              <span class="label">University Award</span>
+              <span class="year">{{ a.year }}</span>
             </div>
-          </div>
+            <p class="title">{{ a.title }}</p>
+            <p class="meta">{{ a.issuer }}</p>
+          </li>
           {% endfor %}
-        </div>
-      </section>
-
-      <section class="card" aria-label="Scholarships & fellowships" style="margin-top:1rem">
-        <h3 class="section-top" style="margin-top:0">Scholarships &amp; Fellowships</h3>
-        <div class="list">
-          {% for a in scholar %}
-          <div class="item">
-            <div class="year">{{ a.year }}</div>
-            <div>
-              <p class="title">{{ a.title }}</p>
-              <p class="meta">{{ a.issuer }}</p>
-            </div>
-          </div>
-          {% endfor %}
-        </div>
+        </ul>
       </section>
     </div>
 
   </div><!-- /.two-cols -->
+
 </div>
 {% endblock %}
