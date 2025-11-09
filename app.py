@@ -372,9 +372,22 @@ teaching_photos = [
 ]
 
 # 2️⃣ 把 photos=teaching_photos 传给模板
+def list_teaching_photos():
+    """
+    自动读取 static/img/teaching/ 下所有图片（png/jpg/jpeg/webp/gif），按文件名排序。
+    """
+    base = os.path.join(app.static_folder, "img", "teaching")
+    exts = (".png", ".jpg", ".jpeg", ".webp", ".gif")
+    try:
+        files = [f for f in os.listdir(base) if f.lower().endswith(exts)]
+    except Exception:
+        files = []
+    return sorted(set(files), key=lambda s: s.lower())
+
+
+# ---- Teaching Overview 页面 ----
 @app.route("/teaching")
 def teaching_overview():
-    # 自动扫描 /static/img/teaching/，不再依赖手动写死的文件名
     photos = list_teaching_photos() or [
         "teaching1.png","teaching2.png","teaching3.png",
         "teaching4.png","teaching5.png","teaching6.png",
@@ -383,22 +396,8 @@ def teaching_overview():
     return render_template(
         "teaching_overview.html",
         photos=photos,
-        academic=teaching_data
+        academic=teaching_data,
     )
-
-# --- 放在文件顶部其它 import 旁边 ---
-import os
-
-def list_teaching_photos():
-    """自动读取 static/img/teaching/ 下所有常见图片扩展名，按文件名排序。"""
-    base = os.path.join(app.static_folder, "img", "teaching")
-    exts = (".png", ".jpg", ".jpeg", ".webp", ".gif")
-    try:
-        files = [f for f in os.listdir(base) if f.lower().endswith(exts)]
-    except Exception:
-        files = []
-    # 去重 + 大小写无关排序
-    return sorted(set(files), key=lambda s: s.lower())
 
 @app.route("/teaching/scroll")
 def teaching_scroll():
@@ -549,6 +548,7 @@ def presentations():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
