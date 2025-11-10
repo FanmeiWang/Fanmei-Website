@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Teaching & Training – Fanmei Wang{% endblock %}
+{% block title %}Teaching & Training — Fanmei Wang{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -8,7 +8,7 @@
   --shadow:0 12px 32px rgba(0,0,0,.10);
   --paper-glow:linear-gradient(180deg, rgba(255,247,220,.55), rgba(255,247,220,0) 46%, transparent);
 
-  /* 卡片头配色（保持你的原色） */
+  /* 头图区颜色（与你当前保持一致） */
   --hero-gold-top:#FFE4AC; --hero-gold-btm:#E8C066;
   --hero-tan-top:#EBD3B6;  --hero-tan-btm:#C9A178;
   --hero-honey-top:#FFDDA4;--hero-honey-btm:#E3A940;
@@ -18,9 +18,9 @@
 /* 页面骨架 */
 body{ background:var(--page); }
 .page-wrap{ max-width:1220px; margin:0 auto; padding:0 1rem 72px; position:relative; z-index:2; }
-.page-title{ text-align:center; color:#364247; margin:56px 0 28px; }
+.page-title{ text-align:center; color:#364247; margin:56px 0 24px; }
 
-/* 顶部四张卡 */
+/* 顶部 4 张卡 */
 .cards{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:2.2rem; }
 @media (max-width:1100px){ .cards{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media (max-width:640px){ .cards{ grid-template-columns:1fr; } }
@@ -44,46 +44,70 @@ body{ background:var(--page); }
 .card--honey { --hero-top:var(--hero-honey-top); --hero-btm:var(--hero-honey-btm); }
 .card--sand  { --hero-top:var(--hero-sand-top);  --hero-btm:var(--hero-sand-btm); }
 
-/* === 教学哲学：浅黄色框，2×2 === */
+/* ===== Teaching Philosophy 区块（含 PDF 工具栏） ===== */
 .philo-brief{
-  max-width:1200px; margin:18px auto 0;
-  background:#FFF4D6;                       /* ← 浅黄色 */
+  max-width:1200px; margin:22px auto 0;
+  background:#FFF4D6;
   border:1px solid #EAD39E;
   border-radius:14px;
   box-shadow:0 8px 22px rgba(0,0,0,.08);
-  padding:14px 18px;
+  padding:16px 18px 18px;
 }
 .philo-brief h3{
-  margin:0 0 8px; text-align:center;
-  color:#223c40; font-weight:700; font-size:1.25rem; letter-spacing:.2px;
+  margin:0 0 10px; text-align:center;
+  color:#223c40; font-weight:800; font-size:1.28rem; letter-spacing:.2px;
 }
-.philo-grid{
-  display:grid; grid-template-columns:1fr 1fr; gap:10px 32px;
+
+/* PDF 按钮工具栏（放在哲学区块里面） */
+.philo-toolbar{
+  display:flex; align-items:center; gap:12px; justify-content:space-between;
+  background:#FFF9EB;
+  border:1px solid #F1E2B7;
+  border-radius:10px;
+  padding:10px 12px;
+  box-shadow:0 4px 12px rgba(0,0,0,.06);
+  margin:6px 0 12px;
 }
+.philo-toolbar .label{ display:flex; align-items:center; gap:.55rem; color:#17363b; font-weight:800; }
+.pdf-pill{
+  display:inline-block; font-size:.78rem; font-weight:800; letter-spacing:.3px;
+  padding:.25rem .5rem; border-radius:.5rem; color:#fff; background:#004F59;
+}
+.actions{ display:flex; gap:.6rem; flex-wrap:wrap; }
+
+/* 复用按钮样式 */
+.btn{
+  appearance:none; border:0; cursor:pointer; text-decoration:none;
+  display:inline-block; padding:.58rem .9rem; border-radius:10px;
+  font-weight:800; letter-spacing:.2px; line-height:1; white-space:nowrap;
+  box-shadow:0 2px 0 rgba(0,0,0,.06);
+}
+.btn-solid{ background:#004F59; color:#fff; }
+.btn-solid:hover{ filter:brightness(1.06); }
+.btn-ghost{ background:#fff; color:#004F59; border:1px solid #D7E3E6; }
+.btn-ghost:hover{ background:#F5FBFC; }
+
+/* 哲学 2×2 列表 */
+.philo-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px 32px; }
 @media (max-width:720px){ .philo-grid{ grid-template-columns:1fr; } }
 .philo-item{
   display:flex; align-items:center; gap:.6rem;
-  color:#234047; font-size:1.08rem; font-weight:800; line-height:1.45;
+  color:#234047; font-size:1.06rem; font-weight:800; line-height:1.45;
 }
 .philo-item::before{
   content:""; width:12px; height:12px; border-radius:50%; flex:0 0 12px;
   background:#E7B85F; box-shadow:0 1px 3px rgba(0,0,0,.18);
 }
 
-/* ── 两侧“漂浮记忆泡泡” ── */
+/* ── 两侧“漂浮记忆泡泡”（保留） ── */
 .bubble-sky{ position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
 .bubble{
   position:absolute; width:var(--size,150px); height:var(--size,150px);
   left:var(--left,0px); top:var(--top,0px);
   border-radius:50%; overflow:hidden; box-shadow:0 14px 40px rgba(0,0,0,.12);
-  transform: translate3d(0,0,0);
   animation: bobXY var(--dur,18s) ease-in-out var(--delay,0s) infinite alternate;
-  will-change: transform;
 }
-.bubble>img{
-  width:100%; height:100%; object-fit:cover; display:block; border-radius:50%;
-  opacity:var(--op,.95); filter:brightness(1.06) contrast(1.08) saturate(1.06);
-}
+.bubble>img{ width:100%; height:100%; object-fit:cover; border-radius:50%; opacity:.95; }
 @keyframes bobXY{ to{ transform:translate3d(var(--hx,26px), var(--vy,16px), 0); } }
 @media (max-width:1100px){ .bubble-sky{ display:none; } }
 @media (prefers-reduced-motion:reduce){ .bubble{ animation:none; } }
@@ -99,30 +123,45 @@ body{ background:var(--page); }
 
   <!-- 顶部四张卡片 -->
   <div class="cards">
-    <section class="color-card card--gold">
+    <a class="color-card card--gold"  href="{{ url_for('teaching_academic') }}">
       <div class="card-hero"><h3 class="hero-title">Academic Courses</h3></div>
       <p class="card-desc">Undergraduate, MBA &amp; EMBA syllabi I designed and taught.</p>
-    </section>
+    </a>
 
-    <section class="color-card card--tan">
+    <a class="color-card card--tan"   href="{{ url_for('teaching_corporate') }}">
       <div class="card-hero"><h3 class="hero-title">Corporate Training</h3></div>
-      <p class="card-desc">In-house workshops on HR analytics, culture and performance.</p>
-    </section>
+      <p class="card-desc">In‑house workshops on HR analytics, culture and performance.</p>
+    </a>
 
     <a class="color-card card--honey" href="{{ url_for('teaching_awards') }}">
       <div class="card-hero"><h3 class="hero-title">Teaching Awards</h3></div>
       <p class="card-desc">Institutional accolades recognising instructional excellence.</p>
     </a>
 
-    <a class="color-card card--sand" href="{{ url_for('teaching_thesis') }}">
+    <a class="color-card card--sand"  href="{{ url_for('teaching_thesis') }}">
       <div class="card-hero"><h3 class="hero-title">Thesis Supervision</h3></div>
-      <p class="card-desc">Supervision provided to 50-plus bachelor’s &amp; master’s dissertations.</p>
+      <p class="card-desc">Supervision provided to 50‑plus bachelor’s &amp; master’s dissertations.</p>
     </a>
   </div>
 
-  <!-- ✦ 新增：浅黄色教学哲学栏（四点，左二右二） -->
+  {# PDF 路径（请将文件放到 static/docs/Teaching_Dossier.pdf） #}
+  {% set DOSSIER = url_for('static', filename='docs/Teaching_Dossier.pdf') %}
+
+  <!-- Teaching Philosophy（内部放 PDF 工具栏） -->
   <section class="philo-brief" aria-label="Teaching Philosophy">
     <h3>Teaching Philosophy</h3>
+
+    <div class="philo-toolbar">
+      <div class="label">
+        <span class="pdf-pill">PDF</span>
+        <span><strong>Teaching Dossier</strong></span>
+      </div>
+      <div class="actions">
+        <a class="btn btn-solid" href="{{ DOSSIER }}#page=1" target="_blank" rel="noopener">View PDF</a>
+        <a class="btn btn-ghost" href="{{ DOSSIER }}" download>Download</a>
+      </div>
+    </div>
+
     <div class="philo-grid">
       <div class="philo-item">Linking Theory &amp; Real‑World Application</div>
       <div class="philo-item">Proactive &amp; Interactive Learning</div>
@@ -132,132 +171,66 @@ body{ background:var(--page); }
   </section>
 </div>
 
-<!-- 两侧漂浮圆图：间距可调，保证不重叠 -->
+<!-- 两侧漂浮圆图（保持不遮挡页眉页脚） -->
 <script>
 (function(){
   const sky  = document.getElementById('bubble-sky');
   const wrap = document.querySelector('.page-wrap');
   if(!sky || !wrap) return;
 
-  /* ===== 可调参数 ===== */
-  const SEG         = 4;           // 每侧数量
-  const SIZE_RANGE  = [140,160];   // 圆图尺寸范围
-  const MIN_GAP     = 24;          // 垂直最小净距（像素），避免“粘在一起”
-  const COMPRESS    = 0.50;        // 垂直分布压缩比例（0.5≈间距减半）
-  const PAD_SIDE    = 12;          // 距离中间内容的水平缓冲
-  const AMP_X_CAP   = 36;          // 左右摆幅上限
-  const AMP_Y       = 16;          // 上下漂移幅度
-  const SPEED_RANGE = [12,22];     // 动画时长范围（秒）
+  const SEG=4, SIZE=[140,160], GAP=24, COMPRESS=.5, PAD=12, AMP_CAP=36, AMP_Y=16, SPEED=[12,22];
 
-  /* 图片清单 */
   const FILES = {{ (photos if photos is defined else []) | tojson }};
   const BASE  = {{ url_for('static', filename='img/teaching/') | tojson }};
-  let SRC     = (FILES.length ? FILES : [
-    'teaching1.png','teaching2.png','teaching3.png',
-    'teaching4.png','teaching5.png','teaching6.png',
-    'teaching7.png','teaching8.png','teaching9.png'
-  ]).map(f => BASE + f);
+  let SRC = (FILES.length? FILES : ['teaching1.png','teaching2.png','teaching3.png','teaching4.png','teaching5.png','teaching6.png','teaching7.png','teaching8.png','teaching9.png']).map(f => BASE + f);
 
-  function splitEight(list){
-    const need = 8;
-    if(list.length < need){
-      const fill = Array.from({length: need - list.length}, (_,i)=> list[i % list.length]);
-      list = list.concat(fill);
-    }
-    return { L: list.slice(0,4), R: list.slice(4,8) };
-  }
-
-  function gutters(){
-    const vw = innerWidth, vh = innerHeight;
-    const r  = wrap.getBoundingClientRect();
-    const left  = { x0: 0,        x1: Math.max(0, r.left  - 14) };
-    const right = { x0: Math.min(vw, r.right + 14), x1: vw };
-    return {vh, left, right};
-  }
-
-  function pickSize(g){
-    const gwidth = Math.max(0, g.x1 - g.x0);
-    const maxByWidth = Math.min(SIZE_RANGE[1], Math.max(120, gwidth - 26));
-    return Math.max(SIZE_RANGE[0], Math.min(SIZE_RANGE[1], maxByWidth));
-  }
+  function split8(a){ if(a.length<8){ a = a.concat(Array.from({length:8-a.length},(_,i)=>a[i%a.length])); } return {L:a.slice(0,4),R:a.slice(4,8)}; }
+  function gutters(){ const vw=innerWidth,vh=innerHeight,r=wrap.getBoundingClientRect(); return {vh, left:{x0:0,x1:Math.max(0,r.left-14)}, right:{x0:Math.min(vw,r.right+14),x1:vw}}; }
+  function pickSize(g){ const w=Math.max(0,g.x1-g.x0); const max=Math.min(SIZE[1],Math.max(120,w-26)); return Math.max(SIZE[0],Math.min(SIZE[1],max)); }
 
   function layout(){
-  sky.innerHTML = '';
-  const {vh, left, right} = gutters();
+    sky.innerHTML='';
+    const {vh,left,right}=gutters();
+    const nav=document.querySelector('nav');
+    const footer=document.querySelector('footer, .site-footer, .page-footer, #footer, .footer');
+    const safeTop=(nav?nav.getBoundingClientRect().bottom:0)+10;
+    const safeBottom=(footer?Math.max(footer.getBoundingClientRect().height||0,56):56)+12;
+    const H=Math.max(460, vh-safeTop-safeBottom);
 
-  // ===== 关键：根据底部灰色 BAR (footer) 动态留白，并整体上移 =====
-  const nav = document.querySelector('nav');
-  const footer = document.querySelector('footer, .site-footer, .page-footer, #footer, .footer');
+    const {L,R}=split8(SRC);
+    const size=Math.min(pickSize(left),pickSize(right));
+    const need=SEG*size+(SEG-1)*GAP;
+    let Hc=Math.max(need, H*COMPRESS); Hc=Math.min(Hc,H);
+    const start=Math.max(safeTop, safeTop + (H-Hc)/2 - 14);
+    const step=(Hc-size)/(SEG-1);
 
-  const safeTop = (nav ? nav.getBoundingClientRect().bottom : 0) + 10;
+    function ampX(g){ const w=Math.max(0,g.x1-g.x0); const m=(w-size-2*PAD)/2; return Math.min(AMP_CAP, Math.max(18,m)); }
+    const ampL=ampX(left), ampR=ampX(right);
 
-  // footer 高度（可视/不可视都能取到），加一点缓冲
-  const footerH = footer ? Math.max(footer.getBoundingClientRect().height || 0, 56) : 56;
-  const safeBottom = footerH + 12;     // ← 让圆图永远留在灰色 BAR 之上
+    function place(arr, side, g, ax){
+      for(let i=0;i<SEG;i++){
+        const top=start+i*step;
+        const leftPx = (side==='L') ? (g.x1 - size - ax - PAD) : (g.x0 + ax + PAD);
+        const dur=SPEED[0]+Math.random()*(SPEED[1]-SPEED[0]);
+        const delay=-Math.random()*dur;
 
-  // 视口可用高度
-  const H  = Math.max(460, vh - safeTop - safeBottom);
+        const box=document.createElement('div');
+        box.className='bubble';
+        box.style.setProperty('--size', size+'px');
+        box.style.setProperty('--left', leftPx+'px');
+        box.style.setProperty('--top',  top+'px');
+        box.style.setProperty('--hx', (side==='L'?ax:-ax)+'px');
+        box.style.setProperty('--vy', AMP_Y+'px');
+        box.style.setProperty('--dur', dur.toFixed(2)+'s');
+        box.style.setProperty('--delay', delay.toFixed(2)+'s');
 
-  const {L, R} = splitEight(SRC);
-
-  const sizeL = pickSize(left);
-  const sizeR = pickSize(right);
-  const size  = Math.min(sizeL, sizeR); // 两侧统一尺寸
-
-  // 需要的最小高度（保证不粘连），与压缩高度二者取更大
-  const requiredH = SEG*size + (SEG-1)*MIN_GAP;
-  let Hc = Math.max(requiredH, H*COMPRESS);
-  Hc = Math.min(Hc, H);
-
-  // 再稍微整体上移一点（可调），更靠上方
-  const LIFT = 14;                     // ← 想再高些就加大，例如 20
-  const start = Math.max(safeTop, safeTop + (H - Hc)/2 - LIFT);
-
-  // 均匀分布的步距
-  const step = (Hc - size) / (SEG - 1);
-
-  function ampXFor(g){
-    const gw = Math.max(0, g.x1 - g.x0);
-    const maxByWidth = (gw - size - 2*PAD_SIDE) / 2;
-    return Math.min(AMP_X_CAP, Math.max(18, maxByWidth));
-  }
-  const ampL = ampXFor(left);
-  const ampR = ampXFor(right);
-
-  function placeSide(arr, side, g, ampX){
-    for(let i=0;i<SEG;i++){
-      const topBase = start + i * step;
-      const leftPx = (side === 'L')
-        ? (g.x1 - size - ampX - PAD_SIDE)
-        : (g.x0 + ampX + PAD_SIDE);
-
-      const dur   = SPEED_RANGE[0] + Math.random()*(SPEED_RANGE[1]-SPEED_RANGE[0]);
-      const delay = -Math.random()*dur;
-
-      const box = document.createElement('div');
-      box.className = 'bubble';
-      box.style.setProperty('--size',  size + 'px');
-      box.style.setProperty('--left',  leftPx + 'px');
-      box.style.setProperty('--top',   topBase + 'px');
-      box.style.setProperty('--hx',    (side==='L'? ampX : -ampX) + 'px');
-      box.style.setProperty('--vy',    AMP_Y + 'px');
-      box.style.setProperty('--dur',   dur.toFixed(2) + 's');
-      box.style.setProperty('--delay', delay.toFixed(2) + 's');
-      box.style.setProperty('--op',    (0.92 + Math.random()*0.05).toFixed(2));
-
-      const img = new Image();
-      img.src = arr[i]; img.alt=''; img.loading='lazy'; img.decoding='async';
-      box.appendChild(img);
-      sky.appendChild(box);
+        const img=new Image(); img.src=arr[i]; img.alt=''; img.loading='lazy'; img.decoding='async';
+        box.appendChild(img); sky.appendChild(box);
+      }
     }
+    place(L,'L',left,ampL); place(R,'R',right,ampR);
   }
-
-  placeSide(L, 'L', left,  ampL);
-  placeSide(R, 'R', right, ampR);
-}
-
-  layout();
-  let t=null; addEventListener('resize', ()=>{ clearTimeout(t); t=setTimeout(layout, 160); });
+  layout(); let t=null; addEventListener('resize', ()=>{ clearTimeout(t); t=setTimeout(layout,160); });
 })();
 </script>
 {% endblock %}
