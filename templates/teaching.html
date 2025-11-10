@@ -1,85 +1,98 @@
-{% extends 'base.html' %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Teaching — Fanmei Wang, PhD</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
-{# ---------- 页面 <title> ---------- #}
-{% block title %}Teaching — Fanmei Wang, PhD{% endblock %}
+  <!-- ▼ Page‑specific styles ▼ -->
+  <style>
+    :root{
+      --deep-teal:#004F59;
+      --amber-1:#FFF9E6;--amber-2:#FFF1C4;--amber-3:#FFE29C;--amber-4:#FFD066;
+      --card-shadow:0 6px 20px rgba(0,0,0,.07);
+    }
 
-{# ---------- 只给教学页加载专属 CSS ---------- #}
-{% block extra_css %}
-  <link rel="stylesheet"
-        href="{{ url_for('static', filename='css/teaching.css') }}">
-{% endblock %}
+    /* --- Base & Modern gradient footer band --- */
+    body{background:#FAF9F4;padding:0 130px;position:relative;overflow-x:hidden;}
+    body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:220px;z-index:-3;
+      background:linear-gradient(180deg,transparent 0%,#FFF1C9 35%,#FFE29C 80%,#FFD066 100%);}  /* 柔和渐变 */
+    @media(max-width:1000px){body{padding:0 1rem;}}
 
-{# ---------- 主体内容 ---------- #}
-{% block content %}
-  <!-- 左右照片轨道 -->
-  <div class="rail left">
-    <div class="rail-inner">
-      {% for img in photos %}
-        <img src="{{ url_for('static', filename='img/teaching/' ~ img) }}" alt="">
-      {% endfor %}
-      {% for img in photos %}
-        <img src="{{ url_for('static', filename='img/teaching/' ~ img) }}" alt="">
-      {% endfor %}
-    </div>
-  </div>
+    .container{max-width:1400px;margin:0 auto;padding:0 1.4rem;}
 
-  <div class="rail right">
-    <div class="rail-inner">
-      {% for img in photos %}
-        <img src="{{ url_for('static', filename='img/teaching/' ~ img) }}" alt="">
-      {% endfor %}
-      {% for img in photos %}
-        <img src="{{ url_for('static', filename='img/teaching/' ~ img) }}" alt="">
-      {% endfor %}
-    </div>
-  </div>
+    /* --- Fixed scrolling photo rails (left / right) --- */
+    .rail{position:fixed;top:0;bottom:0;width:120px;overflow:hidden;z-index:-1;pointer-events:none;}
+    .rail.left{left:0;} .rail.right{right:0;}
+    @media(max-width:1000px){.rail{display:none;}}
+    .rail-inner{display:flex;flex-direction:column;gap:6px;animation:scroll 22s linear infinite;}
+    .rail.right .rail-inner{animation-direction:reverse;}
+    .rail-inner img{width:120px;height:120px;object-fit:cover;filter:brightness(.93);border-radius:6px;}
+    @keyframes scroll{to{transform:translateY(-50%);}}
 
-  <!-- ---------- 主内容 ---------- -->
+    /* --- Card stack grid --- */
+    .teach-stack{display:grid;grid-template-columns:repeat(auto-fit,minmax(47%,1fr));gap:2rem;margin-top:60px;position:relative;}
+    @media(max-width:880px){.teach-stack{grid-template-columns:1fr;}}
+
+    .teach-card{border-radius:16px;padding:1.8rem 2.2rem;background:var(--amber-1);box-shadow:var(--card-shadow);
+      display:flex;flex-direction:column;transition:transform .25s;position:relative;}
+    .teach-card:hover{transform:scale(1.02);}  /* Hover pop */
+    .teach-card:nth-of-type(1){background:linear-gradient(135deg,var(--amber-1),#FFF3D6);top:0;}
+    .teach-card:nth-of-type(2){background:linear-gradient(135deg,var(--amber-2),#FFEEC6);top:20px;}
+    .teach-card:nth-of-type(3){background:linear-gradient(135deg,var(--amber-3),#FFDDA5);top:40px;}
+    .teach-card:nth-of-type(4){background:linear-gradient(135deg,var(--amber-4),#FFC760);top:60px;}
+    @media(max-width:880px){.teach-card{top:0;}}
+
+    h2.card-title{font-size:1.9rem;color:var(--deep-teal);margin:0 0 1rem;}
+    h3.subhead{font-size:1.15rem;color:var(--deep-teal);margin:1rem 0 .3rem;}
+
+    /* Lists */
+    ul.course-list,ul.timeline{margin:0;padding:0;list-style:none;line-height:1.25;font-size:1rem;}
+    ul.course-list li{margin:0 0 .25rem 0;}
+    ul.course-list li::before{content:"• ";color:var(--deep-teal);font-weight:600;}
+
+    .timeline{border-left:2.5px solid var(--deep-teal);padding-left:.9rem;}
+    .timeline li{position:relative;margin:0 0 .65rem;}
+    .timeline li::before{content:"";position:absolute;left:-1.05rem;top:.32rem;width:.5rem;height:.5rem;border-radius:50%;background:var(--deep-teal);} 
+  </style>
+</head>
+<body>
+  {% include "navbar.html" %}
+
+  <!-- Photo rails -->
+  <div class="rail left"><div class="rail-inner">{% for img in photos %}<img src="{{ url_for('static', filename='img/teaching/'~img) }}">{% endfor %}{% for img in photos %}<img src="{{ url_for('static', filename='img/teaching/'~img) }}">{% endfor %}</div></div>
+  <div class="rail right"><div class="rail-inner">{% for img in photos %}<img src="{{ url_for('static', filename='img/teaching/'~img) }}">{% endfor %}{% for img in photos %}<img src="{{ url_for('static', filename='img/teaching/'~img) }}">{% endfor %}</div></div>
+
   <main class="container">
-    <h1 class="page-title">Teaching &amp; Training</h1>
+    <h1 style="font-size:2.6rem;color:var(--deep-teal);margin:40px 0 20px;">Teaching &amp; Training</h1>
 
     <div class="teach-stack">
-      <!-- Academic Courses -->
-      <details class="teach-card" open>
-        <summary><h2 class="card-title">Academic Courses</h2></summary>
+      <!-- Academic -->
+      <details open class="teach-card"><summary><h2 class="card-title">Academic Courses</h2></summary>
         {% for subgroup, items in academic.items() %}
           <h3 class="subhead">{{ subgroup }}</h3>
-          <ul class="course-list">
-            {% for c in items %}
-              <li>{{ c.course }} — {{ c.level }}</li>
-            {% endfor %}
-          </ul>
+          <ul class="course-list">{% for c in items %}<li>{{ c.course }} — {{ c.level }}</li>{% endfor %}</ul>
         {% endfor %}
       </details>
 
-      <!-- Corporate Training -->
-      <details class="teach-card" open>
-        <summary><h2 class="card-title">Corporate Training</h2></summary>
-        <ul class="timeline">
-          {% for t in training_contract %}
-            <li>{{ t }}</li>
-          {% endfor %}
-        </ul>
+      <!-- Corporate -->
+      <details open class="teach-card"><summary><h2 class="card-title">Corporate Training</h2></summary>
+        <ul class="timeline">{% for t in training_contract %}<li>{{ t }}</li>{% endfor %}</ul>
       </details>
 
-      <!-- Teaching Awards -->
-      <details class="teach-card">
-        <summary><h2 class="card-title">Teaching Awards</h2></summary>
-        <ul class="timeline">
-          {% for a in awards %}
-            <li><strong>{{ a.award }}</strong> — {{ a.institution }} · {{ a.year }}</li>
-          {% endfor %}
-        </ul>
+      <!-- Awards -->
+      <details open class="teach-card"><summary><h2 class="card-title">Teaching Awards</h2></summary>
+        <ul class="timeline">{% for a in awards %}<li><strong>{{ a.award }}</strong> — {{ a.institution }} · {{ a.year }}</li>{% endfor %}</ul>
       </details>
 
-      <!-- Thesis Supervision -->
-      <details class="teach-card">
-        <summary><h2 class="card-title">Thesis Supervision</h2></summary>
-        <ul class="course-list">
-          <li>Bachelor’s Papers — {{ thesis.bachelor }}</li>
-          <li>Master’s Theses — {{ thesis.master }}</li>
-        </ul>
+      <!-- Thesis -->
+      <details open class="teach-card"><summary><h2 class="card-title">Thesis Supervision</h2></summary>
+        <ul class="course-list"><li>Bachelor’s Papers — {{ thesis.bachelor }}</li><li>Master’s Theses — {{ thesis.master }}</li></ul>
       </details>
     </div>
   </main>
-{% endblock %}
+</body>
+</html>
+
