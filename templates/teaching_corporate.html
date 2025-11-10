@@ -15,19 +15,44 @@
   .wrap{ max-width:1100px; margin:0 auto; padding:0 1rem 72px; }
   .page-title{ text-align:center; color:var(--brand); margin:54px 0 16px; }
 
-  /* 顶部说明条（英文） */
+  /* 顶部英文说明条 */
   .notice{
     display:flex; align-items:center; gap:1rem;
     background:linear-gradient(180deg,#FFF6C7 0%, #FFFBE6 100%);
     border-left:5px solid var(--brand);
     border-radius:12px;
-    padding:.9rem 1rem; margin:0 0 16px;
+    padding:.9rem 1rem; margin:0 0 14px;
     box-shadow:0 6px 16px rgba(0,0,0,.06);
   }
   .notice strong{ color:var(--brand); }
   .notice .sub{ color:#2f4a50; font-size:.98rem; }
 
-  /* ===== 年份折叠时间线（宽白卡，清爽排版） ===== */
+  /* ======= Corporate Trainer · Spotlight 重点卡片 ======= */
+  .trainer-spotlight{
+    position:relative;
+    background:linear-gradient(180deg,#FFF2C9 0%, #FFF8E6 100%);
+    border:1px solid rgba(0,0,0,.06);
+    border-left:6px solid var(--brand);
+    border-radius:14px;
+    box-shadow:0 12px 28px rgba(0,0,0,.08);
+    padding:1.05rem 1.15rem 1.05rem 1.05rem;
+    margin:0 0 18px;
+  }
+  .spot-title{
+    display:flex; align-items:center; gap:.6rem;
+    margin:0 0 .4rem;
+    color:#0e2f34; font-weight:900; font-size:1.18rem;
+  }
+  .spot-title svg{ width:22px; height:22px; fill:#0e2f34; }
+  .spot-text{ margin:0; color:#1b3337; font-size:1.04rem; line-height:1.6; }
+  .spot-chips{ display:flex; flex-wrap:wrap; gap:.5rem; margin:.6rem 0 0; }
+  .spot-chip{
+    font-size:.82rem; font-weight:700; color:#1f4b50;
+    background:#eef6f5; border:1px solid rgba(0,0,0,.06);
+    border-radius:999px; padding:.22rem .55rem;
+  }
+
+  /* ===== 年份折叠时间线（宽白卡、无金色大徽章） ===== */
   .timeline{ margin-top:10px; }
   details.year{
     background:var(--card);
@@ -60,7 +85,7 @@
   }
   .item:last-child{ border-bottom:none; }
 
-  /* 主题（Topic）做成低调小块，不是金色显眼徽章 */
+  /* 主题标签（低调青灰，而非金色） */
   .topic{
     flex:0 0 auto;
     font-weight:700; font-size:.86rem; color:#1f4b50;
@@ -80,34 +105,34 @@
 {% endblock %}
 
 {% block content %}
-{# ========= 你的原始清单（逐条录入；年份全部用字符串，避免排序 TypeError） ========= #}
+{# ========= 你的原始清单（逐条录入；年份全部为字符串或数值都可，这里用字符串排序安全） ========= #}
 {% set TRAINING = {
   "2016": [
-    {"topic":"Corporate Culture", "org":"MCC Sea Water Desalination Investment Company Ltd., Beijing, China"}
+    {"topic":"Corporate Culture", "org":"“Corporate Culture,” MCC Sea Water Desalination Investment Company Ltd., Beijing, China"}
   ],
   "2015": [
-    {"topic":"Performance Management",      "org":"Wuyang Iron & Steel, Wuyang, Henan"},
-    {"topic":"Human Resources Management",  "org":"Guangdong Topway Network Co., Ltd., Foshan, Guangdong, China"}
+    {"topic":"Performance Management",      "org":"“Performance Management,” Wuyang Iron & Steel, Wuyang, Henan"},
+    {"topic":"Human Resources Management",  "org":"“Human Resources Management,” Guangdong Topway Network Co., Ltd., Foshan, Guangdong, China"}
   ],
   "2014": [
-    {"topic":"Corporate Culture",           "org":"Sinopec Corp. (China Petroleum & Chemical Corporation), Beijing, China"},
-    {"topic":"Human Resources Management",  "org":"Shandong Gold Group Co., Ltd., Beijing, China"},
-    {"topic":"Corporate Culture",           "org":"BBMG Corporation, Beijing, China"}
+    {"topic":"Corporate Culture",           "org":"“Corporate Culture,” Sinopec Corp. (China Petroleum & Chemical Corporation), Beijing, China"},
+    {"topic":"Human Resources Management",  "org":"“Human Resources Management,” Shandong Gold Group Co., Ltd., Beijing, China"},
+    {"topic":"Corporate Culture",           "org":"“Corporate Culture,” BBMG Corporation, Beijing, China"}
   ],
   "2012": [
-    {"topic":"Performance Management",      "org":"MCC Sea Water Desalination Investment Company Ltd., Beijing, China"},
-    {"topic":"Human Resources Management",  "org":"SHOUGANG (Shoudu Iron & Steel) Group, Beijing, China"},
-    {"topic":"Performance Management",      "org":"Tangshan Xinbaotai Iron & Steel Co., Ltd. Plant, Beijing, China"}
+    {"topic":"Performance Management",      "org":"“Performance Management,” MCC Sea Water Desalination Investment Company Ltd., Beijing, China"},
+    {"topic":"Human Resources Management",  "org":"“Human Resources Management,” SHOUGANG (Shoudu Iron & Steel) Group, Beijing, China"},
+    {"topic":"Performance Management",      "org":"“Performance Management,” Tangshan Xinbaotai Iron & Steel Co., Ltd. Plant, Beijing, China"}
   ],
   "2011": [
-    {"topic":"Performance Management",      "org":"HBIS (Hebei Iron & Steel) Group Co., Ltd., Shijiazhuang, Hebei, China"}
+    {"topic":"Performance Management",      "org":"“Performance Management,” HBIS (Hebei Iron & Steel) Group Co., Ltd., Shijiazhuang, Hebei, China (2010, 2011 & 2015)"}
   ],
   "2011 & 2012": [
-    {"topic":"Human Resources Management",  "org":"Chengde Iron & Steel Group Co., Ltd., Chengde, Hebei, China"},
-    {"topic":"Human Resources Management",  "org":"BBMG Corporation, Beijing, China"}
+    {"topic":"Human Resources Management",  "org":"“Human Resources Management,” Chengde Iron & Steel Group Co., Ltd., Chengde, Hebei, China"},
+    {"topic":"Human Resources Management",  "org":"“Human Resources Management,” BBMG Corporation, Beijing, China"}
   ],
   "2010": [
-    {"topic":"Human Resources Management",  "org":"China National Tobacco Corporation, Hohhot, Inner Mongolia, China"}
+    {"topic":"Human Resources Management",  "org":"“Human Resources Management,” China National Tobacco Corporation, Hohhot, Inner Mongolia, China"}
   ]
 } %}
 
@@ -121,8 +146,25 @@
     </div>
   </div>
 
+  <!-- ★ 重点卡片（Corporate Trainer — Summary） -->
+  <section id="trainer" class="trainer-spotlight" aria-label="Corporate Trainer — Summary">
+    <h2 class="spot-title">
+      <!-- 简洁的小图标（内联 SVG，无需静态文件） -->
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4a2 2 0 0 0 2 2h2l3 3v-3h3a5 5 0 0 0 5-5V7l-4 2H5a2 2 0 0 0-2 2zM19 3v2a2 2 0 0 1-2 2h-1"/></svg>
+      Corporate Trainer — Summary
+    </h2>
+    <p class="spot-text">
+      Served as a corporate trainer for seven corporations (i.e., Beijing Urban Construction Group Co., Ltd.; JiangSu Xicheng Sanlian Holding Group, etc.) among others. Topics included performance evaluation, corporate culture, and communication management.
+    </p>
+    <div class="spot-chips" aria-hidden="true">
+      <span class="spot-chip">Performance Evaluation</span>
+      <span class="spot-chip">Corporate Culture</span>
+      <span class="spot-chip">Communication Management</span>
+    </div>
+  </section>
+
+  <!-- 年份时间线（默认展开最近年份） -->
   <section class="timeline" aria-label="Corporate training timeline">
-    {# 年份为字符串：|sort 后 |reverse 即可；不会触发你之前的比较错误 #}
     {% set years = TRAINING.keys() | list | sort | reverse %}
     {% for y in years %}
       <details class="year" {% if loop.first %}open{% endif %}>
@@ -141,11 +183,5 @@
       </details>
     {% endfor %}
   </section>
-
-  <p class="muted" style="margin-top:8px;">
-    <strong>Corporate Trainer (summary):</strong>
-    Served as a corporate trainer for seven corporations (e.g., Beijing Urban Construction Group Co., Ltd.; JiangSu Xicheng Sanlian Holding Group, etc.).
-    Topics included performance evaluation, corporate culture, and communication management.
-  </p>
 </div>
 {% endblock %}
