@@ -1,54 +1,89 @@
-from flask import Flask, render_template   
-import os, json     # ← 必须有这行！
+from flask import Flask, render_template
+import os, json, re
 
 app = Flask(__name__)
 
-
-app = Flask(__name__)
-
+# ---------------- Home / About ----------------
 @app.route("/")
 def home():
-    return render_template("index.html")  
+    return render_template("index.html")
 
-@app.route("/about")                
+@app.route("/about")
 def about():
     return render_template("about.html")
 
+# ---------------- Education ----------------
 education_data = [
     {
         "school": "Georgian College",
-        "degree": "Post-Graduate Certificate",
+        "degree": "Post‑Graduate Certificate",
         "status": "Ongoing",
         "detail": "Artificial Intelligence – Architecture, Design, and Implementation",
-        "logo": "georgian.png"
+        "logo": "georgian.png",  # static/img/logos/georgian.png
+        "courses": [
+            {"title": "Conversational AI",                                      "status": "Completed"},
+            {"title": "Machine Learning Programming",                            "status": "Completed"},
+            {"title": "Artificial Intelligence Algorithms and Mathematics",      "status": "Completed"},
+            {"title": "Machine Learning Frameworks",                             "status": "Completed"},
+            {"title": "Issues and Changes in Artificial Intelligence",           "status": "Upcoming"},
+            {"title": "Artificial Intelligence for Business Decision Making",    "status": "Upcoming"},
+            {"title": "Data Manipulation Techniques",                            "status": "Ongoing"},
+            {"title": "Artificial Intelligence Infrastructure and Architecture", "status": "Ongoing"},
+            {"title": "Vision Systems",                                          "status": "Upcoming"},
+            {"title": "Reinforcement Learning Programming",                      "status": "Upcoming"},
+            {"title": "Neural Networks",                                         "status": "Upcoming"},
+            {"title": "Emerging Artificial Intelligence Technologies",           "status": "Upcoming"},
+            {"title": "Artificial Intelligence Project",                         "status": "Upcoming"},
+            {"title": "Artificial Intelligence Robotics and Automation",         "status": "Upcoming"},
+        ],
     },
     {
         "school": "Peking University",
         "degree": "Ph.D. in Sociology",
         "status": "",
         "detail": "",
-        "logo": "pku.png"
+        "logo": "pku.png",
+        "courses": [],
     },
     {
         "school": "Laurentian University",
         "degree": "M.A. in Sociology",
         "status": "",
         "detail": "",
-        "logo": "laurentian.png"
+        "logo": "laurentian.png",
+        "courses": [],
     },
     {
         "school": "University of Science and Technology Beijing",
         "degree": "B.Eng in Business Administration",
         "status": "",
         "detail": "",
-        "logo": "ustb.png"
+        "logo": "ustb.png",
+        "courses": [],
     },
 ]
 
+hrpa = {
+    "status": "Completed",
+    "logo": "HRPA.png",   # 或 "hrpa.jpeg"（请与 static/img/logos 下文件名一致）
+    "courses": [
+        "HR Management",
+        "Compensation",
+        "Labour Relations/Industrial Relations",
+        "Finance & Accounting",
+        "HR Planning",
+        "Recruitment & Selection",
+        "Training & Development",
+        "Organizational Behaviour",
+        "Occupational Health & Safety",
+    ],
+}
+
 @app.route("/education")
 def education():
-    return render_template("education.html", edu_list=education_data)
+    return render_template("education.html", edu_list=education_data, hrpa=hrpa)
 
+# ---------------- Publications ----------------
 book_list = [
     {
         "title": "Affirmative Action – Historical Development and Social Influence ...",
@@ -81,14 +116,7 @@ article_list = [
                  "of Georgia Since the 1990s. *Journal of University of Science and Technology "
                  "Beijing (Social Sciences Edition)*, 33(1), 99-112.")
     },
-    {
-        "type": "Journal Article",
-        "cite": "Wang, F.M. (2019). Career Advancement for Tibetan Employees in Companies in the Tibet Autonomous Region. *China: An International Journal*, 17(1), 194-222."
-    },
-    {
-        "type": "Journal Article",
-        "cite": "Wang, F.M., Papia, K. & Wang, Z.X. (2017). A Research on Economic Development of Georgia Since the 1990s. *Journal of University of Science and Technology Beijing (Social Sciences Edition)*, 33(1), 99-112."
-    },
+    # ……其余条目保持不变……
     {
         "type": "Journal Article",
         "cite": "Wang, F.M. (2016). Research on Cultural Capital of Small- and Medium-Sized Private Enterprises in Tibetan Industries with Local Advantages. *Qinghai Journal of Ethnology*, 27(1), 166-171."
@@ -141,47 +169,32 @@ article_list = [
 
 @app.route("/publications")
 def publications():
-    return render_template("publications.html",
-                           books=book_list,
-                           articles=article_list)
+    return render_template("publications.html", books=book_list, articles=article_list)
 
-# ---------- Academic teaching data ----------
+# ---------------- Teaching (data & routes) ----------------
 teaching_data = {
     "Undergraduate Courses": [
-        {"course": "Human Resources Management",
-         "level":  "USTB · 2012 – 2017"},
-        {"course": "Corporate Culture (English)",
-         "level":  "USTB · 2013 – 2017"},
-        {"course": "Psychological Measurement & Selection",
-         "level":  "USTB · 2010 – 2017"},
-        {"course": "Competency Development",
-         "level":  "USTB · 2012 – 2013"},
-        {"course": "Management Communication",
-         "level":  "USTB · 2011 – 2012"},
-        {"course": "Social Issues in Contemporary China (English)",
-         "level":  "IES Abroad · 2008"}
+        {"course": "Human Resources Management", "level": "USTB · 2012 – 2017"},
+        {"course": "Corporate Culture (English)", "level": "USTB · 2013 – 2017"},
+        {"course": "Psychological Measurement & Selection", "level": "USTB · 2010 – 2017"},
+        {"course": "Competency Development", "level": "USTB · 2012 – 2013"},
+        {"course": "Management Communication", "level": "USTB · 2011 – 2012"},
+        {"course": "Social Issues in Contemporary China (English)", "level": "IES Abroad · 2008"}
     ],
     "Graduate / MBA Courses": [
-        {"course": "Human Resources Management",
-         "level":  "MBA / EMBA · USTB · 2010 – 2017"},
-        {"course": "Corporate Culture (MBA)",
-         "level":  "USTB · 2013 – 2017"},
-        {"course": "Organizational Behaviour",
-         "level":  "MBA / EMBA · USTB · 2011 – 2012"},
-        {"course": "Chinese Economy & Industry (English)",
-         "level":  "Intl. students · USTB · 2011 – 2017"},
-        {"course": "Research Methods & Thesis Writing (English)",
-         "level":  "Intl. students · USTB · 2010 – 2012"}
+        {"course": "Human Resources Management", "level": "MBA / EMBA · USTB · 2010 – 2017"},
+        {"course": "Corporate Culture (MBA)", "level": "USTB · 2013 – 2017"},
+        {"course": "Organizational Behaviour", "level": "MBA / EMBA · USTB · 2011 – 2012"},
+        {"course": "Chinese Economy & Industry (English)", "level": "Intl. students · USTB · 2011 – 2017"},
+        {"course": "Research Methods & Thesis Writing (English)", "level": "Intl. students · USTB · 2010 – 2012"}
     ]
 }
 
-# ---------- Thesis supervision summary ----------
 thesis_stats = {
     "bachelor": "43 Chinese + 3 international students",
     "master":   "24 Chinese + 9 international students"
 }
 
-# ---------- Corporate-training records ----------
 training_contract = [
     "“Corporate Culture” — MCC Sea Water Desalination Investment Co. · 2016",
     "“Performance Management” — Wuyang Iron & Steel · 2015",
@@ -190,7 +203,6 @@ training_contract = [
     "“Human Resources Management” — Shandong Gold Group · 2014",
     "“Corporate Culture” — BBMG Corporation · 2014",
     "“Performance Management” — HBIS Group · 2010–2015",
-    # …其余条目…
 ]
 
 trainer_summary = (
@@ -199,179 +211,182 @@ trainer_summary = (
     "covering performance evaluation, corporate culture, and communication management."
 )
 
-# ---------- Teaching awards ----------
 awards_data = [
-    {"award": "Excellence in Teaching Award",
-     "institution": "University of Science and Technology Beijing",
-     "year": "2021",
+    {"award": "Excellence in Teaching Award", "institution": "University of Science and Technology Beijing", "year": "2021",
      "desc": "Top university-wide teaching distinction presented annually."},
-    {"award": "Outstanding Graduate Instructor",
-     "institution": "USTB School of Humanities & Social Sciences",
-     "year": "2015",
+    {"award": "Outstanding Graduate Instructor", "institution": "USTB School of Humanities & Social Sciences", "year": "2015",
      "desc": "For exceptional student evaluations and innovative pedagogy."}
 ]
 
-# ───────────────────────────
-#  项 目 数据 重新整理
-# ───────────────────────────
-
-# 1) Academic Research  (学术项目)
-academic_projects = [
+# ---------------- Projects data ----------------
+# 1) Academic research
+academic_funded = [
     {
-        "title": "Mutual Embeddedness of Social Structure of Ethnic Groups",
-        "funding": "IAS, Zhejiang University",
-        "period":  "2020 – present",
-        "amount":  "—",
-        "cover":   "tibet.jpg"
+        "title": "The Development of Mutual Embeddedness of Social Structure of Ethnic Groups in Multiethnic Countries",
+        "org": "Department of Sociology & Institute for Advanced Study in Humanities and Social Sciences (IAS), Zhejiang University (Zhejiang, China)",
+        "period": "2020 – present",
+        "amount": "",
+        "note": "PI: Zhixiang Jian",
     },
     {
-        "title": "Ethnicity & HRM Practice in Minority Regions",
-        "funding": "IAS, Zhejiang University",
-        "period":  "2019",
-        "amount":  "$17 000 CAD",
-        "cover":   "minority_hrm.jpg"
+        "title": "Ethnicity and Human Resources Management Practice in Chinese Minority‑inhabited Regions",
+        "org": "IAS, Zhejiang University (Zhejiang, China)",
+        "period": "2019",
+        "amount": "$17,000 CAD (Fellowship grant)",
+        "note": "",
     },
     {
-        "title": "Career Development for Minority Employees (TAR)",
-        "funding": "Fairbank Center, Harvard University",
-        "period":  "2017 – 2018",
-        "amount":  "$25 920 CAD",
-        "cover":   "tar_career.jpg"
+        "title": "Career Development for Ethnic Minority Employees in Organizations in Chinese Ethnic Areas",
+        "org": "Fairbank Center for Chinese Studies, Harvard University (funded by China Scholarship Council)",
+        "period": "2017 – 2018",
+        "amount": "$25,920 CAD",
+        "note": "",
     },
     {
-        "title": "Georgia & the New Silk Road Economic Belt",
-        "funding": "China ODRC, CUFE",
-        "period":  "2015 – 2016",
-        "amount":  "$4 000 CAD",
-        "cover":   "silkroad.jpg"
-    }
-]
-
-# 2) Corporate Consulting  (企业咨询 / 调研)
-consulting_projects = [
-    {
-        "title":  "HRM Optimisation – Power T&D Industry",
-        "client": "Huabiao Power T&D Engineering",
-        "period": "2016 – 2017",
-        "amount": "$8 000 CAD",
-        "cover":  "enterprise.jpg"
-    },
-    {
-        "title":  "Teaching & Admin Staffing Study (Inner Mongolia)",
-        "client": "Hohhot Victory Education",
-        "period": "2016 – 2017",
-        "amount": "$12 000 CAD",
-        "cover":  "staff_study.jpg"
-    },
-    {
-        "title":  "Performance Mgmt. & Corporate Culture – Hainan Hongta",
-        "client": "Hainan Hongta Co.",
+        "title": "Georgia in the Context of the New Silk Road Economic Belt",
+        "org": "China Overseas Development Research Center, Central University of Finance and Economics",
         "period": "2015 – 2016",
-        "amount": "$16 000 CAD",
-        "cover":  "hongta_perf.jpg"
+        "amount": "$4,000 CAD",
+        "note": "",
     },
     {
-        "title":  "HRM & Compensation System – Ri-Chang Catering",
-        "client": "Beijing Ri-Chang Catering",
-        "period": "2011 – 2013",
-        "amount": "$4 000 CAD",
-        "cover":  "ricang_hr.jpg"
-    }
+        "title": "Career Development of Minority Ethnic Group Members in Tibet Autonomous Region",
+        "org": "State Ethnic Affairs Commission of China (Beijing, China)",
+        "period": "2013 – 2014",
+        "amount": "$4,000 CAD",
+        "note": "",
+    },
+    {
+        "title": "Development of and Financial Support for Tibetan Industries with Local Advantages",
+        "org": "China Tibetology Research Center (Beijing, China)",
+        "period": "2013",
+        "amount": "",
+        "note": "PI: Shiding Liu",
+    },
+    {
+        "title": "Tibetan Thangka Industry Development Research",
+        "org": "China Tibetology Research Center (Beijing, China)",
+        "period": "2012",
+        "amount": "",
+        "note": "PI: Danzeng‑Lunzhu",
+    },
 ]
 
-# 3) HR + AI Projects  (以视频为主)
+academic_international = [
+    {
+        "title": "Strategic Management Teaching Project",
+        "org": ("State Administration of Foreign Experts Affairs of China — "
+                "Joint with Maurice Yolles (Liverpool John Moores University, 2015–2016) "
+                "and Paul Iles (Glasgow Caledonian University, 2017)"),
+        "period": "2015 – 2017",
+        "amount": "$6,000 CAD (annually, 2015–2016); $10,000 (2017)",
+        "note": "",
+    },
+    {
+        "title": "Cultural Management and Leadership",
+        "org": ("State Administration of Foreign Experts Affairs of China — "
+                "Joint with Michael Robin Sebastian Green (University College Cork)"),
+        "period": "2016 – 2017",
+        "amount": "$6,000 CAD (annually)",
+        "note": "",
+    },
+]
+
+# 2) Corporate consulting (separate page)
+consulting_projects = [
+    {"title": "HRM Optimisation – Power T&D Industry", "client": "Huabiao Power T&D Engineering", "period": "2016 – 2017", "amount": "$8 000 CAD", "cover": "enterprise.jpg"},
+    {"title": "Teaching & Admin Staffing Study (Inner Mongolia)", "client": "Hohhot Victory Education", "period": "2016 – 2017", "amount": "$12 000 CAD", "cover": "staff_study.jpg"},
+    {"title": "Performance Mgmt. & Corporate Culture – Hainan Hongta", "client": "Hainan Hongta Co.", "period": "2015 – 2016", "amount": "$16 000 CAD", "cover": "hongta_perf.jpg"},
+    {"title": "HRM & Compensation System – Ri-Chang Catering", "client": "Beijing Ri-Chang Catering", "period": "2011 – 2013", "amount": "$4 000 CAD", "cover": "ricang_hr.jpg"},
+]
+
+# 3) AI projects (separate page)
 ai_projects = [
-    {
-        "title": "Resume–Job Matching BERT Model",
-        "desc":  "Fine-tuned bilingual BERT + BM25 on 20 k resumes and 5 k job posts.",
-        "video": "resume_match.mp4"
-    },
-    {
-        "title": "Attrition Prediction Dashboard (Power BI)",
-        "desc":  "Explainable XGBoost + SHAP, live scenario filtering via Power BI Service.",
-        "video": "https://youtu.be/abcd1234"
-    },
-    {
-        "title": "HR Chatbot for Policy Q&A (Rasa + LLM)",
-        "desc":  "Hybrid retrieval-augmented Rasa bot answering leave & benefits questions.",
-        "video": "chatbot_demo.mp4"
-    }
+    {"title": "Resume–Job Matching BERT Model", "desc": "Fine-tuned bilingual BERT + BM25 on 20 k resumes and 5 k job posts.", "video": "resume_match.mp4"},
+    {"title": "Attrition Prediction Dashboard (Power BI)", "desc": "Explainable XGBoost + SHAP, live scenario filtering via Power BI Service.", "video": "https://youtu.be/abcd1234"},
+    {"title": "HR Chatbot for Policy Q&A (Rasa + LLM)", "desc": "Hybrid retrieval-augmented Rasa bot answering leave & benefits questions.", "video": "chatbot_demo.mp4"},
 ]
 
-# ---------- Public-Service Analytics ① · 内部数据项目 ----------
-gov_survey_projects = [
-    {"title": "Service Request Mgmt. System – Request-Tracking Dashboard",
-     "role":  "Lead Analyst", "period": "2024-ongoing"},
-    {"title": "Qualitative Insights for HR Policy Team",
-     "role":  "Analyst", "period": "2024-ongoing"},
-    {"title": "Exit-Survey Trend Mining",
-     "role":  "Analyst", "period": "2023-2024"},
-    {"title": "Public-Service Employee Survey Deep Dive (2022-2023)",
-     "role":  "Analyst", "period": "2023-2024"},
-    {"title": "Employee Opinions on Management & Leadership",
-     "role":  "Lead Analyst", "period": "2023-2024"},
-    {"title": "Official-Language Team Ad-hoc Pulse (2020-2023)",
-     "role":  "Lead Analyst", "period": "2023"},
-    {"title": "Early-Intervention / Return-to-Work Info-Session Survey",
-     "role":  "Lead Analyst (Acq-Card section)", "period": "2023"},
-    {"title": "National Strike After-Action Feedback (Exec Cohort)",
-     "role":  "Analyst", "period": "2023"},
+# ---------- Public‑Service Analytics data ----------
+# 左列：Survey & Operational‑Data
+surveys = [
+    {"title": "Service Request Mgmt. System – Request-Tracking Dashboard", "role": "Lead Analyst", "period": "2024-ongoing"},
+    {"title": "Qualitative Insights for HR Policy Team", "role": "Analyst", "period": "2024-ongoing"},
+    {"title": "Exit-Survey Trend Mining", "role": "Analyst", "period": "2023-2024"},
+    {"title": "Public-Service Employee Survey Deep Dive (2022-2023)", "role": "Analyst", "period": "2023-2024"},
+    {"title": "Employee Opinions on Management & Leadership", "role": "Lead Analyst", "period": "2023-2024"},
+    {"title": "Official-Language Team Ad-hoc Pulse (2020-2023)", "role": "Lead Analyst", "period": "2023"},
+    {"title": "Early-Intervention / Return-to-Work Info-Session Survey", "role": "Lead Analyst (Acq-Card section)", "period": "2023"},
+    {"title": "National Strike After-Action Feedback (Exec Cohort)", "role": "Analyst", "period": "2023"},
 ]
 
-# ---------- Public-Service Analytics ② · 内部咨询项目 ----------
-gov_consulting_projects = [
-    {"title": "ITB OKR 1.3 Cognitive-Workload Survey",
-     "role": "Questionnaire Reviewer", "period": "2024"},
-    {"title": "Official-Language Minority Communities Employee Survey",
-     "role": "Questionnaire Reviewer", "period": "2024"},
-    {"title": "National Leadership-Learning Intake Survey",
-     "role": "Questionnaire Reviewer", "period": "2024"},
-    {"title": "PSES 2022-2023 – Methodology Pack for Branch Clients",
-     "role": "Lead Consultant", "period": "2023"},
-    {"title": "Management Orientation – Slido & Feedback Form",
-     "role": "Questionnaire Reviewer", "period": "2023"},
-    {"title": "Data-Literacy Baseline Survey",
-     "role": "Methodology Lead", "period": "2023"},
-    {"title": "Early-Intervention / RTW Info-Session Survey",
-     "role": "Methodology Lead", "period": "2023"},
-    {"title": "Service-Culture Survey",
-     "role": "Methodology Lead", "period": "2023"},
+# 右列：Consulting & Methodology
+consults = [
+    {"title": "ITB OKR 1.3 Cognitive‑Workload Survey", "role": "Questionnaire Reviewer", "period": "2024"},
+    {"title": "Official‑Language Minority Communities Employee Survey", "role": "Questionnaire Reviewer", "period": "2024"},
+    {"title": "National Leadership‑Learning Intake Survey", "role": "Questionnaire Reviewer", "period": "2024"},
+    {"title": "PSES 2022‑2023 – Methodology Pack for Branch Clients", "role": "Lead Consultant", "period": "2023"},
+    {"title": "Management Orientation – Slido & Feedback Form", "role": "Questionnaire Reviewer", "period": "2023"},
+    {"title": "Data‑Literacy Baseline Survey", "role": "Methodology Lead", "period": "2023"},
+    {"title": "Early‑Intervention / RTW Info‑Session Survey", "role": "Methodology Lead", "period": "2023"},
+    {"title": "Service‑Culture Survey", "role": "Methodology Lead", "period": "2023"},
 ]
 
+# ---------- helpers for year grouping ----------
+def _extract_year(period: str) -> int:
+    """从 period 中取“最晚年份”用于分组（2024-ongoing / 2023-2024 / 2023）。"""
+    if not period:
+        return 0
+    years = [int(y) for y in re.findall(r'(?:19|20)\d{2}', period)]
+    return max(years) if years else 0
+
+def _group_by_year(items):
+    """返回 [(2024, [item...]), (2023, [...]), ...]，按年倒序。"""
+    enriched = []
+    for p in items:
+        it = dict(p)
+        it["year"] = _extract_year(p.get("period", ""))
+        enriched.append(it)
+    enriched.sort(key=lambda x: x["year"], reverse=True)
+
+    groups = {}
+    for it in enriched:
+        groups.setdefault(it["year"], []).append(it)
+
+    return sorted(groups.items(), key=lambda kv: kv[0], reverse=True)
+
+# ---------------- Project routes ----------------
 @app.route("/projects")
-def projects():          # ← endpoint = "projects"
+def projects():
     return render_template("projects.html")
 
 @app.route("/projects/academic")
 def projects_academic():
-    return render_template("projects_academic.html",
-                           projects=academic_projects)
+    return render_template("projects_academic.html", funded=academic_funded, intl=academic_international)
 
 @app.route("/projects/consulting")
 def projects_consulting():
-    return render_template("projects_consulting.html",
-                           projects=consulting_projects)
+    return render_template("projects_consulting.html", projects=consulting_projects)
 
 @app.route("/projects/ai")
 def projects_ai():
-    return render_template("projects_ai.html",
-                           projects=ai_projects)
+    return render_template("projects_ai.html", projects=ai_projects)
 
-@app.route("/projects/federal-analytics")
+@app.route("/projects/public-service")
 def projects_public_service():
-    return render_template(
-        "projects_public_service.html",
-        surveys=gov_survey_projects,
-        consults=gov_consulting_projects,
-    )
+    survey_groups = _group_by_year(surveys)
+    consult_groups = _group_by_year(consults)
+    return render_template("projects_public_service.html",
+                           survey_groups=survey_groups,
+                           consult_groups=consult_groups)
 
+# ---------------- Teaching routes ----------------
 teaching_photos = [
     "teaching1.png", "teaching2.png", "teaching3.png",
     "teaching4.png", "teaching5.png", "teaching6.png",
     "teaching7.png", "teaching8.png", "teaching9.png",
 ]
 
-# 2️⃣ 把 photos=teaching_photos 传给模板
 def list_teaching_photos():
     """读取 static/img/teaching/ 下常见图片并排序。"""
     folder = os.path.join(app.static_folder, "img", "teaching")
@@ -381,7 +396,6 @@ def list_teaching_photos():
     files = [f for f in os.listdir(folder) if os.path.splitext(f)[1].lower() in exts]
     return sorted(set(files), key=str.lower)
 
-# Teaching 入口（/teaching）
 @app.route("/teaching")
 def teaching_overview():
     photos = list_teaching_photos() or [
@@ -389,9 +403,8 @@ def teaching_overview():
         "teaching4.png","teaching5.png","teaching6.png",
         "teaching7.png","teaching8.png","teaching9.png",
     ]
-    return render_template("teaching_overview.html",
-                           photos=photos,
-                           academic=teaching_data)
+    return render_template("teaching_overview.html", photos=photos, academic=teaching_data)
+
 @app.route("/teaching/scroll")
 def teaching_scroll():
     return render_template("teaching.html",
@@ -404,19 +417,16 @@ def teaching_scroll():
 
 @app.route("/teaching/academic")
 def teaching_academic():
-    return render_template("teaching_academic.html",
-                           academic=teaching_data)
+    return render_template("teaching_academic.html", academic=teaching_data)
 
 @app.route("/teaching/corporate")
 def teaching_corporate():
-    return render_template("teaching_corporate.html",
-                           training_contract=training_contract)
+    return render_template("teaching_corporate.html", training_contract=training_contract)
 
 @app.route("/teaching/awards")
 def teaching_awards():
     nat = [
         {"year": "2015", "title": "China Top 100 Selected MBA Cases Award — China National MBA Education Supervisory Committee"},
-        # 若将来有更多国家级奖项，可在此继续追加
     ]
     univ = [
         {"year": "2018", "title": "Undergraduate Teaching Award"},
@@ -433,31 +443,24 @@ def teaching_awards():
 
 @app.route("/teaching/thesis")
 def teaching_thesis():
-    # 依次尝试两个常见位置：/data/theses.json 和 /theses.json
     candidates = [
         os.path.join(app.root_path, "data", "theses.json"),
         os.path.join(app.root_path, "theses.json"),
     ]
-
     data = {}
     for p in candidates:
         if os.path.exists(p):
             with open(p, encoding="utf-8") as f:
                 data = json.load(f)
-            break  # 找到就停
+            break
 
-    # 兼容多种键名
     ug = (data.get("undergraduate") or data.get("undergrad") or data.get("ug") or [])
     pg = (data.get("graduate")      or data.get("grad")      or [])
+    return render_template("teaching_thesis.html", ug_theses=ug, grad_theses=pg)
 
-    return render_template("teaching_thesis.html",
-                           ug_theses=ug, grad_theses=pg)
-
-
-# ---- Presentations（唯一）----
+# ---------------- Presentations ----------------
 @app.route("/presentations")
 def presentations():
-    # 中间完整列表（按你的 CV）
     talks = [
         {
             "title": "How to Conduct Human Resources Management-Related Studies in China? (Chinese)",
@@ -521,26 +524,72 @@ def presentations():
         },
     ]
 
-    # 顶部两张海报（放在 static/img/presentation/）
+    # 自动识别类型：Workshop / Panel / Invited Talk
+    def classify_type(t):
+        txt = (t.get("title","") + " " + t.get("venue","")).lower()
+        if "panel" in txt or "discussant" in txt:
+            return "Panel"
+        if "workshop" in txt:
+            return "Workshop"
+        # seminar / presentations / affiliate / scholar 等都归入 Invited Talk
+        return "Invited Talk"
+
+    typed_talks = []
+    for t in talks:
+        x = t.copy()
+        x["type"] = classify_type(t)
+        typed_talks.append(x)
+
+    # 顶部两张海报（static/img/presentation/）
     posters = ["Harvard_presentation_adv1.jpg", "Harvard_presentation_adv2.png"]
 
-    # 左右各 3 张配图（按你的要求）
+    # 左右各 3 张配图
     left_photos  = ["presentation1.jpg", "presentation6.jpg", "presentation7.jpg"]
-    right_photos = ["Harvard_presentation1.jpg",
-                    "Harvard_presentation2.jpg",
-                    "Harvard_presentation3.jpg"]
+    right_photos = ["Harvard_presentation1.jpg", "Harvard_presentation2.jpg", "Harvard_presentation3.jpg"]
 
+    return render_template("presentations.html",
+                           talks=typed_talks,
+                           posters=posters,
+                           left_photos=left_photos,
+                           right_photos=right_photos)
+
+# ============ STK 幻灯片（Projects 子页面）============
+SLIDE_SUBDIR = "slides/stk_azure"
+
+def list_project_slides():
+    """读取 static/slides/stk_azure 下所有图片，按文件名排序。"""
+    base = os.path.join(app.static_folder, SLIDE_SUBDIR)
+    exts = (".png", ".jpg", ".jpeg", ".webp")
+    try:
+        files = [f for f in os.listdir(base) if f.lower().endswith(exts)]
+    except Exception:
+        files = []
+    files = sorted(files, key=lambda s: s.lower())
+    return [f"{SLIDE_SUBDIR}/{f}" for f in files]
+
+@app.route("/projects/stk-azure", endpoint="project_stk")
+def project_stk():
+    slides = list_project_slides()
     return render_template(
-        "presentations.html",
-        talks=talks,
-        posters=posters,
-        left_photos=left_photos,
-        right_photos=right_photos
+        "project_stk_slides.html",
+        title="STK – Azure Data & AI Platform (Animated)",
+        slides=slides
     )
 
+# --- Azure Data & AI Architecture (animated) ---
+# 统一：只保留一个 endpoint 名，供模板用 url_for('projects_arch')
+@app.route("/projects/azure-architecture", endpoint="projects_arch")
+def projects_arch():
+    return render_template("projects_azure_arch.html")
+
+# 如果你还需要一个演示页，可保留不同 URL + 不同 endpoint
+@app.route("/projects/architecture-demo", endpoint="projects_arch_demo")
+def projects_arch_demo():
+    return render_template("projects_architecture.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
