@@ -1,15 +1,151 @@
 {% extends "base.html" %}
-{% block content %}
-<h1 class="page-title">Corporate Training</h1>
-<p class="lead">
-  A snapshot of bespoke in-house workshops delivered for state-owned enterprises
-  and multinationals on performance management, corporate culture, and HR
-  analytics.
-</p>
+{% block title %}Corporate Training — Fanmei Wang{% endblock %}
 
-<ul class="timeline">
-  {% for item in training_contract %}
-    <li>{{ item }}</li>
-  {% endfor %}
-</ul>
+{% block extra_css %}
+<style>
+  :root{
+    --brand:#004F59;
+    --ink:#153E42;
+    --page:#F2EEE6;
+    --card:#ffffff;
+    --muted:#5E6E73;
+    --shadow:0 10px 28px rgba(0,0,0,.10);
+  }
+  body{ background:var(--page); }
+  .wrap{ max-width:1100px; margin:0 auto; padding:0 1rem 72px; }
+  .page-title{ text-align:center; color:var(--brand); margin:54px 0 16px; }
+
+  /* 顶部说明条（英文） */
+  .notice{
+    display:flex; align-items:center; gap:1rem;
+    background:linear-gradient(180deg,#FFF6C7 0%, #FFFBE6 100%);
+    border-left:5px solid var(--brand);
+    border-radius:12px;
+    padding:.9rem 1rem; margin:0 0 16px;
+    box-shadow:0 6px 16px rgba(0,0,0,.06);
+  }
+  .notice strong{ color:var(--brand); }
+  .notice .sub{ color:#2f4a50; font-size:.98rem; }
+
+  /* ===== 年份折叠时间线（宽白卡，清爽排版） ===== */
+  .timeline{ margin-top:10px; }
+  details.year{
+    background:var(--card);
+    border-radius:14px;
+    box-shadow:var(--shadow);
+    margin:0 0 14px;
+    overflow:hidden;
+  }
+  summary.year-head{
+    list-style:none;
+    display:flex; align-items:center; justify-content:space-between; gap:.8rem;
+    padding:1rem 1.2rem;
+    cursor:pointer; user-select:none;
+    background:#fff;
+    border-bottom:1px solid rgba(0,0,0,.06);
+  }
+  summary.year-head::-webkit-details-marker{ display:none; }
+  .year-head .y{ font-weight:900; color:#0f3136; font-size:1.15rem; }
+  .year-head .count{
+    color:#2f5b5f; font-size:.95rem; font-weight:700;
+    background:#f7faf9; border-radius:999px; padding:.22rem .6rem;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+  }
+
+  .list{ list-style:none; margin:0; padding:.35rem 1.2rem 1rem; }
+  .item{
+    padding:.65rem 0;
+    display:flex; gap:.85rem; align-items:flex-start;
+    border-bottom:1px dashed rgba(0,0,0,.07);
+  }
+  .item:last-child{ border-bottom:none; }
+
+  /* 主题（Topic）做成低调小块，不是金色显眼徽章 */
+  .topic{
+    flex:0 0 auto;
+    font-weight:700; font-size:.86rem; color:#1f4b50;
+    background:#eef6f5;
+    border:1px solid rgba(0,0,0,.06);
+    border-radius:8px; padding:.22rem .5rem; margin-top:.1rem;
+    white-space:nowrap;
+  }
+  .org{ color:var(--ink); line-height:1.55; }
+  .muted{ color:var(--muted); }
+
+  @media (max-width:640px){
+    .item{ flex-direction:column; }
+    .topic{ margin-bottom:.2rem; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+{# ========= 你的原始清单（逐条录入；年份全部用字符串，避免排序 TypeError） ========= #}
+{% set TRAINING = {
+  "2016": [
+    {"topic":"Corporate Culture", "org":"MCC Sea Water Desalination Investment Company Ltd., Beijing, China"}
+  ],
+  "2015": [
+    {"topic":"Performance Management",      "org":"Wuyang Iron & Steel, Wuyang, Henan"},
+    {"topic":"Human Resources Management",  "org":"Guangdong Topway Network Co., Ltd., Foshan, Guangdong, China"}
+  ],
+  "2014": [
+    {"topic":"Corporate Culture",           "org":"Sinopec Corp. (China Petroleum & Chemical Corporation), Beijing, China"},
+    {"topic":"Human Resources Management",  "org":"Shandong Gold Group Co., Ltd., Beijing, China"},
+    {"topic":"Corporate Culture",           "org":"BBMG Corporation, Beijing, China"}
+  ],
+  "2012": [
+    {"topic":"Performance Management",      "org":"MCC Sea Water Desalination Investment Company Ltd., Beijing, China"},
+    {"topic":"Human Resources Management",  "org":"SHOUGANG (Shoudu Iron & Steel) Group, Beijing, China"},
+    {"topic":"Performance Management",      "org":"Tangshan Xinbaotai Iron & Steel Co., Ltd. Plant, Beijing, China"}
+  ],
+  "2011": [
+    {"topic":"Performance Management",      "org":"HBIS (Hebei Iron & Steel) Group Co., Ltd., Shijiazhuang, Hebei, China"}
+  ],
+  "2011 & 2012": [
+    {"topic":"Human Resources Management",  "org":"Chengde Iron & Steel Group Co., Ltd., Chengde, Hebei, China"},
+    {"topic":"Human Resources Management",  "org":"BBMG Corporation, Beijing, China"}
+  ],
+  "2010": [
+    {"topic":"Human Resources Management",  "org":"China National Tobacco Corporation, Hohhot, Inner Mongolia, China"}
+  ]
+} %}
+
+<div class="wrap">
+  <h1 class="page-title">Corporate Training</h1>
+
+  <div class="notice">
+    <div>
+      <strong>Selected in‑house training delivered for state‑owned and private enterprises.</strong>
+      <span class="sub">Topics include Human Resources Management, Performance Management, and Corporate Culture.</span>
+    </div>
+  </div>
+
+  <section class="timeline" aria-label="Corporate training timeline">
+    {# 年份为字符串：|sort 后 |reverse 即可；不会触发你之前的比较错误 #}
+    {% set years = TRAINING.keys() | list | sort | reverse %}
+    {% for y in years %}
+      <details class="year" {% if loop.first %}open{% endif %}>
+        <summary class="year-head">
+          <span class="y">{{ y }}</span>
+          <span class="count">{{ TRAINING[y] | length }} engagement{{ 's' if TRAINING[y]|length > 1 }}</span>
+        </summary>
+        <ul class="list">
+          {% for e in TRAINING[y] %}
+            <li class="item">
+              <span class="topic">{{ e.topic }}</span>
+              <span class="org">{{ e.org }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </details>
+    {% endfor %}
+  </section>
+
+  <p class="muted" style="margin-top:8px;">
+    <strong>Corporate Trainer (summary):</strong>
+    Served as a corporate trainer for seven corporations (e.g., Beijing Urban Construction Group Co., Ltd.; JiangSu Xicheng Sanlian Holding Group, etc.).
+    Topics included performance evaluation, corporate culture, and communication management.
+  </p>
+</div>
 {% endblock %}
