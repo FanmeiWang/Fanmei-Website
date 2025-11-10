@@ -1,146 +1,152 @@
 {% extends "base.html" %}
-{% block title %}Presentations — Fanmei Wang{% endblock %}
+{% block title %}Selected Invited Talks, Workshops & Panels — Fanmei Wang{% endblock %}
 
 {% block extra_css %}
 <style>
-:root{
-  --ink:#16363b;
-  --muted:#5a6a6f;
-  --brand:#004F59;
-}
-.page-wrap{max-width:1220px;margin:0 auto;padding:0 1rem 64px;}
-.page-title{text-align:center;color:var(--brand);margin:42px 0 18px;letter-spacing:.2px}
-
-/* 三列：左 300 / 中自适应 / 右 300 */
-.pres-grid{
-  display:grid;
-  grid-template-columns: 300px minmax(0,1fr) 300px;
-  gap:22px;
-}
-
-/* 海报 + 缩略图 */
-.poster{width:100%;border-radius:14px;box-shadow:0 10px 24px rgba(0,0,0,.12);display:block}
-.thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
-.thumbs img{width:100%;height:112px;object-fit:cover;border-radius:10px;box-shadow:0 6px 14px rgba(0,0,0,.10)}
-
-/* 列表容器：更小字号，更紧凑；自动滚动 */
-.talk-scroll{
-  height:580px;               /* 可按需要调整 */
-  overflow:auto;
-  background:#fff;
-  border-radius:16px;
-  box-shadow:0 12px 28px rgba(0,0,0,.08);
-  padding:6px 4px;
-}
-.talk-list{list-style:none;margin:0;padding:0}
-.talk{
-  padding:12px 14px;
-  border-bottom:1px solid rgba(0,0,0,.06);
-  line-height:1.35;
-  color:var(--ink);
-  font-size:1.02rem;          /* 比原来更小 */
-}
-.talk:last-child{border-bottom:none}
-.talk .title{font-weight:750}
-.talk .meta{color:var(--muted)}
-
-  @media (min-width: 1024px){
-  /* 容器整体更宽，并取消左右内边距，让内容更靠页面两侧 */
-  .page-wrap{
-    max-width: 1380px;   /* 原 1200 → 1380（你也可以调到 1440/1500） */
-    padding: 0 0 64px;   /* 去掉左右 1rem 内边距 */
+  :root{
+    --brand:#004F59;
+    --ink:#0f3a3f;
+    --muted:#5f6d72;
+    --chip:#E3B25F;     /* 黄底白字标签 */
+    --line:#e9ecef;
+    --title-brown:#5B3B1F; /* 深褐色 */
   }
 
-  /* 三列布局：缩窄两侧栏、放大中栏，并缩小列间距 */
-  .pr-grid{
-    grid-template-columns: 230px minmax(0,1fr) 230px; /* 原 280px → 230px */
-    gap: 16px;                                       /* 原 22px → 16px */
+  /* 隐藏可能的顶部横幅占位 */
+  .pub-hero, .page-hero, .hero-cover, .page-cover, .masthead, .header-sky { display:none !important; }
+
+  /* === 三栏布局：左/中/右 ===
+     中栏加宽：容器 1600px、侧栏 320px → 中间更宽 */
+  .wrap{
+    max-width:1600px;
+    margin:0 auto;
+    padding:24px 16px 64px;
+    display:grid;
+    grid-template-columns:320px 1fr 320px;
+    gap:24px;
+    align-items:start;
   }
 
-  /* 海报卡片更紧凑，缩小内边距与缩略图间距 */
-  .poster{ padding: 8px; }       /* 原 10px → 8px */
-  .thumbs{ gap: 8px; }           /* 原 10px → 8px */
-
-  /* 中间滚动区更高一些，视觉更“满” */
-  .scroller{ height: 700px; }    /* 原 620px → 700px，可按需调整 */
+ 
+  .page-title{
+  grid-column:1 / -1;
+  margin:0 0 10px;
+  text-align:center;
+  color:#364247;
+  font-weight:700;        /* 半粗，介于常规与粗体之间 */
+  letter-spacing:.2px;
+  font-size:2.1rem;
 }
 
-/* 超宽屏时再放大一点（可选） */
-@media (min-width: 1440px){
-  .page-wrap{ max-width: 1500px; }
-  .pr-grid{ grid-template-columns: 260px minmax(0,1fr) 260px; }
-}
 
+  /* 中栏滚动（和 Publications 右栏滚动类似） */
+  .center{
+    max-height:calc(100vh - 160px);
+    overflow:auto;
+    padding-right:.5rem;
+    scrollbar-gutter:stable;
+    scroll-behavior:smooth;
+  }
+  .center::-webkit-scrollbar{ width:10px; }
+  .center::-webkit-scrollbar-thumb{ background:#c9d4d9; border-radius:8px; }
+  .center::-webkit-scrollbar-track{ background:transparent; }
+
+  /* 海报与照片（两侧） */
+  .poster{
+    width:100%; border-radius:14px;
+    box-shadow:0 10px 24px rgba(0,0,0,.12); object-fit:cover;
+  }
+
+  /* 缩略图更大：两列、比例 16:10 */
+  .thumbs{
+    display:grid; grid-template-columns:repeat(2,1fr);
+    gap:12px; margin-top:14px;
+  }
+  .thumbs img{
+    width:100%; aspect-ratio:16/10; object-fit:cover;
+    border-radius:10px; box-shadow:0 6px 16px rgba(0,0,0,.10);
+    display:block;
+  }
+
+  /* 中间列表：每条独立白卡 + 黄标签；文本不加粗 */
+  .talk-list{ display:grid; gap:12px; }
+  .talk-card{
+    background:#fff; border:1px solid var(--line); border-radius:14px;
+    box-shadow:0 8px 22px rgba(0,0,0,.06); padding:14px 16px;
+  }
+  .talk-type{
+    display:inline-block; padding:.22rem .6rem; border-radius:999px;
+    background:var(--chip); color:#fff; font-weight:900; letter-spacing:.3px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.45);
+  }
+  .talk-cite{
+    margin:.45rem 0 0; color:#2f4a4f;
+    font-size:1rem; line-height:1.6; font-weight:400;
+  }
+  .talk-meta{ margin:.1rem 0 0; color:#7a8a8f; font-size:.94rem; }
+
+  /* 窄屏：单列堆叠，取消中栏独立滚动 */
+  @media (max-width:1100px){
+    .wrap{ grid-template-columns:1fr; }
+    .page-title{ grid-column:1; }
+    .center{ max-height:none; overflow:visible; padding-right:0; }
+  }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="page-wrap">
-  <h1 class="page-title">Presentations</h1>
+<main class="wrap">
+  <h1 class="page-title">Selected Invited Talks, Workshops &amp; Panels</h1>
 
-  <div class="pres-grid">
-    <!-- 左列：海报 + 3 图 -->
-    <aside>
-      {% if posters and posters[0] %}
-        <img class="poster" src="{{ url_for('static', filename='img/presentation/' ~ posters[0]) }}" alt="Harvard poster 1">
-      {% endif %}
+  <!-- 左侧：海报 + 照片 -->
+  <aside>
+    {% if posters and posters|length > 0 %}
+      <img class="poster" src="{{ url_for('static', filename='img/presentation/' ~ posters[0]) }}" alt="Poster">
+    {% endif %}
+    {% if left_photos and left_photos|length > 0 %}
       <div class="thumbs">
-        {% for img in left_photos %}
-          <img src="{{ url_for('static', filename='img/presentation/' ~ img) }}" alt="Presentation photo {{ loop.index }}">
+        {% for f in left_photos %}
+          <img src="{{ url_for('static', filename='img/presentation/' ~ f) }}" alt="Photo {{ loop.index }}">
         {% endfor %}
       </div>
-    </aside>
+    {% endif %}
+  </aside>
 
-    <!-- 中列：完整列表（单行样式） -->
-    <main>
-      <div class="talk-scroll" id="talkScroll" aria-label="Full list of talks">
-        <ul class="talk-list">
-          {% for t in talks %}
-          <li class="talk">
-            <span class="title">{{ t.title }}</span>
-            <span class="meta"> — {{ t.venue }} — {{ t.city }} • {{ t.date }}</span>
-          </li>
-          {% endfor %}
-        </ul>
-      </div>
-    </main>
+  <!-- 中间：Talk 卡片列表（黄底白字类型徽章） -->
+  <section class="center">
+    <div class="talk-list">
+      {% for t in talks %}
+        {% set venue_l = (t.venue or '')|lower %}
+        {% set title_l = (t.title or '')|lower %}
+        {% set auto_type = (
+            'Workshop' if 'workshop' in venue_l or 'workshop' in title_l else
+            'Panel'    if 'panel' in venue_l or 'discussant' in title_l or 'panel' in title_l else
+            'Invited Talk' if 'seminar' in venue_l or 'presentations' in venue_l or 'lecture' in venue_l else
+            'Talk'
+        ) %}
+        <article class="talk-card">
+          <span class="talk-type">{{ t.type or auto_type }}</span>
+          <p class="talk-cite">
+            {{ t.title }} — {{ t.venue }}{% if t.city %} — {{ t.city }}{% endif %}
+          </p>
+          {% if t.date %}<p class="talk-meta">{{ t.date }}</p>{% endif %}
+        </article>
+      {% endfor %}
+    </div>
+  </section>
 
-    <!-- 右列：海报 + 3 图 -->
-    <aside>
-      {% if posters|length > 1 %}
-        <img class="poster" src="{{ url_for('static', filename='img/presentation/' ~ posters[1]) }}" alt="Harvard poster 2">
-      {% endif %}
+  <!-- 右侧：海报 + 照片 -->
+  <aside>
+    {% if posters and posters|length > 1 %}
+      <img class="poster" src="{{ url_for('static', filename='img/presentation/' ~ posters[1]) }}" alt="Poster">
+    {% endif %}
+    {% if right_photos and right_photos|length > 0 %}
       <div class="thumbs">
-        {% for img in right_photos %}
-          <img src="{{ url_for('static', filename='img/presentation/' ~ img) }}" alt="Harvard presentation photo {{ loop.index }}">
+        {% for f in right_photos %}
+          <img src="{{ url_for('static', filename='img/presentation/' ~ f) }}" alt="Photo {{ loop.index }}">
         {% endfor %}
       </div>
-    </aside>
-  </div>
-</div>
+    {% endif %}
+  </aside>
+</main>
 {% endblock %}
-
-{% block content_scripts %}
-<script>
-/* 轻微自动上下滚动；鼠标悬停暂停 */
-(function(){
-  const box = document.getElementById('talkScroll');
-  if(!box || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  let dir = 1, raf;
-  function step(){
-    box.scrollTop += 0.5 * dir;     // 速度(像素/帧)，想更慢就改 0.4/0.3
-    if (box.scrollTop + box.clientHeight >= box.scrollHeight - 1) dir = -1;
-    if (box.scrollTop <= 0) dir = 1;
-    raf = requestAnimationFrame(step);
-  }
-  function start(){ raf = requestAnimationFrame(step); }
-  function stop(){ cancelAnimationFrame(raf); }
-
-  box.addEventListener('mouseenter', stop);
-  box.addEventListener('mouseleave', start);
-  start();
-})();
-</script>
-{% endblock %}
-
