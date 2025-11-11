@@ -3,176 +3,197 @@
 
 {% block extra_css %}
 <style>
+/* ========= Quick knobs (you can tweak numbers) ========= */
 :root{
-  /* 暖金/褐 + 现代深色，用于卡片头部渐变 */
-  --gold-top:#FFE4AC;   --gold-btm:#E7BF6A;   /* 基础金色 */
-  --tan-top:#EBD3B6;    --tan-btm:#C9A178;    /* 暖褐 */
-  --honey-top:#FFDDA4;  --honey-btm:#E3B25F;  /* 蜂蜜金 */
-  --sand-top:#F0D8B0;   --sand-btm:#CFA170;   /* 砂金 */
-  --ai-top:#2B2620;     --ai-btm:#A77A2A;    /* AI（深色到金） */
-  --ink:#123B40;
-  --page:#CCC7BC33; /* 与 Teaching/Publication 接近的暖灰米色背景 */
+  --frame-w: 860px;        
+  --gap: 1rem;            
+  --tile: 160px;            /* 拼盘单张直径（保持你说的“大小可以”） */
+  --wheel-size: 1000px;      /* 拼盘整体尺寸（原 850/980 降到 620） */
+  --wheel-r: 360px;         /* 拼盘半径（更紧凑，原 ~390/420） */
+  --ink:#123B40; --teal:#004F59; --page:#CCC7BC33;
+  --gold-top:#FFE4AC; --gold-btm:#E7BF6A;
+  --honey-top:#FFDDA4; --honey-btm:#E3B25F;
+  --ai-top:#2B2620; --ai-btm:#A77A2A;
+}
+body{ background:var(--page); }
+
+/* 容器更窄，底部留白减少；相对定位用于承载拼盘 */
+.projects-frame{
+  max-width:var(--frame-w);
+  margin:0 auto 54px;
+  padding:0 1rem 120px;      
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;        /* ⬅ 让 grid 居中对齐 */
+  text-align:center;
+}
+.page-title{ margin:24px 0 10px; text-align:center; color:var(--teal); letter-spacing:.2px; }
+
+/* ===== 背景圆形旋转拼盘（更小、更密集、更靠上） ===== */
+.collage-wheel{
+  position:absolute; top:70px; left:50%; transform:translateX(-50%);
+  width:var(--wheel-size); height:var(--wheel-size);
+  opacity:.92; pointer-events:none; z-index:0; filter:saturate(.95);
+}
+.collage-wheel ul{
+  list-style:none; margin:0; padding:0; position:relative; width:100%; height:100%;
+  animation:spin 55s linear infinite;
+}
+@keyframes spin{ from{ transform:rotate(0) } to{ transform:rotate(360deg) } }
+
+.collage-wheel li{
+  position:absolute; top:50%; left:50%;
+  width:var(--tile); height:var(--tile);
+  margin: calc(var(--tile)/-2) 0 0 calc(var(--tile)/-2);
+  border-radius:50%; overflow:hidden;
+  box-shadow:0 5px 14px rgba(0,0,0,.12), inset 0 0 0 2px #fff;
+}
+.collage-wheel img{ width:100%; height:100%; object-fit:cover; }
+
+/* 16 等分（更密集）：每 22.5° 放一张，半径用变量控制紧凑度 */
+.collage-wheel li:nth-child(1)  { transform:rotate(0deg)    translate(var(--wheel-r)) rotate(0deg); }
+.collage-wheel li:nth-child(2)  { transform:rotate(22.5deg) translate(var(--wheel-r)) rotate(-22.5deg); }
+.collage-wheel li:nth-child(3)  { transform:rotate(45deg)   translate(var(--wheel-r)) rotate(-45deg); }
+.collage-wheel li:nth-child(4)  { transform:rotate(67.5deg) translate(var(--wheel-r)) rotate(-67.5deg); }
+.collage-wheel li:nth-child(5)  { transform:rotate(90deg)   translate(var(--wheel-r)) rotate(-90deg); }
+.collage-wheel li:nth-child(6)  { transform:rotate(112.5deg)translate(var(--wheel-r)) rotate(-112.5deg); }
+.collage-wheel li:nth-child(7)  { transform:rotate(135deg)  translate(var(--wheel-r)) rotate(-135deg); }
+collage-wheel li:nth-child(8)  { transform:rotate(157.5deg)translate(var(--wheel-r)) rotate(-157.5deg); }
+.collage-wheel li:nth-child(9)  { transform:rotate(180deg)  translate(var(--wheel-r)) rotate(-180deg); }
+.collage-wheel li:nth-child(10) { transform:rotate(202.5deg)translate(var(--wheel-r)) rotate(-202.5deg); }
+.collage-wheel li:nth-child(11) { transform:rotate(225deg)  translate(var(--wheel-r)) rotate(-225deg); }
+.collage-wheel li:nth-child(12) { transform:rotate(247.5deg)translate(var(--wheel-r)) rotate(-247.5deg); }
+.collage-wheel li:nth-child(13) { transform:rotate(270deg)  translate(var(--wheel-r)) rotate(-270deg); }
+.collage-wheel li:nth-child(14) { transform:rotate(292.5deg)translate(var(--wheel-r)) rotate(-292.5deg); }
+.collage-wheel li:nth-child(15) { transform:rotate(315deg)  translate(var(--wheel-r)) rotate(-315deg); }
+.collage-wheel li:nth-child(16) { transform:rotate(337.5deg)translate(var(--wheel-r)) rotate(-337.5deg); }
+
+/* 小屏：隐藏拼盘避免遮挡 */
+@media (max-width: 1100px){ .collage-wheel{ display:none; } }
+
+/* ===== 三卡网格（上二下通栏一）更紧凑 ===== */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:var(--gap);
+  align-items:start;
+  justify-content:center;    /* ⬅ 让卡片在容器中居中 */
+  position:relative;
+  z-index:1;
+  grid-template-areas:
+    "psda ai"
+    "foundations foundations";
+margin-top: 210px; 
+}
+@media (max-width: 992px){
+  .grid{ grid-template-columns:1fr; grid-template-areas:"psda" "ai" "foundations"; }
 }
 
-/* ===== 两侧滚动相册（固定在视口两边） ===== */
-.proj-rail{position:fixed;top:0;bottom:0;width:120px;overflow:hidden;pointer-events:none;z-index:-1;}
-.proj-rail.left{left:0;} .proj-rail.right{right:0;}
-@media(max-width:1100px){ .proj-rail{display:none;} }
-
-.rail-inner{display:flex;flex-direction:column;gap:8px;animation:projScroll 60s linear infinite;}
-.proj-rail.right .rail-inner{animation-direction:reverse;}
-.rail-inner img{width:120px;height:120px;object-fit:cover;border-radius:8px;filter:grayscale(.08) contrast(1.02) brightness(.98);}
-@keyframes projScroll{to{transform:translateY(-50%);}}
-
-/* ===== 页面框架 ===== */
-body{background:var(--page);}
-.projects-frame{max-width:1220px;margin:0 auto 70px;padding:0 1rem;}
-.page-title{margin:56px 0 28px;text-align:center;color:#004F59;letter-spacing:.2px}
-
-/* ===== 两列竖排（每列两张卡） ===== */
-.split{
-  display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;
+/* 卡片：更小的圆角、更轻的阴影、更低的最小高度与内边距 */
+.card{
+  display:block; text-decoration:none; color:var(--ink);
+  background:#f9f6ef; border-radius:12px; overflow:hidden;
+  box-shadow:0 8px 22px rgba(0,0,0,.04);
+  transition:transform .22s, box-shadow .22s; min-height:180px;
+  border:1px solid rgba(0,0,0,.05);           
 }
-.tower{display:grid;gap:1.6rem;}
-@media(max-width:992px){ .split{grid-template-columns:1fr;} }
+.card:hover{ transform:translateY(-3px); box-shadow:0 12px 24px rgba(0,0,0,.12); }
 
-/* ===== 项目卡 ===== */
-.proj-card{
-  display:block;text-decoration:none;color:var(--ink);
-  background:#fff;border-radius:22px;overflow:hidden;
-  box-shadow:0 12px 32px rgba(0,0,0,.10);
-  transition:transform .25s, box-shadow .25s;
-  min-height:320px;
-}
-.proj-card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,.14);}
-
-/* 彩色头（≥ 一半高度），标题置中 */
 .card-hero{
-  min-height:180px;display:flex;align-items:center;justify-content:center;text-align:center;
-  padding:28px 20px;border-radius:22px 22px 12px 12px;
-  background:linear-gradient(180deg,var(--hero-top),var(--hero-btm));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.38);
-}
-.card-hero h2{
-  margin:0;font:900 2rem/1.15 ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial;
-  letter-spacing:.3px;color:#1e2b2e;text-shadow:0 1px 0 rgba(255,255,255,.35);
+  margin:0;                                              /* 去掉可能的外边距 */
+  min-height:88px;                                       /* 100/180px → 88px */
+  padding:14px 14px;                                     /* 内边距更紧 */
+  border-radius:8px;                                     /* 内圆角更小 */
+  background:linear-gradient(180deg, var(--top), var(--btm));
+  display:grid; place-items:center;                      /* 垂直+水平都居中 */
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.30);
+}.card-hero h2{ margin:0; font:900 1.35rem/1.1 ui-sans-serif,system-ui; letter-spacing:.3px; color:#1e2b2e; text-shadow:0 1px 0 rgba(255,255,255,.3); }
+.card-hero.is-ai{ background:linear-gradient(180deg, var(--ai-top), var(--ai-btm)); }
+.card-hero.is-ai h2{ color:#fff; text-shadow:0 1px 0 rgba(0,0,0,.25); }
+
+.card-body{ padding:10px 14px 14px; }
+.card-desc{ margin:0; color:#2F4A4F; font-size:.98rem; line-height:1.5; }
+.card-desc .jump{ font-weight:800; color:#0f5d66; text-decoration:underline; text-underline-offset:2px; }
+
+/* Grid areas */
+.psda{ grid-area: psda; }
+.ai{ grid-area: ai; }
+.foundations{ grid-area: foundations; }
+footer {
+  position: relative;
+  margin-top: 135px;   /* ⬅ 向下推 footer */
 }
 
-/* AI Projects：更现代、对比更强，标题白色 */
-.card-hero.is-ai{background:linear-gradient(180deg,var(--ai-top),var(--ai-btm));}
-.card-hero.is-ai h2{color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.25);}
-
-/* 简介行 */
-.card-body{padding:16px 20px 20px;}
-.card-desc{margin:0;color:#2F4A4F;font-size:1.04rem;line-height:1.55;}
-.card-desc .jump{font-weight:800;color:#0f5d66;text-decoration:underline;text-underline-offset:2px}
-
-/* 给主体左右留出“边距”，避免压到滚动相册 */
-@media(min-width:1101px){
-  .projects-frame{padding-left:140px;padding-right:140px;}
-}
-  /* ① 非‑AI 卡片的头部颜色更浅（学术/咨询/公共服务） */
-.card--gold  .card-hero{  /* Academic Research */
-  background:linear-gradient(180deg,#FFF5D6 0%, #F2E3BD 100%);
-}
-.card--tan   .card-hero{  /* Corporate Consulting */
-  background:linear-gradient(180deg,#FAEDE2 0%, #E8D3C0 100%);
-}
-.card--sand  .card-hero{  /* Public‑Service Analytics */
-  background:linear-gradient(180deg,#F7ECD8 0%, #E7D8C0 100%);
-}
-/* （AI 卡保持原来的深色强调） */
-
-/* ② 卡片更矮：整体与头部高度下调，标题略收紧 */
-.projects-grid{ gap:1.5rem; }             /* 行列间距略收紧 */
-.proj-card{ min-height:240px; }           /* 原来约 300px → 240px */
-.card-hero{ min-height:128px; padding:18px 14px; }
-.card-hero h2{ font-size:1.7rem; }        /* 原来更大，稍微收一档 */
-.page-title{ margin:44px 0 18px; }        /* 页标题上下间距缩小 */
-
-/* 小屏再短一点，帮助首屏看到页脚 */
-@media (max-width:640px){
-  .proj-card{ min-height:220px; }
-  .card-hero{ min-height:112px; }
-}
 </style>
 {% endblock %}
 
 {% block content %}
-{# 左右滚动相册：直接在模板内列出你给的文件名 #}
-{% set WALL = [
-  'harvard1.jpg','jinshan.jpeg','jinshan2.jpg','jinshan3.jpg','jinshan3.png',
-  'jinshan4.png','jinshan5.png','neimeng1.jpg','neimeng2.jpg','p7.jpg','xizang.jpg'
-] %}
-
-<!-- Side scrolling rails -->
-<div class="proj-rail left">
-  <div class="rail-inner">
-    {% for f in WALL %}<img src="{{ url_for('static', filename='img/projects_wall/' ~ f) }}" alt="project photo">{% endfor %}
-    {% for f in WALL %}<img src="{{ url_for('static', filename='img/projects_wall/' ~ f) }}" alt="project photo">{% endfor %}
-  </div>
-</div>
-<div class="proj-rail right">
-  <div class="rail-inner">
-    {% for f in WALL %}<img src="{{ url_for('static', filename='img/projects_wall/' ~ f) }}" alt="project photo">{% endfor %}
-    {% for f in WALL %}<img src="{{ url_for('static', filename='img/projects_wall/' ~ f) }}" alt="project photo">{% endfor %}
-  </div>
-</div>
-
 <div class="projects-frame">
+
+  <!-- 紧凑旋转拼盘（使用你 /static/img/projects_wall 内的图片；不足 16 张会自动重复） -->
+  <div class="collage-wheel" aria-hidden="true">
+    <ul>
+      <li><img src="{{ url_for('static', filename='img/projects_wall/harvard1.jpg') }}"  onerror="this.style.visibility='hidden'"></li>
+      <li><img src="{{ url_for('static', filename='img/projects_wall/jinshan.jpeg') }}"   onerror="this.style.visibility='hidden'"></li>
+      <li><img src="{{ url_for('static', filename='img/projects_wall/jinshan2.jpg') }}"   onerror="this.style.visibility='hidden'"></li>
+      <li><img src="{{ url_for('static', filename='img/projects_wall/jinshan3.png') }}"   onerror="this.style.visibility='hidden'"></li>
+      <li><img src="{{ url_for('static', filename='img/projects_wall/jinshan4.png') }}"   onerror="this.style.visibility='hidden'"></li>
+      <li><img src="{{ url_for('static', filename='img/projects_wall/jinshan5.png') }}"   onerror="this.style.visibility='hidden'"></li>
+      <li><img src="{{ url_for('static', filename='img/projects_wall/neimeng1.jpg') }}"   onerror="this.style.visibility='hidden'"></li>
+      <li><img src="{{ url_for('static', filename='img/projects_wall/neimeng2.jpg') }}"   onerror="this.style.visibility='hidden'"></li>
+      <li><img src="{{ url_for('static', filename='img/projects_wall/p7.jpg') }}"         onerror="this.style.visibility='hidden'"></li>
+      <li><img src="{{ url_for('static', filename='img/projects_wall/xizang.jpg') }}"     onerror="this.style.visibility='hidden'"></li>
+      <li><img src="{{ url_for('static', filename='img/projects_wall/Ningxia1.jpg') }}"   onerror="this.style.visibility='hidden'"></li>
+      <li><img src="{{ url_for('static', filename='img/projects_wall/Ningxia2.jpg') }}"   onerror="this.style.visibility='hidden'"></li>
+      <li><img src="{{ url_for('static', filename='img/projects_wall/harvard1.jpg') }}"  onerror="this.style.visibility='hidden'"></li>
+      <li><img src="{{ url_for('static', filename='img/projects_wall/jinshan.jpeg') }}"   onerror="this.style.visibility='hidden'"></li>
+      <li><img src="{{ url_for('static', filename='img/projects_wall/jinshan2.jpg') }}"   onerror="this.style.visibility='hidden'"></li>
+      <li><img src="{{ url_for('static', filename='img/projects_wall/jinshan3.png') }}"   onerror="this.style.visibility='hidden'"></li>
+    </ul>
+  </div>
+
   <h1 class="page-title">Projects</h1>
 
-  <div class="split">
-    <!-- 左列：AI + Public‑Service -->
-    <div class="tower">
-      <a class="proj-card" href="{{ url_for('projects_ai') }}">
-        <div class="card-hero is-ai">
-          <h2>AI Projects</h2>
-        </div>
-        <div class="card-body">
-          <p class="card-desc">
-            Applied analytics & AI demos (dashboards, NLP, modeling). <span class="jump">Explore →</span>
-          </p>
-        </div>
-      </a>
+  <section class="grid">
+    <!-- Public‑Service Data & AI -->
+    <a class="card psda" href="{{ url_for('projects_public_service') }}">
+      <div class="card-hero" style="--top:var(--honey-top); --btm:var(--honey-btm);">
+        <h2>Public‑Service Data &amp; AI</h2>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">
+          Engineering, analytics, and applied ML across survey and operations data.
+          <span class="jump">See projects →</span>
+        </p>
+      </div>
+    </a>
 
-      <a class="proj-card" href="{{ url_for('projects_public_service') }}">
-        <div class="card-hero" style="--hero-top:var(--honey-top);--hero-btm:var(--honey-btm);">
-          <h2>Public‑Service Analytics</h2>
-        </div>
-        <div class="card-body">
-          <p class="card-desc">
-            Survey analytics and internal consulting highlights. <span class="jump">See projects →</span>
-          </p>
-        </div>
-      </a>
-    </div>
+    <!-- AI Projects -->
+    <a class="card ai" href="{{ url_for('projects_ai') }}">
+      <div class="card-hero is-ai">
+        <h2>AI Projects</h2>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">
+          Applied analytics & AI demos (dashboards, NLP, modeling).
+          <span class="jump">Explore →</span>
+        </p>
+      </div>
+    </a>
 
-    <!-- 右列：Academic + Corporate -->
-    <div class="tower">
-      <a class="proj-card" href="{{ url_for('projects_academic') }}">
-        <div class="card-hero" style="--hero-top:var(--gold-top);--hero-btm:var(--gold-btm);">
-          <h2>Academic Research</h2>
-        </div>
-        <div class="card-body">
-          <p class="card-desc">
-            Grants, fieldwork and publications stemming from research. <span class="jump">View details →</span>
-          </p>
-        </div>
-      </a>
-
-      <a class="proj-card" href="{{ url_for('projects_consulting') }}">
-        <div class="card-hero" style="--hero-top:var(--tan-top);--hero-btm:var(--tan-btm);">
-          <h2>Corporate Consulting</h2>
-        </div>
-        <div class="card-body">
-          <p class="card-desc">
-            Enterprise engagements on HR, culture and performance. <span class="jump">Case list →</span>
-          </p>
-        </div>
-      </a>
-    </div>
-  </div>
+    <!-- Foundations & Engagements -->
+    <a class="card foundations" href="/projects/foundations">
+      <div class="card-hero" style="--top:var(--gold-top); --btm:var(--gold-btm);">
+        <h2>Foundations &amp; Engagements</h2>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">
+          Research & advisory foundations that underpin my current HR data & AI practice.
+          <span class="jump">View highlights →</span>
+        </p>
+      </div>
+    </a>
+  </section>
 </div>
 {% endblock %}
-
