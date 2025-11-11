@@ -4,7 +4,7 @@
 
 {% block extra_css %}
 <style>
-/* ───────── Hero 拼图横幅 ───────── */
+/* ───────── Hero 横幅 ───────── */
 .research-hero{
   height:240px;position:relative;
   background:url("{{ url_for('static',filename='img/bg/research-hero.jpg') }}") center/cover no-repeat;
@@ -16,26 +16,39 @@
 .badge{position:absolute;right:1.4rem;top:1.4rem;background:#7b1136;color:#fff;font-size:.82rem;padding:.35rem .7rem;border-radius:6px;font-weight:600;text-align:center}
 
 /* ───────── Timeline 容器 ───────── */
-+.timeline{max-width:900px;margin:60px auto 100px;padding:0 1rem;
-+  display:grid;grid-template-columns:100px 1fr;   /* ← 列宽 80 → 100 */
-+  column-gap:20px;                                 /* ← 左右空更多 */
-+  position:relative}
-.timeline::before{content:"";position:absolute;left:50px;top:0;bottom:0;width:2px;background:var(--brand-teal)}
+.timeline{
+  max-width:900px;margin:60px auto 100px;padding:0 1rem;
+  display:grid;grid-template-columns:100px 1fr;  /* 年份列 + 内容列 */
+  column-gap:20px;position:relative
+}
+.timeline::before{content:"";position:absolute;left:50px;top:0;bottom:0;width:2px;background:var(--brand-teal,#004F59)}
 
 /* ───────── 单条条目 ───────── */
-.entry{display:grid;grid-template-columns:100px 1fr;column-gap:14px;
-  margin-bottom:2.4rem;grid-column:1 / -1;position:relative}
-.entry-year{font:700 1.15rem var(--font-sans,system-ui);color:var(--brand-teal);
-  text-align:right;line-height:1.35;word-break:break-word;min-width:0}
-.entry-card{background:#fff;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.06);
+.entry{
+  display:grid;grid-template-columns:100px 1fr;column-gap:14px;
+  margin-bottom:2.4rem;grid-column:1 / -1;position:relative
+}
+.entry-year{
+  font:700 1.15rem var(--font-sans,system-ui);color:var(--brand-teal,#004F59);
+  text-align:right;line-height:1.35;word-break:break-word;min-width:0
+}
+.entry-card{
+  background:#fff;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.06);
   padding:1.35rem 1.8rem 1.7rem;line-height:1.55;position:relative;
-  animation:fadeUp .6s ease forwards;opacity:0;transform:translateY(20px)}
+  animation:fadeUp .6s ease forwards;opacity:0;transform:translateY(20px)
+}
 .entry-card::before{content:"";position:absolute;left:-58px;top:1.4rem;
-  width:.90rem;height:.90rem;border-radius:50%;background:var(--brand-teal)}
-/* 文字层级 */
-.entry-card .org   {font-weight:700;color:var(--brand-teal);font-size:1.02rem}
+  width:.90rem;height:.90rem;border-radius:50%;background:var(--brand-teal,#004F59)}
+.entry-card .org   {font-weight:700;color:var(--brand-teal,#004F59);font-size:1.02rem}
 .entry-card .title {margin:.35rem 0 .75rem;font-size:1.07rem;color:#01555f}
 .entry-card p      {margin:0;font-size:.95rem}
+
+/* ── 类别小标签 ── */
+.tag{
+  display:inline-block;background:rgba(0,79,89,.08);color:#0b4c55;
+  border:1px solid rgba(0,79,89,.20); border-radius:999px;
+  font:700 .72rem/1.9 system-ui; padding:.22rem .55rem; margin-left:.5rem
+}
 
 /* Featured 高亮 */
 .entry-card.featured{background:#7b1136;color:#fff}
@@ -70,6 +83,100 @@
     </div>
   </section>
 
+  {# ▸ 数据直接写在模板里（如果你更想放到 app.py 里，见文末说明） #}
+  {% set entries = [
+    /* ───── FUNDED TEACHING‑ORIENTED PROJECTS ───── */
+    {
+      'year':'2014–2016',
+      'cat':'Teaching',
+      'org':'University of Science and Technology Beijing — Fundamental Research Funds for the Central Universities (Beijing, China)',
+      'title':'Establishment of Teaching Materials for Graduate‑level Courses',
+      'desc':'Amount: $6,000 CAD.'
+    },
+    {
+      'year':'2014–2016',
+      'cat':'Teaching',
+      'org':'University of Science and Technology Beijing (Beijing, China)',
+      'title':'Teaching Materials Establishment Project Under the 12th Five‑year Plan',
+      'desc':'Amount: $4,000 CAD.'
+    },
+    {
+      'year':'2012–2014',
+      'cat':'Teaching',
+      'org':'University of Science and Technology Beijing (Beijing, China)',
+      'title':'Establishment of 1st Teaching Demonstration Courses Taught in English',
+      'desc':'Amount: $4,000 CAD.'
+    },
+
+    /* ───── FUNDED ACADEMIC RESEARCH PROJECTS ───── */
+    {
+      'year':'2020 +',
+      'cat':'Academic Research',
+      'org':'Department of Sociology & IAS, Zhejiang University (Zhejiang, China)',
+      'title':'The Development of Mutual Embeddedness of Social Structure of Ethnic Groups in Multiethnic Countries',
+      'desc':'PI: Zhixiang Jian.'
+    },
+    {
+      'year':'2019',
+      'cat':'Academic Research',
+      'org':'Institute for Advanced Study in Humanities and Social Sciences (IAS), Zhejiang University (Zhejiang, China)',
+      'title':'Ethnicity and Human Resources Management Practice in Chinese Minority‑inhabited Regions',
+      'desc':'Amount: $17,000 CAD (Fellowship grant).'
+    },
+    {
+      'year':'2017–2018',
+      'cat':'Academic Research',
+      'featured':true,
+      'org':'Fairbank Center for Chinese Studies, Harvard University (funded by China Scholarship Council)',
+      'title':'Career Development for Ethnic Minority Employees in Organizations in Chinese Ethnic Areas',
+      'desc':'Amount: $25,920 CAD.'
+    },
+    {
+      'year':'2015–2016',
+      'cat':'Academic Research',
+      'org':'China Overseas Development Research Center, Central University of Finance and Economics',
+      'title':'Georgia in the Context of the New Silk Road Economic Belt',
+      'desc':'Amount: $4,000 CAD.'
+    },
+    {
+      'year':'2013–2014',
+      'cat':'Academic Research',
+      'org':'State Ethnic Affairs Commission of China (Beijing, China)',
+      'title':'Career Development of Minority Ethnic Group Members in Tibet Autonomous Region',
+      'desc':'Amount: $4,000 CAD.'
+    },
+    {
+      'year':'2013',
+      'cat':'Academic Research',
+      'org':'China Tibetology Research Center (Beijing, China)',
+      'title':'Development of and Financial Support for Tibetan Industries with Local Advantages',
+      'desc':'PI: Shiding Liu.'
+    },
+    {
+      'year':'2012',
+      'cat':'Academic Research',
+      'org':'China Tibetology Research Center (Beijing, China)',
+      'title':'Tibetan Thangka Industry Development Research',
+      'desc':'PI: Danzeng‑Lunzhu.'
+    },
+
+    /* ───── FUNDED INTERNATIONAL COOPERATIVE PROJECTS ───── */
+    {
+      'year':'2015–2017',
+      'cat':'International Cooperation',
+      'org':'State Administration of Foreign Experts Affairs of China (Beijing, China)',
+      'title':'Strategic Management Teaching Project',
+      'desc':'$6,000 CAD annually (joint with Maurice Yolles, Liverpool John Moores University, 2015–2016); $10,000 (joint with Paul Iles, Glasgow Caledonian University, 2017).'
+    },
+    {
+      'year':'2016–2017',
+      'cat':'International Cooperation',
+      'org':'State Administration of Foreign Experts Affairs of China (Beijing, China)',
+      'title':'Cultural Management and Leadership',
+      'desc':'$6,000 CAD annually (joint with Michael Robin Sebastian Green, University College Cork).'
+    }
+  ] %}
+
   <!-- ▸ Timeline -->
   <div class="timeline">
     {% for e in entries %}
@@ -77,7 +184,10 @@
         <div class="entry-year">{{ e.year }}</div>
 
         <div class="entry-card{% if e.featured %} featured{% endif %}">
-          <div class="org">{{ e.org }}</div>
+          <div class="org">
+            {{ e.org }}
+            {% if e.cat %}<span class="tag">{{ e.cat }}</span>{% endif %}
+          </div>
           <div class="title">{{ e.title }}</div>
           <p>{{ e.desc }}</p>
 

@@ -1,24 +1,61 @@
 {% extends "base.html" %}
-{% block title %}HR-AI Projects{% endblock %}
-{% block content %}
-<h1 class="page-title">AI Projects in HR&nbsp;Management</h1>
+{% block title %}{{ page_h1 or 'Data & AI Projects' }} — Fanmei Wang{% endblock %}
 
-<div class="video-grid">
-  {% for p in projects %}
-    <div class="video-card">
-      {% if p.video.startswith('http') %}
-        <!-- YouTube / 其他平台 -->
-        <iframe src="{{ p.video | replace('watch?v=','embed/') }}"
-                loading="lazy" allow="autoplay; encrypted-media"
-                frameborder="0"></iframe>
-      {% else %}
-        <!-- 本地 mp4 -->
-        <video controls>
-          <source src="{{ url_for('static', filename='video/' ~ p.video) }}" type="video/mp4">
-        </video>
-      {% endif %}
-      <h3>{{ p.title }}</h3>
-      <p>{{ p.desc }}</p>
+{% block extra_css %}
+<style>
+:root{
+  --teal:#004F59; --ink:#153E42; --page:#DAD3C6;
+  --card:#fff; --shadow:0 10px 24px rgba(0,0,0,.10);
+}
+body{ background:var(--page); }
+.wrap{ max-width:1200px; margin:0 auto; padding:0 1rem 64px; }
+.h1{ margin:48px 0 18px; color:var(--teal); text-align:left; }
+
+.grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:1.3rem; }
+
+.card{
+  background:var(--card); border-radius:14px; box-shadow:var(--shadow);
+  overflow:hidden; display:flex; flex-direction:column; min-height:360px;
+}
+.thumb{
+  height:190px; background:#e9eef2 center/cover no-repeat;
+  border-bottom:1px solid rgba(0,0,0,.06);
+}
+.body{ padding:1rem 1.1rem 1.25rem; color:var(--ink); display:flex; flex-direction:column; gap:.55rem; }
+.badge{ display:inline-block; background:#0b666f; color:#fff; border-radius:999px; padding:.18rem .55rem; font-size:.82rem; font-weight:800; }
+.title{ margin:.15rem 0 .15rem; font-size:1.15rem; font-weight:900; color:#0f3a42; }
+.meta{ font-size:.95rem; color:#5d6c70; }
+.desc{ margin:0; line-height:1.55; font-size:.98rem; }
+.cta{ margin-top:auto; display:inline-block; align-self:flex-start; font-weight:800; color:#0b666f; background:linear-gradient(180deg,#FFF6DE,#FBE4B4); padding:.5rem .85rem; border-radius:10px; text-decoration:none; box-shadow:0 1px 0 rgba(0,0,0,.05), inset 0 0 0 1px rgba(0,0,0,.08); }
+.cta:hover{ text-decoration:underline; }
+
+/* 分组标题 */
+.h2{ margin:1.6rem 0 .6rem; font-size:1.25rem; color:#0f3a42; font-weight:900; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="wrap">
+  <h1 class="h1">{{ page_h1 or 'Data & AI Projects' }}</h1>
+
+  {% for sec in sections %}
+    <h2 class="h2">{{ sec.name }}</h2>
+    <div class="grid">
+      {% for p in sec.items %}
+        <article class="card">
+          <a class="thumb"
+             href="{{ p.href }}"
+             style="background-image:url('{{ url_for('static', filename=p.cover) }}');"
+             aria-label="Open {{ p.title }}"></a>
+          <div class="body">
+            {% if p.badge %}<span class="badge">{{ p.badge }}</span>{% endif %}
+            <h3 class="title">{{ p.title }}</h3>
+            {% if p.authors %}<p class="meta"><strong>Authors:</strong> {{ p.authors }}</p>{% endif %}
+            <p class="desc">{{ p.desc }}</p>
+            <a class="cta" href="{{ p.href }}">Open →</a>
+          </div>
+        </article>
+      {% endfor %}
     </div>
   {% endfor %}
 </div>
