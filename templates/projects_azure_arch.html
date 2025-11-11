@@ -1,0 +1,392 @@
+{% extends "base.html" %}
+{% block title %}Azure Data & AI Architecture (Animated) — Fanmei Wang{% endblock %}
+
+{% block extra_css %}
+<style>
+:root{
+  /* ① 画布与几何（外层真正加宽） */
+  --page-max: 1480px;        /* ← 你想更宽改这里，如 1600px */
+  --stage-min-h: 920px;      /* 舞台最小高度，拉大可更松 */
+  /* ② Lakehouse 与层 */
+  --lake-w: 460px;           /* Lakehouse 外框宽度 */
+  --layer-w: 340px;          /* 三层统一宽度（更窄以给连线让路） */
+  --layer-h: 92px;
+  --layer1-top: 140px;       /* Bronze 顶部 */
+  --layer2-top: 320px;       /* Silver 顶部 */
+  --layer3-top: 500px;       /* Gold 顶部 */
+  /* ③ 颜色与线条 */
+  --deep-blue: #0b5060;      /* 深蓝主色（线/箭头/高亮） */
+  --deep-blue-2: #0b3d47;
+  --flow-glow: rgba(0, 217, 255, .55);
+  --muted:#6A7880;
+  --page:#F2EEE6;
+  --card:#fff;
+  --shadow:0 14px 34px rgba(0,0,0,.12);
+}
+
+/* 页面骨架（外层加宽） */
+body{ background:var(--page); }
+.page-wrap{ max-width:var(--page-max); margin:0 auto 66px; padding:0 1rem; }
+.page-title{ text-align:center; color:#004F59; margin:58px 0 18px; }
+
+/* 控制条 */
+.player{ display:flex; align-items:center; gap:.8rem; flex-wrap:wrap;
+  background:#fff; border-radius:12px; padding:.6rem .8rem;
+  box-shadow:0 6px 16px rgba(0,0,0,.06); margin:0 0 .8rem; }
+.player .btn{ appearance:none; border:0; border-radius:10px; padding:.5rem .8rem;
+  background:linear-gradient(180deg,#FFF6DE,#FBE9BB); color:#004F59;
+  font-weight:800; cursor:pointer; box-shadow:0 2px 0 rgba(0,0,0,.05), inset 0 0 0 1px rgba(0,0,0,.06); }
+.player select{ padding:.45rem .6rem; border-radius:8px; border:1px solid #e6e6e6; }
+.player .note{ color:#5a6a6f; font-size:.95rem }
+
+/* 舞台（允许连线越界） */
+.stage{ position:relative; background:#fff; border-radius:18px;
+  box-shadow:var(--shadow); min-height:var(--stage-min-h);
+  padding:20px; overflow:visible; }
+
+/* 字幕（英文） */
+.caption{ position:absolute; left:18px; right:18px; top:18px; z-index:30;
+  background:#ffffffcc; border-radius:10px; padding:.55rem .7rem; color:#263b40; font-weight:600;
+  box-shadow:0 6px 16px rgba(0,0,0,.06); }
+
+/* 节点卡片（可双行） */
+.node{
+  position:absolute; display:flex; align-items:center; justify-content:center; text-align:center;
+  padding:8px 12px; min-width:130px; min-height:52px;
+  background:var(--card); border-radius:12px; box-shadow:0 10px 24px rgba(0,0,0,.08);
+  color:#213b40; font-weight:800; z-index:20; line-height:1.25; white-space:normal; word-break:break-word;
+}
+.node.small{ min-height:44px; min-width:120px; font-weight:700; font-size:.95rem; }
+.muted{ color:var(--muted); font-weight:600; font-size:.9rem; }
+
+/* 高亮节点（当前步两端一起） */
+.node.active{
+  background:var(--deep-blue-2);
+  color:#fff;
+  outline:3px solid rgba(14,165,177,.35);
+  box-shadow:0 0 0 6px rgba(14,165,177,.16), 0 12px 28px rgba(0,0,0,.12);
+  animation:pulseNode 1.8s ease-out infinite;
+}
+@keyframes pulseNode{
+  0%{box-shadow:0 0 0 0 rgba(0,255,234,.40)}
+  70%{box-shadow:0 0 0 14px rgba(0,255,234,0)}
+  100%{box-shadow:0 0 0 0 rgba(0,255,234,0)}
+}
+
+/* Lakehouse（整体右移，给左/右列更多走廊） */
+.lake{
+  position:absolute; z-index:10; width:var(--lake-w);
+  left: calc(50% + 60px); transform:translateX(-50%);
+  top:120px; bottom:110px;
+  background:linear-gradient(180deg,#f5f9ff,#e9f0f9);
+  border:1px solid rgba(0,0,0,.06); border-radius:16px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.5), 0 8px 26px rgba(0,0,0,.06);
+}
+.lake .title{ position:absolute; left:14px; top:10px; color:#58727a; font-weight:800; }
+
+.layer{
+  position:absolute; z-index:11; width:var(--layer-w); height:var(--layer-h);
+  left:50%; transform:translateX(-50%); display:flex; align-items:center; justify-content:center;
+  border-radius:12px; box-shadow:inset 0 1px 0 rgba(255,255,255,.6); padding:0 .6rem; text-align:center;
+}
+.layer.bronze{ top:var(--layer1-top); background:linear-gradient(180deg,#f3e3d0,#e1c1a1); color:#3d3329; }
+.layer.silver{ top:var(--layer2-top); background:linear-gradient(180deg,#e7eef6,#d7e0ea); color:#2f3a40; }
+.layer.gold  { top:var(--layer3-top); background:linear-gradient(180deg,#ffefb9,#f1d57b); color:#3c3422; }
+
+/* 右侧服务列（加宽+加大行距） */
+.side{ position:absolute; top:170px; right:38px; width:300px; z-index:20; }
+.side .node{ position:static; margin:32px 0; width:100%; height:auto; padding:16px 14px; }
+
+/* 底部治理条 */
+.footer{ position:absolute; left:24px; right:24px; bottom:14px; z-index:12;
+  background:linear-gradient(180deg,#fff6d6,#f6ead0); color:#5a5a5a; border-radius:10px;
+  padding:.5rem .7rem; text-align:center; font-weight:750; box-shadow: inset 0 1px 0 rgba(255,255,255,.6); }
+
+/* SVG 连线层（永远在最上，且初始隐藏，逐步显现） */
+svg.wires{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:60; }
+.edge{ opacity:0; transition:opacity .25s ease; }
+.edge.shown{ opacity:1; }
+
+/* 白色底线 + 深蓝主线（霓虹） */
+.wire{ fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.under{ stroke:#ffffff; stroke-width:8; opacity:.96; }
+.over{  stroke:var(--deep-blue); stroke-width:3.2; filter:url(#glowBlue); }
+.edge.active .over{ stroke-dasharray:12 9; animation:dash .95s linear infinite; }
+@keyframes dash{ to{ stroke-dashoffset:-40; } }
+
+/* 响应式（更高舞台以增加上下走廊） */
+@media (max-width:1400px){
+  :root{ --stage-min-h: 980px; }
+}
+@media (max-width:1100px){
+  :root{ --stage-min-h: 1060px; }
+  .side{ right:24px; width:280px; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+  <h1 class="page-title">Azure Data &amp; AI Architecture — Animated Walkthrough</h1>
+
+  <div class="player">
+    <button class="btn" id="play">▶ Play</button>
+    <button class="btn" id="pause">⏸ Pause</button>
+    <button class="btn" id="reset">⟲ Reset</button>
+    <span class="note">Speed:</span>
+    <select id="speed">
+      <option value="normal" selected>Normal</option>
+      <option value="fast">Fast</option>
+      <option value="slow">Slow</option>
+    </select>
+    <span class="note" id="stepLabel">Step 0 / 12</span>
+  </div>
+
+  <section class="stage" id="stage" aria-label="Azure Data & AI architecture animation">
+    <div class="caption" id="caption">Press <strong>Play</strong> to step through the end‑to‑end flow (1 → 12).</div>
+
+    <!-- 左列：加大上下间距，避免线重叠 -->
+    <div class="node small" id="sap"    style="left:28px; top:170px;">SAP / S/4HANA</div>
+    <div class="node small" id="d365"   style="left:28px; top:320px;">Dynamics 365<br><span class="muted">Dataverse</span></div>
+    <div class="node small" id="oracle" style="left:28px; top:470px;">Oracle DB</div>
+    <div class="node small" id="blob"   style="left:28px; top:620px;">Azure Blob<br><span class="muted">CSV / Unstructured</span></div>
+
+    <!-- 采集 -->
+    <div class="node" id="adf"  style="left:260px; top:280px;">
+      Azure Data Factory
+      <div style="position:absolute;right:-10px;bottom:-12px;font:700 .75rem/1 system-ui;color:#7a6752;background:#fff2; padding:.15rem .35rem;border-radius:6px;">via SHIR</div>
+    </div>
+    <div class="node small" id="synlink" style="left:260px; top:400px;">
+      Synapse Link<br><span class="muted">for Dataverse</span>
+    </div>
+
+    <!-- Lakehouse（右移 + 三层更窄） -->
+    <div class="lake" id="lake">
+      <div class="title">ADLS Gen2 + Delta Lake</div>
+      <div class="layer bronze" id="bronze">Bronze (Raw / Append‑only)</div>
+      <div class="layer silver" id="silver">Silver (Cleansed / Standardized)</div>
+      <div class="layer gold"   id="gold">Gold (Curated / Analytics‑Ready)</div>
+    </div>
+
+    <!-- Databricks（略靠右，上方） -->
+    <div class="node" id="databricks" style="left:650px; top:70px;">Azure Databricks</div>
+
+    <!-- 右列：加大上下间距 -->
+    <div class="side">
+      <div class="node" id="synsql">Synapse Serverless SQL</div>
+      <div class="node" id="pbi">Power BI</div>
+      <div class="node" id="azml">Azure Machine Learning</div>
+    </div>
+
+    <div class="footer">Governance • Security • Monitoring</div>
+
+    <!-- 连线（初始不显示，按步骤逐步显现） -->
+    <svg class="wires" id="wires">
+      <defs>
+        <!-- 箭头（深蓝） -->
+        <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--deep-blue)"></path>
+        </marker>
+        <!-- 霓虹发光 -->
+        <filter id="glowBlue">
+          <feGaussianBlur stdDeviation="3.2" result="blur"/>
+          <feMerge>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+    </svg>
+  </section>
+</div>
+
+<script>
+(function(){
+  const $  = (s, r=document)=>r.querySelector(s);
+  const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
+
+  const stage     = $('#stage');
+  const svg       = $('#wires');
+  const caption   = $('#caption');
+  const stepLabel = $('#stepLabel');
+
+  /* ───── Edges（为容易遮字的边提供转弯提示） ───── */
+  const edges = [
+    {id:'sap-adf',        from:'#sap',      to:'#adf',      bendX:'right'},
+    {id:'d365-synlink',   from:'#d365',     to:'#synlink',  bendX:'right'},
+    {id:'oracle-adf',     from:'#oracle',   to:'#adf',      bendX:'right'},
+    {id:'blob-adf',       from:'#blob',     to:'#adf',      bendX:'right'},
+    {id:'adf-bronze',     from:'#adf',      to:'#bronze',   bendX:'right'},
+    {id:'synlink-bronze', from:'#synlink',  to:'#bronze',   bendX:'right'},
+    {id:'bronze-silver',  from:'#bronze',   to:'#silver',   bendY:'middle'},
+    {id:'silver-gold',    from:'#silver',   to:'#gold',     bendY:'middle'},
+    {id:'gold-synsql',    from:'#gold',     to:'#synsql',   bendX:'right'},
+    {id:'synsql-pbi',     from:'#synsql',   to:'#pbi',      bendY:'middle'},
+    {id:'gold-azml',      from:'#gold',     to:'#azml',     bendX:'right'},
+    {id:'azml-gold',      from:'#azml',     to:'#gold',     bendX:'left' }  // 回写
+  ];
+
+  /* ───── Steps（英文字幕；每步可能含一条或多条线） ───── */
+  const steps = [
+    { id:1,  nodes:['sap','adf'],          wires:['sap-adf'],          text:'(1) SAP → Azure Data Factory (via SHIR)' },
+    { id:2,  nodes:['d365','synlink'],     wires:['d365-synlink'],     text:'(2) Dynamics 365 (Dataverse) → Synapse Link (near‑real‑time)' },
+    { id:3,  nodes:['oracle','adf'],       wires:['oracle-adf'],       text:'(3) Oracle → Azure Data Factory (via SHIR)' },
+    { id:4,  nodes:['blob','adf'],         wires:['blob-adf'],         text:'(4) Azure Blob (CSV + unstructured) → Azure Data Factory' },
+    { id:5,  nodes:['adf','bronze'],       wires:['adf-bronze'],       text:'(5) ADF → ADLS Gen2 Bronze (raw, Delta/Parquet)' },
+    { id:6,  nodes:['synlink','bronze'],   wires:['synlink-bronze'],   text:'(6) Synapse Link → ADLS Gen2 Bronze' },
+    { id:7,  nodes:['databricks','bronze','silver'], wires:['bronze-silver'], text:'(7) Databricks transforms Bronze → Silver (cleansed, standardized)' },
+    { id:8,  nodes:['databricks','silver','gold'],   wires:['silver-gold'],   text:'(8) Databricks models Silver → Gold (curated, analytics‑ready)' },
+    { id:9,  nodes:['gold','synsql'],      wires:['gold-synsql'],      text:'(9) Gold → Synapse Serverless SQL (views/external tables)' },
+    { id:10, nodes:['synsql','pbi'],       wires:['synsql-pbi'],       text:'(10) Synapse Serverless SQL → Power BI (semantic model & dashboards)' },
+    { id:11, nodes:['gold','azml'],        wires:['gold-azml'],        text:'(11) Gold → Azure Machine Learning (train & deploy)' },
+    { id:12, nodes:['azml','gold'],        wires:['azml-gold'],        text:'(12) Azure ML predictions → Gold (batch/online scoring)' }
+  ];
+
+  /* ───── 几何助手：边缘锚点 + 曼哈顿折线 + 走廊避让 ───── */
+  function rect(el){
+    const r = el.getBoundingClientRect(), s = svg.getBoundingClientRect();
+    return { x:r.left-s.left, y:r.top-s.top, w:r.width, h:r.height,
+             cx:r.left-s.left + r.width/2, cy:r.top-s.top + r.height/2 };
+  }
+  function anchor(Ra, Rb){
+    const dx = Rb.cx - Ra.cx, dy = Rb.cy - Ra.cy;
+    if(Math.abs(dx) > Math.abs(dy)){
+      return (dx > 0) ? { x: Ra.x + Ra.w, y: Ra.cy, side:'right' } : { x: Ra.x, y: Ra.cy, side:'left' };
+    }else{
+      return (dy > 0) ? { x: Ra.cx, y: Ra.y + Ra.h, side:'bottom' } : { x: Ra.cx, y: Ra.y, side:'top' };
+    }
+  }
+  function route(aEl, bEl, hint={}){
+    const pad = 26;   // 与卡片保持安全距离
+    const Ra = rect(aEl), Rb = rect(bEl);
+    const A = anchor(Ra, Rb), B = anchor(Rb, Ra);
+    const seg = [];
+    seg.push(`M ${A.x} ${A.y}`);
+
+    // 水平对水平
+    if( (A.side==='left'||A.side==='right') && (B.side==='left'||B.side==='right') ){
+      let mx;
+      if(hint.bendX === 'left')      mx = Math.min(A.x, B.x) - pad;
+      else if(hint.bendX === 'right')mx = Math.max(A.x, B.x) + pad;
+      else                           mx = (A.x + B.x)/2;
+      seg.push(`L ${mx} ${A.y} L ${mx} ${B.y}`);
+    }
+    // 垂直对垂直
+    else if( (A.side==='top'||A.side==='bottom') && (B.side==='top'||B.side==='bottom') ){
+      let my;
+      if(hint.bendY === 'top')       my = Math.min(A.y, B.y) - pad;
+      else if(hint.bendY === 'bottom') my = Math.max(A.y, B.y) + pad;
+      else if(hint.bendY === 'middle') my = (A.y + B.y)/2;
+      else                            my = (A.y + B.y)/2;
+      seg.push(`L ${A.x} ${my} L ${B.x} ${my}`);
+    }
+    // 一横一竖：走一折
+    else{
+      if(A.side==='left'||A.side==='right') seg.push(`L ${B.x} ${A.y}`);
+      else                                   seg.push(`L ${A.x} ${B.y}`);
+    }
+    seg.push(`L ${B.x} ${B.y}`);
+    return seg.join(' ');
+  }
+
+  /* ───── 画线（每条放在 <g.edge> 里，便于整体 show/active） ───── */
+  function drawEdges(){
+    // 固定 svg 尺寸以匹配舞台
+    const {width, height} = stage.getBoundingClientRect();
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+
+    // 保留 defs
+    const defs = svg.querySelector('defs');
+    svg.innerHTML = '';
+    if(defs) svg.appendChild(defs);
+
+    edges.forEach(e=>{
+      const a = $(e.from), b = $(e.to);
+      if(!a || !b) return;
+
+      const d = route(a, b, e);
+      const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+      g.setAttribute('class','edge');
+      g.setAttribute('data-id', e.id);
+
+      const under = document.createElementNS('http://www.w3.org/2000/svg','path');
+      under.setAttribute('d', d); under.setAttribute('class','wire under');
+
+      const over = document.createElementNS('http://www.w3.org/2000/svg','path');
+      over.setAttribute('d', d); over.setAttribute('class','wire over');
+      over.setAttribute('marker-end','url(#arrowBlue)');
+
+      g.appendChild(under); g.appendChild(over);
+      svg.appendChild(g);
+    });
+  }
+
+  /* 首次绘制与大小变化重绘（保证加宽/改高后锚点准确） */
+  const ro = new ResizeObserver(()=> requestAnimationFrame(drawEdges));
+  ro.observe(stage);
+  window.addEventListener('resize', ()=> requestAnimationFrame(drawEdges));
+  // DOM ready 后画一次
+  drawEdges();
+
+  /* ───── 播放逻辑：逐步显现，当前步高亮；已显现保留 ───── */
+  let idx=0, timer=null, speed='normal';
+  const SPEED_MS = { slow:1400, normal:900, fast:520 };
+
+  function clearActiveOnly(){
+    $$('.edge').forEach(g=> g.classList.remove('active'));
+    $$('.node').forEach(n=> n.classList.remove('active'));
+  }
+
+  function revealUpTo(step){
+    // 显示 1..step 所有边；其余保持隐藏
+    const shownIds = new Set();
+    for(let i=0;i<step;i++){
+      (steps[i]?.wires||[]).forEach(w=> shownIds.add(w));
+    }
+    // 切换类名
+    $$('.edge').forEach(g=>{
+      const id = g.getAttribute('data-id');
+      if(shownIds.has(id)) g.classList.add('shown');
+      else                 g.classList.remove('shown');
+    });
+  }
+
+  function go(step){
+    if(step<1 || step>steps.length){
+      clearActiveOnly();
+      revealUpTo(0);
+      caption.textContent = 'Press Play to step through the end‑to‑end flow (1 → 12).';
+      stepLabel.textContent = 'Step 0 / 12';
+      return;
+    }
+    revealUpTo(step);
+    clearActiveOnly();
+
+    const s = steps[step-1];
+    // 当前步高亮节点
+    s.nodes.forEach(id=> $('#'+id).classList.add('active'));
+    // 当前步高亮线（加流动）
+    (s.wires||[]).forEach(id=>{
+      const g = $(`.edge[data-id="${id}"]`);
+      if(g) g.classList.add('active');
+    });
+
+    caption.textContent = s.text;
+    stepLabel.textContent = `Step ${s.id} / ${steps.length}`;
+  }
+
+  function next(){ idx = (idx % steps.length) + 1; go(idx); }
+  function play(){ if(timer) return; if(idx===0) idx=1, go(idx); timer = setInterval(next, SPEED_MS[speed]||SPEED_MS.normal); }
+  function pause(){ clearInterval(timer); timer=null; }
+  function reset(){ pause(); idx=0; go(0); }
+
+  $('#play').addEventListener('click', play);
+  $('#pause').addEventListener('click', pause);
+  $('#reset').addEventListener('click', reset);
+  $('#speed').addEventListener('change', e=>{ speed=e.target.value; if(timer){ pause(); play(); } });
+
+  reset();
+})();
+</script>
+{% endblock %}
+

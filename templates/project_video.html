@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} — Fanmei Wang{% endblock %}
+
+{% block extra_css %}
+<style>
+.wrap{ max-width:1000px; margin:0 auto; padding:0 1rem 64px; }
+.h1{ margin:46px 0 14px; color:#004F59; }
+.meta{ color:#5e6a6f; margin:.2rem 0 1rem; }
+.player{
+  background:#fff; border-radius:14px; box-shadow:0 10px 24px rgba(0,0,0,.10);
+  padding:1rem;
+}
+video{ width:100%; height:auto; border-radius:10px; background:#111; }
+.desc{ margin:1rem 0 0; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="wrap">
+  <h1 class="h1">{{ title }}</h1>
+  <p class="meta"><strong>Authors:</strong> {{ authors }}</p>
+  <div class="player">
+    <video controls preload="metadata"
+       poster="{{ url_for('static', filename=video.poster) if video.get('poster') else '' }}"
+       style="max-width:960px;width:100%;border-radius:12px;">
+  <source src="{{ url_for('static', filename=video.file) }}" type="video/mp4">
+  <a href="{{ url_for('static', filename=video.file) }}">点击下载</a>
+</video>
+
+    {% if desc %}<p class="desc">{{ desc }}</p>{% endif %}
+  </div>
+</div>
+{% endblock %}
