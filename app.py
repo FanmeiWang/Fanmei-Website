@@ -538,7 +538,7 @@ def projects_consulting():
 # ---------- AI / ML 项目列表（数据） ----------
 ai_projects = [
     {
-        "title": "Azure Data & AI Architecture (Animated)",
+        "title": "Azure Data & AI Architecture",
         "desc":  "12-step end‑to‑end lakehouse flow on Azure "
                  "(sources → ADF/Synapse Link → Delta Lake → Databricks "
                  "→ Serverless SQL/Power BI/ML).",
@@ -583,7 +583,7 @@ def projects_ai():
         {
             "title": "Text Classification Demonstration: Exploring Canada’s Immigration Discourse (video)",
             "summary": "Course project overview and demo video.",
-            "cover": None,
+            "cover": "img/covers/reddit_project_FanmeiHongan.png",
             "href": url_for("project_video", slug="presentation"),
             "badge": "Video"
         },
@@ -690,6 +690,7 @@ def __routes():
 if __name__ == "__main__":
     # 开发模式自动重载
     app.run(debug=True)
+
 
 
 
