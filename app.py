@@ -599,19 +599,29 @@ def projects_ml():
                            page_title="ML / DL Projects",
                            projects=cards)
 
-# 简单的视频详情页（把视频文件放到 static/video/Presentation.mp4）
+from flask import abort  # ← 你路由里用了 abort，需要确保导入
+
 @app.route("/projects/ai/<slug>")
 def project_video(slug):
     videos = {
         "presentation": {
             "title": "AIDI1003 – Final Presentation",
-            "file": "video/Presentation.mp4"  # static/video/Presentation.mp4
+            "authors": "Fanmei Wang",
+            "file": "video/Presentation.mp4",   # 见下条路径说明
+            "poster": "img/covers/presentation_poster.jpg",
+            "desc": "Course project overview and demo."
         }
     }
     v = videos.get(slug)
     if not v:
         abort(404)
-    return render_template("project_video.html", video=v)
+    return render_template(
+        "project_video.html",
+        title=v["title"],
+        authors=v.get("authors"),
+        desc=v.get("desc"),
+        video=v
+    )
 
 # 公共服务分析
 surveys = [
@@ -690,6 +700,7 @@ def __routes():
 if __name__ == "__main__":
     # 开发模式自动重载
     app.run(debug=True)
+
 
 
 
