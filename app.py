@@ -550,7 +550,7 @@ ai_projects = [
         "title": "Project Overview & Demo (Video)",
         "desc":  "5‑min walkthrough covering goals, design choices, and a short demo.",
         "cover": "img/covers/Azure_Architecture.png",
-        "video": "video/Presentation.mp4",
+        "video": "video/Presentation_1.mp4",
         "category": "AI"
     },
     {
@@ -690,6 +690,7 @@ def __routes():
 if __name__ == "__main__":
     # 开发模式自动重载
     app.run(debug=True)
+
 
 
 
