@@ -1450,4 +1450,30 @@ h1, h2, h3, h4, h5, h6,
 .edu-item, .edu-text h3, .edu-text p {
   font-family: var(--font-sans) !important;
 }
+/* ---- Home hero tagline ---- */
+.hero{ 
+  text-align: center;
+  padding: 48px 0 28px;   /* 视情况微调上下留白 */
+}
+.hero .tagline-1{
+  font-weight: 850;
+  /* 自适应字号：小屏不挤，大屏不夸张 */
+  font-size: clamp(28px, 3.0vw, 44px);
+  letter-spacing: .2px;
+  color: #004F59;         /* 你的站点主色 */
+  margin: 6px 0 4px;
+}
+.hero .tagline-2{
+  font-weight: 600;
+  font-size: clamp(16px, 1.8vw, 22px);
+  color: #274c52;
+  opacity: .95;
+  margin: 4px 0 0;
+}
+.hero .avatar{
+  width: 96px; height: 96px; 
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 12px;    /* 头像与标语的间距 */
+}
 
