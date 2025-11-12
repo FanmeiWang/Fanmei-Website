@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block title %}Foundations & Engagements — Fanmei Wang{% endblock %}
+
+{% block extra_css %}
+<style>
+  :root{
+    --teal:#004F59;               /* 深绿色（与 Public‑Service 页一致） */
+    --ink:#163b40;                /* 正文深灰绿 */
+    --paper:#efe8db;              /* 浅米色卡片底 */
+    --shadow:0 10px 24px rgba(0,0,0,.08);
+  }
+  body{ background:#d9d3c7; }     /* 与站内其它项目页一致的淡米灰底 */
+
+  .wrap{ max-width:1160px; margin:0 auto; padding:18px 16px 68px; }
+
+  /* 标题与引导 */
+  .page-title{
+    margin:24px 0 6px;
+    text-align:center;
+    color:var(--teal);
+    font-size:2.25rem;
+    letter-spacing:.2px;
+  }
+  .lead, .scope{
+    margin:0 auto;
+    max-width:980px;
+    text-align:center;
+    font-weight:700;              /* 加粗 */
+    line-height:1.55;
+    color:#0f3a42;                /* 深灰绿色（可读性更好） */
+  }
+  .lead{ font-size:1.06rem; margin-top:.25rem; }
+  .scope{ font-size:1.02rem; margin:6px auto 18px; }
+
+  /* 两栏布局 */
+  .cols{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+  @media (max-width: 980px){ .cols{ grid-template-columns:1fr; } }
+
+  /* 卡片（浅米色） */
+  .panel{
+    background:var(--paper);
+    border-radius:14px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    min-height:300px;
+  }
+  .panel h2{
+    margin:0;
+    padding:14px 14px;            /* 缩小左右留白 */
+    font-size:1.35rem;
+    color:var(--teal);
+    border-bottom:1px solid rgba(0,0,0,.06);
+  }
+  .panel .body{
+    padding:10px 14px;            /* 缩小左右留白 */
+    max-height:60vh;              /* 可滚动高度 */
+    overflow:auto;                /* 出滚动条 */
+  }
+  /* 轻度美化滚动条（支持的浏览器） */
+  .panel .body::-webkit-scrollbar{ width:10px; }
+  .panel .body::-webkit-scrollbar-thumb{ background:#cdbf9f; border-radius:8px; }
+  .panel .body::-webkit-scrollbar-track{ background:transparent; }
+
+  /* 分组标题与列表 */
+  .group{ margin:8px 0 16px; }
+  .group h3{
+    margin:8px 0 8px;
+    font-size:1.02rem;
+    color:#0e4d55;
+  }
+  .list{
+    margin:0; padding-left:18px;
+    color:var(--ink);
+    font-size:.98rem;
+    line-height:1.55;
+  }
+  .list li{ margin:0 0 .55rem; }
+
+  /* 底部 “Why this still matters” */
+  .why{
+    max-width:980px;
+    margin:18px auto 0;
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 6px 18px rgba(0,0,0,.06);
+    padding:14px 16px;
+  }
+  .why h3{ margin:0 0 6px; color:var(--teal); font-size:1.1rem; }
+  .why p{ margin:0; color:var(--ink); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="wrap">
+
+  <h1 class="page-title">Foundations &amp; Engagements</h1>
+  <p class="lead">
+    {{ page.blurb }}
+  </p>
+  <p class="scope">
+    {{ page.scope }}
+  </p>
+
+  <div class="cols">
+
+    <!-- 左列：Research Foundations（学术） -->
+    <section class="panel">
+      <h2>Research Foundations</h2>
+      <div class="body">
+
+        <div class="group">
+          <h3>Funded Academic Research Projects</h3>
+          <ul class="list">
+            <li><strong>The Development of Mutual Embeddedness of Social Structure of Ethnic Groups in Multiethnic Countries</strong> — Department of Sociology &amp; IAS, Zhejiang University (Zhejiang, China); <em>PI: Zhixiang Jian</em>; <strong>2020+</strong>.</li>
+            <li><strong>Ethnicity and Human Resources Management Practice in Chinese Minority‑inhabited Regions</strong> — IAS, Zhejiang University (Zhejiang, China); <em>$17,000 CAD (Fellowship grant)</em>; <strong>2019</strong>.</li>
+            <li><strong>Career Development for Ethnic Minority Employees in Organizations in Chinese Ethnic Areas</strong> — Fairbank Center for Chinese Studies, Harvard University (funded by China Scholarship Council); <em>$25,920 CAD</em>; <strong>2017–2018</strong>.</li>
+            <li><strong>Georgia in the Context of the New Silk Road Economic Belt</strong> — China Overseas Development Research Center, CUFE; <em>$4,000 CAD</em>; <strong>2015–2016</strong>.</li>
+            <li><strong>Career Development of Minority Ethnic Group Members in Tibet Autonomous Region</strong> — State Ethnic Affairs Commission of China (Beijing, China); <em>$4,000 CAD</em>; <strong>2013–2014</strong>.</li>
+            <li><strong>Development of and Financial Support for Tibetan Industries with Local Advantages</strong> — China Tibetology Research Center (Beijing, China); <em>PI: Shiding Liu</em>; <strong>2013</strong>.</li>
+            <li><strong>Tibetan Thangka Industry Development Research</strong> — China Tibetology Research Center (Beijing, China); <em>PI: Danzeng‑Lunzhu</em>; <strong>2012</strong>.</li>
+          </ul>
+        </div>
+
+        <div class="group">
+          <h3>Funded International Cooperative Projects</h3>
+          <ul class="list">
+            <li><strong>Strategic Management Teaching Project</strong> — State Administration of Foreign Experts Affairs of China (Beijing, China); <em>$6,000 CAD annually (joint with Maurice Yolles, LJMU, 2015–2016); $10,000 (joint with Paul Iles, GCU, 2017)</em>; <strong>2015–2017</strong>.</li>
+            <li><strong>Cultural Management and Leadership</strong> — State Administration of Foreign Experts Affairs of China (Beijing, China); <em>$6,000 CAD annually (joint with Michael Robin Sebastian Green, University College Cork)</em>; <strong>2016–2017</strong>.</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 右列：Advisory & Pro Bono -->
+    <section class="panel">
+      <h2>Advisory &amp; Pro Bono (Selected)</h2>
+      <div class="body">
+
+        <div class="group">
+          <h3>Funded Teaching‑Oriented Projects</h3>
+          <ul class="list">
+            <li><strong>Establishment of Teaching Materials for Graduate‑level Courses</strong> — Fundamental Research Funds for the Central Universities, USTB (Beijing, China); <em>$6,000 CAD</em>; <strong>2014–2016</strong>.</li>
+            <li><strong>Teaching Materials Establishment Project Under the 12th Five‑year Plan</strong> — University of Science and Technology Beijing (Beijing, China); <em>$4,000 CAD</em>; <strong>2014–2016</strong>.</li>
+            <li><strong>Establishment of 1st Teaching Demonstration Courses Taught in English</strong> — University of Science and Technology Beijing (Beijing, China); <em>$4,000 CAD</em>; <strong>2012–2014</strong>.</li>
+          </ul>
+        </div>
+
+        <div class="group">
+          <h3>Funded Enterprise Research Projects</h3>
+          <ul class="list">
+            <li><strong>Mongolian Teaching and Administrative Staff in the Educational and Training Sector of Inner Mongolia</strong> — Hohhot Victory (Hohhot, Inner Mongolia, China); <em>$12,000 CAD</em>; <strong>2016–2017</strong>.</li>
+            <li><strong>Optimization of the HRM System in the Power Transmission and Distribution Industry in Inner Mongolia</strong> — Huabiao Power Transmission &amp; Distribution Industry Engineering Corp. (Hohhot, Inner Mongolia, China); <em>$8,000 CAD</em>; <strong>2016–2017</strong>.</li>
+            <li><strong>Optimization of Performance Management and Corporate Culture</strong> — Hainan Hongta Co., Ltd (Haikou, Hainan, China); <em>$16,000 CAD</em>; <strong>2015–2016</strong>.</li>
+            <li><strong>Establishment of Performance Management and Compensation System</strong> — Beijing Ri‑Chang Catering Corporation (Beijing, China); <em>$4,000 CAD</em>; <strong>2011–2013</strong>.</li>
+          </ul>
+        </div>
+
+        <div class="group">
+          <h3>Publications</h3>
+          <ul class="list">
+            <li>Full list available on the <a href="{{ url_for('publications') }}"><strong>Publications</strong></a> page.</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+</div>
+{% endblock %}

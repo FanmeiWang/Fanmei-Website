@@ -182,8 +182,8 @@ footer {
       </div>
     </a>
 
-    <!-- Foundations & Engagements -->
-    <a class="card foundations" href="/projects/foundations">
+     <!-- Foundations & Engagements (use endpoint) -->
+    <a class="card foundations" href="{{ url_for('foundations_engagements') }}">
       <div class="card-hero" style="--top:var(--gold-top); --btm:var(--gold-btm);">
         <h2>Foundations &amp; Engagements</h2>
       </div>
@@ -197,6 +197,3 @@ footer {
   </section>
 </div>
 {% endblock %}
-
-
-
