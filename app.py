@@ -569,9 +569,8 @@ def projects_ml():
 def project_video(slug):
     videos = {
         "presentation": {
-            "title": "AIDI1003 – Final Presentation",
-            "authors": "Fanmei Wang",
-            # 修正为你仓库中的文件名
+            "title": "Text Classification Demonstration: Exploring Canada’s Immigration Discourse",
+            "authors": "Fanmei Wang & Hongan Lai",
             "file": "video/Presentation_1.mp4",
             "poster": "img/covers/presentation_poster.jpg",
             "desc": "Course project overview and demo."
@@ -694,4 +693,5 @@ def foundations_engagements_page():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
