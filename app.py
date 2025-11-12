@@ -564,14 +564,16 @@ def projects_ml():
                            page_title="ML / DL Projects",
                            projects=cards)
 
+# 视频详情（按 slug 区分）
 @app.route("/projects/ai/<slug>")
 def project_video(slug):
     videos = {
         "presentation": {
-            "title": "Text Classification Demonstration: Exploring Canada’s Immigration Discourse (video)",
-            "authors": "Fanmei Wang & Hongan Lai",
+            "title": "AIDI1003 – Final Presentation",
+            "authors": "Fanmei Wang",
+            # 修正为你仓库中的文件名
             "file": "video/Presentation_1.mp4",
-            "poster": "img/covers/reddit_project_FanmeiHongan.jpg",
+            "poster": "img/covers/presentation_poster.jpg",
             "desc": "Course project overview and demo."
         }
     }
@@ -692,6 +694,4 @@ def foundations_engagements_page():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
 
