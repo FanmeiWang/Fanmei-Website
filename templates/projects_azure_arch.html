@@ -6,14 +6,14 @@
 :root{
   /* ① 画布与几何（外层真正加宽） */
   --page-max: 1480px;        /* ← 你想更宽改这里，如 1600px */
-  --stage-min-h: 920px;      /* 舞台最小高度，拉大可更松 */
+  --stage-min-h: 700px;      /* 舞台最小高度，拉大可更松 */
   /* ② Lakehouse 与层 */
-  --lake-w: 460px;           /* Lakehouse 外框宽度 */
-  --layer-w: 340px;          /* 三层统一宽度（更窄以给连线让路） */
+  --lake-w: 300px;           /* Lakehouse 外框宽度 */
+  --layer-w: 240px;          /* 三层统一宽度（更窄以给连线让路） */
   --layer-h: 92px;
-  --layer1-top: 140px;       /* Bronze 顶部 */
-  --layer2-top: 320px;       /* Silver 顶部 */
-  --layer3-top: 500px;       /* Gold 顶部 */
+  --layer1-top: 80px;       /* Bronze 顶部 */
+  --layer2-top: 220px;       /* Silver 顶部 */
+  --layer3-top: 360px;       /* Gold 顶部 */
   /* ③ 颜色与线条 */
   --deep-blue: #0b5060;      /* 深蓝主色（线/箭头/高亮） */
   --deep-blue-2: #0b3d47;
@@ -94,7 +94,7 @@ body{ background:var(--page); }
 .layer.gold  { top:var(--layer3-top); background:linear-gradient(180deg,#ffefb9,#f1d57b); color:#3c3422; }
 
 /* 右侧服务列（加宽+加大行距） */
-.side{ position:absolute; top:170px; right:38px; width:300px; z-index:20; }
+.side{ position:absolute; top:170px; right:38px; width:190px; z-index:20; }
 .side .node{ position:static; margin:32px 0; width:100%; height:auto; padding:16px 14px; }
 
 /* 底部治理条 */
@@ -109,8 +109,18 @@ svg.wires{ position:absolute; inset:0; width:100%; height:100%; pointer-events:n
 
 /* 白色底线 + 深蓝主线（霓虹） */
 .wire{ fill:none; stroke-linecap:round; stroke-linejoin:round; }
-.under{ stroke:#ffffff; stroke-width:8; opacity:.96; }
-.over{  stroke:var(--deep-blue); stroke-width:3.2; filter:url(#glowBlue); }
+/* Thinner white underlay + thicker blue line */
+.under{
+  stroke:#ffffff;
+  stroke-width:5;     /* 原来是 8，缩小 */
+  opacity:.65;        /* 降低不透明度，避免“吃掉”主线 */
+}
+.over{
+  stroke:var(--deep-blue);
+  stroke-width:4.6;   /* 原来是 3.2，加粗一些 */
+  filter:url(#glowBlue);
+  mix-blend-mode:multiply; /* 让蓝线在浅底上更显色（可选） */
+}
 .edge.active .over{ stroke-dasharray:12 9; animation:dash .95s linear infinite; }
 @keyframes dash{ to{ stroke-dashoffset:-40; } }
 
@@ -122,6 +132,55 @@ svg.wires{ position:absolute; inset:0; width:100%; height:100%; pointer-events:n
   :root{ --stage-min-h: 1060px; }
   .side{ right:24px; width:280px; }
 }
+/* 让 SVG 不裁剪箭头 */
+svg.wires{
+  position:absolute; inset:0; width:100%; height:100%;
+  pointer-events:none; z-index:60;
+  overflow: visible;              /* 新增：确保箭头超出时仍可见 */
+}
+
+/* 白色底线 + 深蓝主线（霓虹） */
+.wire{ fill:none; stroke-linecap:round; stroke-linejoin:round; }
+
+
+/* 让主线更实、更高于底光；并把 color 同步给箭头（见补丁 B） */
+.over{
+  stroke:var(--deep-blue);
+  color:var(--deep-blue);         /* 供箭头用 currentColor 继承 */
+  stroke-width:4.2;               /* 原 3.2，略加粗更清楚 */
+  filter:url(#glowBlue);
+}
+
+/* 箭头本体样式（见补丁 B 的 <marker>） */
+.arrow-head{
+  fill: currentColor;             /* 继承 .over 的 color */
+  stroke: currentColor;
+  stroke-width: .6;
+}
+/* --- FIX: hide white underlay; strengthen blue stroke; ensure topmost --- */
+svg.wires{ z-index: 999 !important; }            /* 以防被别的层盖住 */
+.edge .under{ display:none !important; }         /* 彻底隐藏白色底线 */
+.edge .over{ stroke:var(--deep-blue) !important; /* 深蓝主线更醒目 */
+             stroke-width:4.25px !important;
+             filter:url(#glowBlue); }
+
+/* === Wires: use a single colored stroke (no white underlay) === */
+svg.wires{ overflow:visible; z-index: 200 !important; }  /* 确保在线条之上且不裁剪 */
+.edge{ opacity:0; transition:opacity .25s ease; }
+.edge.shown{ opacity:1; }
+
+/* 徹底隐藏白色底线，避免“看到白线” */
+.edge .under{ display:none !important; }
+
+/* 只保留蓝色主线；去掉混合模式，避免某些背景上发灰/发白 */
+.edge .over{
+  stroke:#0b5060 !important;    /* 等于 var(--deep-blue) */
+  stroke-width:4.5px !important;
+  fill:none;
+  filter:url(#glowBlue);
+  mix-blend-mode:normal !important;  /* 覆盖你前面写的 multiply */
+}
+
 </style>
 {% endblock %}
 
@@ -168,9 +227,6 @@ svg.wires{ position:absolute; inset:0; width:100%; height:100%; pointer-events:n
       <div class="layer gold"   id="gold">Gold (Curated / Analytics‑Ready)</div>
     </div>
 
-    <!-- Databricks（略靠右，上方） -->
-    <div class="node" id="databricks" style="left:650px; top:70px;">Azure Databricks</div>
-
     <!-- 右列：加大上下间距 -->
     <div class="side">
       <div class="node" id="synsql">Synapse Serverless SQL</div>
@@ -184,9 +240,12 @@ svg.wires{ position:absolute; inset:0; width:100%; height:100%; pointer-events:n
     <svg class="wires" id="wires">
       <defs>
         <!-- 箭头（深蓝） -->
-        <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--deep-blue)"></path>
-        </marker>
+        <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5"
+        markerWidth="10" markerHeight="10" markerUnits="strokeWidth" orient="auto">
+  <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--deep-blue)"></path>
+</marker>
+
+
         <!-- 霓虹发光 -->
         <filter id="glowBlue">
           <feGaussianBlur stdDeviation="3.2" result="blur"/>
@@ -234,8 +293,11 @@ svg.wires{ position:absolute; inset:0; width:100%; height:100%; pointer-events:n
     { id:4,  nodes:['blob','adf'],         wires:['blob-adf'],         text:'(4) Azure Blob (CSV + unstructured) → Azure Data Factory' },
     { id:5,  nodes:['adf','bronze'],       wires:['adf-bronze'],       text:'(5) ADF → ADLS Gen2 Bronze (raw, Delta/Parquet)' },
     { id:6,  nodes:['synlink','bronze'],   wires:['synlink-bronze'],   text:'(6) Synapse Link → ADLS Gen2 Bronze' },
-    { id:7,  nodes:['databricks','bronze','silver'], wires:['bronze-silver'], text:'(7) Databricks transforms Bronze → Silver (cleansed, standardized)' },
-    { id:8,  nodes:['databricks','silver','gold'],   wires:['silver-gold'],   text:'(8) Databricks models Silver → Gold (curated, analytics‑ready)' },
+    { id:7,  nodes:['bronze','silver'], wires:['bronze-silver'],
+  text:'(7) Databricks transforms Bronze → Silver (cleansed, standardized)' },
+
+{ id:8,  nodes:['silver','gold'],   wires:['silver-gold'],
+  text:'(8) Databricks models Silver → Gold (curated, analytics‑ready)' },
     { id:9,  nodes:['gold','synsql'],      wires:['gold-synsql'],      text:'(9) Gold → Synapse Serverless SQL (views/external tables)' },
     { id:10, nodes:['synsql','pbi'],       wires:['synsql-pbi'],       text:'(10) Synapse Serverless SQL → Power BI (semantic model & dashboards)' },
     { id:11, nodes:['gold','azml'],        wires:['gold-azml'],        text:'(11) Gold → Azure Machine Learning (train & deploy)' },
@@ -263,23 +325,37 @@ svg.wires{ position:absolute; inset:0; width:100%; height:100%; pointer-events:n
     const seg = [];
     seg.push(`M ${A.x} ${A.y}`);
 
-    // 水平对水平
-    if( (A.side==='left'||A.side==='right') && (B.side==='left'||B.side==='right') ){
-      let mx;
-      if(hint.bendX === 'left')      mx = Math.min(A.x, B.x) - pad;
-      else if(hint.bendX === 'right')mx = Math.max(A.x, B.x) + pad;
-      else                           mx = (A.x + B.x)/2;
-      seg.push(`L ${mx} ${A.y} L ${mx} ${B.y}`);
-    }
-    // 垂直对垂直
-    else if( (A.side==='top'||A.side==='bottom') && (B.side==='top'||B.side==='bottom') ){
-      let my;
-      if(hint.bendY === 'top')       my = Math.min(A.y, B.y) - pad;
-      else if(hint.bendY === 'bottom') my = Math.max(A.y, B.y) + pad;
-      else if(hint.bendY === 'middle') my = (A.y + B.y)/2;
-      else                            my = (A.y + B.y)/2;
-      seg.push(`L ${A.x} ${my} L ${B.x} ${my}`);
-    }
+    // 水平对水平（A 与 B 都在左右边缘出/入）
+if( (A.side==='left'||A.side==='right') && (B.side==='left'||B.side==='right') ){
+  const pad = 26;
+  let mx;
+
+  // 关键：按 B 的朝向决定最终一段的方向
+  // 如果目标是左边缘，就让最后一段从左→右进入；右边缘则从右→左进入
+  if (B.side === 'left') {
+    mx = Math.min(A.x, B.x) - pad;   // 折线放到更靠“左”的走廊
+  } else { // B.side === 'right'
+    mx = Math.max(A.x, B.x) + pad;   // 折线放到更靠“右”的走廊
+  }
+
+  seg.push(`L ${mx} ${A.y} L ${mx} ${B.y}`);
+}
+// 垂直对垂直（A 与 B 都在上下边缘出/入）
+else if( (A.side==='top'||A.side==='bottom') && (B.side==='top'||B.side==='bottom') ){
+  const pad = 26;
+  let my;
+
+  // 关键：按 B 的朝向决定最终一段的方向
+  // 目标是上边缘：从上→下进入；下边缘：从下→上进入
+  if (B.side === 'top') {
+    my = Math.min(A.y, B.y) - pad;
+  } else { // B.side === 'bottom'
+    my = Math.max(A.y, B.y) + pad;
+  }
+
+  seg.push(`L ${A.x} ${my} L ${B.x} ${my}`);
+}
+
     // 一横一竖：走一折
     else{
       if(A.side==='left'||A.side==='right') seg.push(`L ${B.x} ${A.y}`);
@@ -293,7 +369,9 @@ svg.wires{ position:absolute; inset:0; width:100%; height:100%; pointer-events:n
   function drawEdges(){
     // 固定 svg 尺寸以匹配舞台
     const {width, height} = stage.getBoundingClientRect();
-    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    const vbPad = 16; // 视口边距，避免箭头在边缘被裁掉
+svg.setAttribute('viewBox', `${-vbPad} ${-vbPad} ${width + vbPad*2} ${height + vbPad*2}`);
+
 
     // 保留 defs
     const defs = svg.querySelector('defs');
