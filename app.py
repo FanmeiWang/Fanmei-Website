@@ -1,6 +1,5 @@
-
 # app.py
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, abort
 import os, json, re
 
 app = Flask(__name__)
@@ -438,12 +437,12 @@ def presentations():
 # ==========================
 # Projects
 # ==========================
-# 总览页（四宫格）
+# 总览页
 @app.route("/projects")
 def projects():
     return render_template("projects.html")
 
-# Academic research
+# Academic research (lists/timeline pages)
 academic_funded = [
     {
         "title": "The Development of Mutual Embeddedness of Social Structure of Ethnic Groups in Multiethnic Countries",
@@ -535,41 +534,7 @@ consulting_projects = [
 def projects_consulting():
     return render_template("projects_consulting.html", projects=consulting_projects)
 
-# ---------- AI / ML 项目列表（数据） ----------
-ai_projects = [
-    {
-        "title": "Azure Data & AI Architecture",
-        "desc":  "12-step end‑to‑end lakehouse flow on Azure "
-                 "(sources → ADF/Synapse Link → Delta Lake → Databricks "
-                 "→ Serverless SQL/Power BI/ML).",
-        "cover": "img/covers/Azure_Architecture.png",
-        "endpoint": "projects_azure_arch",
-        "category": "AI"
-    },
-    {
-        "title": "Project Overview & Demo (Video)",
-        "desc":  "5‑min walkthrough covering goals, design choices, and a short demo.",
-        "cover": "img/covers/Azure_Architecture.png",
-        "video": "video/Presentation_1.mp4",
-        "category": "AI"
-    },
-    {
-        "title": "Resume–Job Matching BERT Model",
-        "desc":  "Fine‑tuned bilingual BERT + BM25 on 20k resumes and 5k job posts.",
-        "video": "videos/resume_match.mp4",
-        "category": "ML/DL"
-    },
-    {
-        "title": "Attrition Prediction Dashboard (Power BI)",
-        "desc":  "Explainable XGBoost + SHAP with live scenario filtering.",
-        "video": "https://youtu.be/abcd1234",
-        "category": "Analytics"
-    },
-]
-
-# ---------- 通用项目卡片页（一个模板吃多个类别） ----------
-from flask import abort
-
+# ---------- AI / ML 项目（卡片页） ----------
 @app.route("/projects/ai")
 def projects_ai():
     cards = [
@@ -599,15 +564,15 @@ def projects_ml():
                            page_title="ML / DL Projects",
                            projects=cards)
 
-from flask import abort  # ← 你路由里用了 abort，需要确保导入
-
+# 视频详情（按 slug 区分）
 @app.route("/projects/ai/<slug>")
 def project_video(slug):
     videos = {
         "presentation": {
             "title": "AIDI1003 – Final Presentation",
             "authors": "Fanmei Wang",
-            "file": "video/Presentation.mp4",   # 见下条路径说明
+            # 修正为你仓库中的文件名
+            "file": "video/Presentation_1.mp4",
             "poster": "img/covers/presentation_poster.jpg",
             "desc": "Course project overview and demo."
         }
@@ -623,7 +588,7 @@ def project_video(slug):
         video=v
     )
 
-# 公共服务分析
+# 公共服务分析（分年聚合展示）
 surveys = [
     {"title": "Service Request Mgmt. System – Request-Tracking Dashboard", "role": "Lead Analyst", "period": "2024-ongoing"},
     {"title": "Qualitative Insights for HR Policy Team", "role": "Analyst", "period": "2024-ongoing"},
@@ -681,7 +646,6 @@ def projects_public_service():
 @app.route("/projects/ai/azure-architecture")
 @app.route("/projects/azure-architecture")
 def projects_azure_arch():
-    # 模板名：templates/projects_azure_arch.html
     return render_template("projects_azure_arch.html")
 
 
@@ -697,15 +661,37 @@ def __routes():
     return "<pre>" + "\n".join(sorted(lines)) + "</pre>"
 
 
+# ===== Foundations & Engagements（只保留这一段；统一 endpoint）=====
+@app.route("/projects/foundations", endpoint="foundations_engagements")
+def foundations_engagements_page():
+    page = {
+        "title": "Foundations & Engagements",
+        "blurb": (
+            "A consolidated view of the research and advisory work that shaped "
+            "how I approach data and AI. These foundations inform my current Public‑Service Data & AI work—from privacy‑first data engineering and survey analytics to applied NLP/ML and executive‑ready reporting."
+        ),
+        "scope": "Spanning 2010–2020 (research) and 2011–2017 (advisory), with occasional pro bono since."
+    }
+    research = [
+        "Diversity & inclusion in employment; minority workforce development.",
+        "Fieldwork and mixed‑methods studies; policy‑relevant analysis.",
+        "Graduate‑level methods teaching (quantitative & qualitative)."
+    ]
+    advisory = [
+        "Organization & HR systems — job architecture, compensation, performance.",
+        "Culture & change — leadership workshops, communication, enablement.",
+        "Employee listening & surveys — instrument review, sampling, measurement.",
+        "Analytics & dashboards — decision‑ready reporting and KPI frameworks.",
+        "Pro bono — lightweight operating models and HR toolkits for SMEs."
+    ]
+    bridge = ("These foundations inform my current Public‑Service Data & AI work—from privacy‑first "
+              "data engineering and survey analytics to applied NLP/ML and executive‑ready reporting.")
+    return render_template(
+        "foundations_engagements.html",
+        page=page, research=research, advisory=advisory, bridge=bridge
+    )
+
+
 if __name__ == "__main__":
-    # 开发模式自动重载
     app.run(debug=True)
-
-
-
-
-
-
-
-
 
