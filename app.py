@@ -569,9 +569,9 @@ def project_video(slug):
     videos = {
         "presentation": {
             "title": "Text Classification Demonstration: Exploring Canada’s Immigration Discourse (video)",
-            "authors": "Fanmei Wang",
+            "authors": "Fanmei Wang & Hongan Lai",
             "file": "video/Presentation_1.mp4",
-            "poster": "img/covers/presentation_poster.jpg",
+            "poster": "img/covers/reddit_project_FanmeiHongan.jpg",
             "desc": "Course project overview and demo."
         }
     }
@@ -692,5 +692,6 @@ def foundations_engagements_page():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
