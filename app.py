@@ -91,7 +91,6 @@ article_list = [
     {"type": "Journal Article", "cite": "Wang, F.M. (2010). Lishi yange Affirmative Action zai United States (The Historical Development of Affirmative Action in the United States), Northwestern Journal of Ethnology (CSSCI), 2, 45-80."},
     {"type": "Journal Article", "cite": "Wang, F.M. (2010). Shilun Italian Americans zai Affirmative Action zhong zaoyu de kunjing (The Difficulties Encountered by Italian Americans in Affirmative Action), Journal of Southwest University for Nationalities (Humanities and Social Science) (CSSCI), 5, 64-70."},
     {"type": "Journal Article", "cite": "Wang, F.M. (2010). Lun Jingju gaige zhong chuantong wenhua de baohu wenti (How to Protect Traditional Culture in the Reform of Peking Opera), Journal of South-Central University for Nationalities (Humanities and Social Sciences) (CSSCI), 30(3), 38-42."},
-    {"type": "Journal Article", "cite": “Wang, F.M. (2009). “Zhuanjiyin zhizhan” de quanli fenxi (Power Analysis for Campaigns Related to Genetically Modified Technology), Journal of University of Science and Technology Beijing (Social Sciences Edition), 25(4), 14-22.”}
 ]
 
 @app.route("/publications")
@@ -413,6 +412,7 @@ def __routes():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
