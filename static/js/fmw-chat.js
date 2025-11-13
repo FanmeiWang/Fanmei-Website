@@ -3,7 +3,6 @@
  * No global CSS changed. All styles are scoped to .fmw-*
  */
 (() => {
-  // ====== 你可以改的配置（仅此处） ==========================================
   const URLS = {
     about:   '/about',
     contact: '/about#contact',
@@ -205,3 +204,4 @@
   // 可选：首条欢迎语
   addBubble(`Hi! I can answer questions <strong>only</strong> about Fanmei's profile, education, teaching, projects (incl. Azure Architecture), publications, and how to contact her.`);
 })();
+
