@@ -24,27 +24,27 @@
   /* 站内“知识库”：只回答网站相关问题；链接都指向你现有的页面 */
   window.fmBotKB = [
     {
-      q: ["who is fanmei", "who is fanmei wang", "介绍一下你", "个人简介", "profile", "resume", "cv"],
+      q: ["who is fanmei", "who is fanmei wang", "introduction", "profile", "resume", "cv"],
       a: "I'm Fanmei Wang. See <a href='{{ url_for('about') }}' target='_self'>About</a> for a short profile."
     },
     {
-      q: ["ai projects", "show me ai projects", "人工智能 项目", "演示", "视频"],
+      q: ["ai projects", "show me ai projects", "ai", "presentation", "video"],
       a: "All AI demos are here: <a href='{{ url_for('projects_ai') }}' target='_self'>AI Projects</a>."
     },
     {
-      q: ["azure architecture", "azure 数据 架构", "animated architecture", "azure demo"],
+      q: ["azure architecture", "architecture", "animated architecture", "azure demo"],
       a: "Open the step-by-step animated Azure Architecture demo: <a href='{{ url_for('projects') }}#azure-arch' target='_self'>Azure Architecture (Animated)</a>."
     },
     {
-      q: ["teaching", "courses", "教学", "教学经历"],
+      q: ["teaching", "courses", "teach", "teaching experience"],
       a: "Teaching overview: <a href='{{ url_for('teaching_overview') }}' target='_self'>Teaching</a>."
     },
     {
-      q: ["publications", "论文", "著作", "发表"],
+      q: ["publications", "thesis", "paper", "publish"],
       a: "See the list of books & papers on <a href='{{ url_for('publications') }}' target='_self'>Publications</a>."
     },
     {
-      q: ["contact", "how can i contact you", "联系", "email"],
+      q: ["contact", "how can i contact you", "contact", "email"],
       a: "You can reach me via the info on <a href='{{ url_for('about') }}#contact' target='_self'>About → Contact</a>."
     }
   ];
@@ -62,3 +62,4 @@
 
 </body>
 </html>
+
