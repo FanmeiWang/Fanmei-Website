@@ -119,18 +119,24 @@ teaching_data = {
 thesis_stats = {"bachelor": "43 Chinese + 3 international students", "master": "24 Chinese + 9 international students"}
 
 training_contract = [
-    "“Corporate Culture” — MCC Sea Water Desalination Investment Co. · 2016",
-    "“Performance Management” — Wuyang Iron & Steel · 2015",
-    "“Human Resources Management” — Guangdong Topway Network · 2015",
-    "“Corporate Culture” — Sinopec Corp. · 2014",
-    "“Human Resources Management” — Shandong Gold Group · 2014",
-    "“Corporate Culture” — BBMG Corporation · 2014",
-    "“Performance Management” — HBIS Group · 2010–2015",
+    "“Corporate Culture” — MCC Sea Water Desalination Investment Company Ltd., Beijing, China· 2016",
+    "“Performance Management” — Wuyang Iron & Steel, Wuyang, Henan· 2015",
+    "“Human Resources Management” — Guangdong Topway Network Co., Ltd., Foshan, Guangdong, China· 2015",
+    "“Corporate Culture” — Sinopec Corp. (China Petroleum & Chemical Corporation), Beijing, China· 2014",
+    "“Human Resources Management” — Shandong Gold Group Co., Ltd., Beijing, China· 2014",
+    "“Corporate Culture” — BBMG Corporation, Beijing, China· 2014",
+    "“Performance Management” — MCC Sea Water Desalination Investment Company Ltd., Beijing, China· 2010–2015",
+    "“Human Resources Management” — SHOUGANG (Shoudu Iron & Steel) Group, Beijing, China· 2012",
+    "“Performance Management” — Tangshan Xinbaotai Iron & Steel Co., Ltd. Plant, Beijing, China· 2012",
+    "“Performance Management” — HBIS (Hebei Iron & Steel) Group Co., Ltd., Shijiazhuang, Hebei, China· 2010, 2011 &2015",
+    "“Human Resources Management” — Chengde Iron & Steel Group Co., Ltd., Chengde, Hebei, China· 2011&2012",
+    "“Human Resources Management” — BBMG Corporation, Beijing, China· 2011&2012",
+    "“Human Resources Management” — China National Tobacco Corporation, Hohhot, Inner Mongolia, China· 2010",
 ]
 
-trainer_summary = (
-    "Delivered in-house workshops for seven corporations, including Beijing Urban Construction Group and "
-    "Jiangsu Xicheng Sanlian, covering performance evaluation, corporate culture, and communication management."
+corporate_trainer = (
+    "Served as a corporate trainer for seven corporations (i.e., Beijing Urban Construction Group Co., Ltd.; JiangSu Xicheng Sanlian Holding Group, etc.) among others."
+    "Topics included on performance evaluation, corporate culture, and communication management."
 )
 
 awards_data = [
@@ -412,6 +418,7 @@ def __routes():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
