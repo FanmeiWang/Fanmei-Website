@@ -211,12 +211,14 @@ def teaching_thesis():
 @app.route("/presentations")
 def presentations():
     talks = [
-        {"title": "How to Conduct HRM‑Related Studies in China? (Chinese)", "venue": "Zhejiang University", "city": "Hangzhou", "date": "Apr 28, 2019"},
-        {"title": "HRM for Ethnic Minority Employees (Chinese)", "venue": "Zhejiang University", "city": "Hangzhou", "date": "Apr 29, 2019"},
+        {"title": "How to Conduct HRM‑Related Studies in China? (Chinese) Workshop “Research on Ethnic Minority Group Members in China”", "venue": "Zhejiang University", "city": "Hangzhou", "date": "Apr 28, 2019"},
+        {"title": "Human Resource Management for Ethnic Minority Employees in Organizations in Chinese Minority- inhabited Regions: A Case Study in the Tibetan Autonomous Region” (in Chinese)", "venue": "Zhejiang University", "city": "Hangzhou", "date": "Apr 29, 2019"},
         {"title": "A New Perspective in Analyzing China Ethnic‑related Employment Issues (English)", "venue": "Harvard University", "city": "Boston, MA", "date": "May 1, 2018"},
-        {"title": "Career Development for Ethnic Minority Employees (English)", "venue": "Harvard University", "city": "Boston, MA", "date": "Apr 26, 2018"},
+        {"title": "Career Development for Ethnic Minority Employees: A Case Study in the Tibetan Autonomous Region", "venue": "Harvard University", "city": "Boston, MA", "date": "Apr 26, 2018"},
         {"title": "Chinese Ethnic Policies: An International Comparative Perspective (English)", "venue": "Tsinghua University", "city": "Beijing", "date": "Feb 2, 2017"},
-        # ... 其余略 ...
+        {"title": "Chinese Ethnic Issues in the Context of One belt, One Road Initiative (Chinese)", "venue": "Minzu University of China", "city": "Beijing", "date": "Dec 24, 2016"},
+        {"title": "Affirmative Action – The Historical Development and Social Influence of Preferential Policies for Ethnic Minorities in the United States (Chinese)", "venue": "Tsinghua University", "city": "Beijing", "date": "Nov 6, 2016"},
+        {"title": "Cross-Cultural Management (English)", "venue": "USTB", "city": "Beijing", "date": "Jun 9, 2016"},
     ]
     posters = ["Harvard_presentation_adv1.jpg", "Harvard_presentation_adv2.png"]
     left_photos  = ["presentation1.jpg", "presentation6.jpg", "presentation7.jpg"]
@@ -418,6 +420,7 @@ def __routes():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
