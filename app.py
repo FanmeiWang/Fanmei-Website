@@ -282,7 +282,7 @@ def project_video(slug):
             "subtitle": "Policy‑aware topic trends around the May 31, 2023 reform",
 
             "authors": (
-                "Team project (postgraduate). Lead & end‑to‑end: Fanmei Wang. "
+                "Team project (postgraduate). Fanmei Wang & Hongan Lai. "
                 "Small team project (postgraduate). I built the end‑to‑end pipeline on 10k+ Reddit submissions, "
                 " designed 8 topic labels, curated ~1.1k human‑verified samples, and fine‑tuned DistilBERT (test accuracy ≈ 78.6%). "
                 "Hongan supported text cleaning, contributed to manual verification, prepared several baseline models, implemented a small Flask demo, and recorded the video."
@@ -448,6 +448,7 @@ def projects_azure_stepper():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
