@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Azure Data & AI Architecture — Step‑by‑Step{% endblock %}
+
+{% block extra_css %}
+<style>
+.azure-walkthrough{
+  margin: 22px auto 60px; max-width: 1160px; background:#fff; border-radius:16px;
+  box-shadow:0 10px 26px rgba(0,0,0,.08); padding:1.6rem;
+}
+.azure-layout{ display:grid; grid-template-columns:1.2fr 1fr; gap:1.4rem; align-items:start; }
+@media(max-width:980px){ .azure-layout{ grid-template-columns:1fr; } }
+
+.azure-diagram img{ width:100%; display:block; border-radius:12px; box-shadow:0 8px 22px rgba(0,0,0,.10); }
+.azure-diagram figcaption{ margin-top:.45rem; font-size:.92rem; color:#6a767a; }
+
+.step-card{
+  background:linear-gradient(180deg,#FFF6C7 0,#FFFBE6 100%);
+  border-radius:14px; border-left:6px solid var(--brand-teal,#004F59);
+  padding:1rem 1rem 1.1rem; box-shadow:0 10px 24px rgba(0,0,0,.08);
+}
+.step-card h3{ margin:.1rem 0 .35rem; font-size:1.18rem; color:#123b40 }
+.step-card p{ margin:0; font-size:.98rem; color:#4a5b60; line-height:1.55 }
+
+.step-controls{ margin-top:.9rem; display:flex; align-items:center; justify-content:space-between; gap:.6rem }
+.step-controls button{
+  padding:.55rem 1rem; border-radius:12px; border:1px solid rgba(0,0,0,.08);
+  background:#fff; font-weight:800; color:#004F59; cursor:pointer;
+}
+#step-counter{ font-size:.95rem; color:#5c6a6f }
+.play{ margin-left:auto; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+  <h1 class="page-title">Azure Data &amp; AI Architecture — Step‑by‑Step</h1>
+
+  <section class="azure-walkthrough">
+    <div class="azure-layout">
+      <!-- 左：静态架构图（可先用封面图，之后换成你 PPT 导出的 PNG） -->
+      <figure class="azure-diagram">
+        <img src="{{ url_for('static', filename='img/covers/Azure_Architecture.png') }}"
+             alt="Azure Data & AI architecture diagram">
+        <figcaption>AIDI1006 · End‑to‑End lakehouse flow on Azure</figcaption>
+      </figure>
+
+      <!-- 右：stepper 只变文字 -->
+      <div class="azure-steps">
+        <article class="step-card">
+          <h3 id="step-title"></h3>
+          <p id="step-text"></p>
+
+          <div class="step-controls">
+            <button type="button" data-dir="-1">‹ 上一条</button>
+            <span id="step-counter"></span>
+            <button type="button" data-dir="1">下一条 ›</button>
+            <button class="play" id="autoplay" type="button" aria-pressed="false">► 自动播放</button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  // 12 步数据流（中文说明）
+  const STEPS = [
+    {t:"(1) SAP / S4HANA → ADF（自托管运行时）", d:"通过 SHIR 安全抽取 SAP 数据，进入 ADF 管道。"},
+    {t:"(2) Dynamics 365 (Dataverse) → Synapse Link", d:"用 Synapse Link 准实时导出到数据湖（后续落 Bronze）。"},
+    {t:"(3) Oracle → ADF（自托管运行时）", d:"从 Oracle 库抽数进入统一的采集管道。"},
+    {t:"(4) Azure Blob（CSV/非结构化）→ ADF", d:"把历史 CSV 与外部文件统一纳管。"},
+    {t:"(5) ADF → ADLS Gen2 · Bronze", d:"原始区，Append‑only；存 Parquet/Delta，保留数据血缘。"},
+    {t:"(6) Synapse Link → Bronze", d:"Dataverse 的变更也按批次进入 Bronze。"},
+    {t:"(7) Databricks：Bronze → Silver", d:"清洗/标准化，主键、时间戳、枚举值等对齐。"},
+    {t:"(8) Databricks：Silver → Gold", d:"汇总建模，做成分析就绪的宽表/星型。"},
+    {t:"(9) Gold → Synapse Serverless SQL", d:"通过外部表/视图把湖区暴露给 SQL 消费方。"},
+    {t:"(10) Synapse Serverless → Power BI", d:"建语义模型和仪表板，支持自助分析。"},
+    {t:"(11) Gold → Azure Machine Learning", d:"训练/部署模型；批量或在线推理。"},
+    {t:"(12) Azure ML 预测结果 → Gold", d:"把评分结果回写 Gold，形成闭环（BI 复用）。"}
+  ];
+
+  let idx = 0, timer = null, auto = false;
+  const title   = document.getElementById("step-title");
+  const text    = document.getElementById("step-text");
+  const counter = document.getElementById("step-counter");
+  const buttons = document.querySelectorAll(".step-controls [data-dir]");
+  const autoplayBtn = document.getElementById("autoplay");
+
+  function render(i){
+    if (!STEPS.length) return;
+    idx = (i + STEPS.length) % STEPS.length;
+    const s = STEPS[idx];
+    title.textContent   = s.t;
+    text.textContent    = s.d;
+    counter.textContent = (idx+1) + " / " + STEPS.length;
+  }
+
+  buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const dir = Number(btn.dataset.dir || 1);
+      render(idx + dir);
+    });
+  });
+
+  autoplayBtn.addEventListener("click", ()=>{
+    auto = !auto;
+    autoplayBtn.setAttribute("aria-pressed", String(auto));
+    autoplayBtn.textContent = auto ? "❚❚ 停止" : "► 自动播放";
+    if (auto) {
+      timer = setInterval(()=> render(idx + 1), 1800);
+    } else {
+      clearInterval(timer);
+    }
+  });
+
+  render(0);
+})();
+</script>
+{% endblock %}
