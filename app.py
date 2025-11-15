@@ -1,77 +1,74 @@
 # app.py — clean merged
+from flask import Flask, render_template, url_for, abort, request, jsonify
 import os, json, re, difflib
-from flask import Flask, render_template, url_for, abort, request, jsonify, Response
+
+from openai import OpenAI   # 仅保留一次导入
 
 app = Flask(__name__)
 
-# ---------- OpenAI client helper ----------
-def _get_openai_client():
-    """
-    尝试读取 OPENAI_API_KEY 并返回 OpenAI 客户端；没配就返回 None（本地不崩）。
-    """
+# ----------------------------- OpenAI Chat backend -----------------------------
+# 仅保留一个客户端获取函数；避免应用启动时就因缺环境变量而崩溃
+def get_openai_client():
     key = os.getenv("OPENAI_API_KEY")
     if not key:
+        # 不让 SDK 在创建时才抛错；我们在接口里给出友好提示
         return None
-    try:
-        from openai import OpenAI
-        return OpenAI(api_key=key)
-    except Exception as e:
-        print("OpenAI import/init error:", repr(e))
-        return None
+    return OpenAI(api_key=key)
 
-# ---------- Chat API（供前端小窗使用） ----------
-@app.route("/api/chat", methods=["POST"], endpoint="api_chat")
+_ALLOWED = [
+    "about", "education", "teaching", "projects", "publications",
+    "azure", "azure architecture", "contact", "presentations"
+]
+
+def _is_allowed(q: str) -> bool:
+    ql = (q or "").lower()
+    return any(k in ql for k in _ALLOWED)
+
+@app.post("/api/chat")
 def api_chat():
     """
-    与前端 _chat_widget.html 一致：POST JSON {q: "..."} 或 {message: "..."}
-    只回答站内内容；没配置 OPENAI_API_KEY 时返回温和提示，避免本地崩溃。
+    站内助手：仅回答站点相关的问题。
+    前端小浮窗会向这个路由发请求（见 _chat_widget.html）。  :contentReference[oaicite:1]{index=1}
     """
     data = request.get_json(silent=True) or {}
     q = (data.get("q") or data.get("message") or "").strip()
     if not q:
         return jsonify({"reply": "Please type a question about this site."}), 400
 
-    # 允许的话题关键词（只接站内）
-    allowed = [
-        "about", "education", "teaching", "projects", "publications",
-        "presentations", "contact", "azure", "azure architecture"
-    ]
-    if not any(k in q.lower() for k in allowed):
-        return jsonify({"reply": (
-            "I can answer questions about this site only: "
-            "About • Education • Teaching • Projects (incl. Azure Architecture) • "
-            "Publications • Presentations • Contact."
-        )})
+    if not _is_allowed(q):
+        reply = ("I can only answer questions about Fanmei’s site: "
+                 "About · Education · Teaching · Projects (incl. Azure) · Publications · Contact.")
+        return jsonify({"reply": reply})
 
-    client = _get_openai_client()
-    if not client:
-        return jsonify({"reply": "(Dev) OpenAI key not configured. "
-                                 "Add OPENAI_API_KEY on Render and redeploy."}), 503
+    client = get_openai_client()
+    if client is None:
+        # 本地没设置 OPENAI_API_KEY 或 Render 环境变量未生效时的兜底
+        return jsonify({"reply": "The assistant is not available yet (missing API key)."}), 503
 
     system = (
-        "You are the assistant for Fanmei Wang’s personal website. "
+        "You are the assistant for Fanmei Wang’s personal site. "
         "Answer briefly and helpfully about these sections only: "
-        "About, Education, Teaching, Projects (including the Azure Data & AI architecture demo), "
-        "Publications, Presentations, and Contact. If asked anything else, politely steer back."
+        "About, Education, Teaching, Projects (including Azure Data & AI architecture), "
+        "Publications, Presentations, and how to contact her. "
+        "If the user asks for anything else, say you can only answer about the site."
     )
+
     try:
-        # 轻量模型，成本低
         resp = client.chat.completions.create(
             model="gpt-4o-mini",
-            temperature=0.2,
-            max_tokens=350,
-            messages=[
-                {"role": "system", "content": system},
-                {"role": "user",   "content": q},
-            ],
+            temperature=0.25,
+            max_tokens=400,
+            messages=[{"role":"system","content":system},
+                      {"role":"user","content":q}]
         )
-        reply = (resp.choices[0].message.content or "").strip()
-        return jsonify({"reply": reply or "…"})
+        reply = (resp.choices[0].message.content or "").strip() or "…"
+        return jsonify({"reply": reply})
     except Exception as e:
+        # 控制台打印便于排查；对前端只给通用提示
         print("OpenAI error:", repr(e))
-        return jsonify({"reply": "The chat service is temporarily unavailable."}), 502
+        return jsonify({"reply": "Sorry, the chat service is temporarily unavailable."}), 500
 
-# ---------------- Home / About ----------------
+# ----------------------------- Home / About -----------------------------
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -80,7 +77,7 @@ def home():
 def about():
     return render_template("about.html")
 
-# ---------------- Education ----------------
+# ----------------------------- Education -----------------------------
 education_data = [
     {
         "school": "Georgian College",
@@ -109,7 +106,6 @@ education_data = [
     {"school": "Laurentian University", "degree": "M.A. in Sociology", "status": "", "detail": "", "logo": "laurentian.png", "courses": []},
     {"school": "University of Science and Technology Beijing", "degree": "B.Eng in Business Administration", "status": "", "detail": "", "logo": "ustb.png", "courses": []},
 ]
-
 hrpa = {
     "status": "Completed",
     "logo": "HRPA.png",
@@ -123,7 +119,7 @@ hrpa = {
 def education():
     return render_template("education.html", edu_list=education_data, hrpa=hrpa)
 
-# ---------------- Publications ----------------
+# ----------------------------- Publications -----------------------------
 book_list = [
     {
         "title": "Affirmative Action – Historical Development and Social Influence ...",
@@ -156,13 +152,13 @@ article_list = [
     {"type": "Journal Article", "cite": "Wang, F.M. (2012). ... *Northwestern Journal of Ethnology*, 2, 65-82 & 128."},
     {"type": "Journal Article", "cite": "Wang, F.M. (2010). ... *Northwestern Journal of Ethnology*, 2, 45-80."},
     {"type": "Journal Article", "cite": "Wang, F.M. (2010). ... *Journal of Southwest Univ. for Nationalities*, 5, 64-70."},
+    {"type": "Journal Article", "cite": "Wang, F.M. (2009). ... *JUSTB (SS)*, 25(4), 14-22."},
 ]
-
 @app.route("/publications")
 def publications():
     return render_template("publications.html", books=book_list, articles=article_list)
 
-# ---------------- Teaching ----------------
+# ----------------------------- Teaching -----------------------------
 teaching_data = {
     "Undergraduate Courses": [
         {"course": "Human Resources Management", "level": "USTB · 2012 – 2017"},
@@ -262,7 +258,7 @@ def teaching_thesis():
     pg = data.get("graduate") or data.get("grad") or []
     return render_template("teaching_thesis.html", ug_theses=ug, grad_theses=pg)
 
-# ---------------- Presentations ----------------
+# ----------------------------- Presentations -----------------------------
 @app.route("/presentations")
 def presentations():
     talks = [
@@ -277,7 +273,7 @@ def presentations():
     right_photos = ["Harvard_presentation1.jpg", "Harvard_presentation2.jpg", "Harvard_presentation3.jpg"]
     return render_template("presentations.html", talks=talks, posters=posters, left_photos=left_photos, right_photos=right_photos)
 
-# ---------------- Projects ----------------
+# ----------------------------- Projects -----------------------------
 @app.route("/projects")
 def projects():
     return render_template("projects.html")
@@ -294,7 +290,6 @@ academic_international = [
     {"title": "Strategic Management Teaching Project", "org": "SAFEA (with Maurice Yolles / Paul Iles)", "period": "2015 – 2017", "amount": "$6,000 (2015–2016); $10,000 (2017)", "note": ""},
     {"title": "Cultural Management and Leadership", "org": "SAFEA (with M.R.S. Green, UCC)", "period": "2016 – 2017", "amount": "$6,000 (annually)", "note": ""},
 ]
-
 @app.route("/projects/academic")
 def projects_academic():
     return render_template("projects_academic.html", funded=academic_funded, intl=academic_international)
@@ -306,7 +301,6 @@ consulting_projects = [
     {"title": "Performance Mgmt. & Corporate Culture – Hainan Hongta", "client": "Hainan Hongta Co.", "period": "2015 – 2016", "amount": "$16 000 CAD", "cover": "hongta_perf.jpg"},
     {"title": "HRM & Compensation System – Ri-Chang Catering", "client": "Beijing Ri-Chang Catering", "period": "2011 – 2013", "amount": "$4 000 CAD", "cover": "ricang_hr.jpg"},
 ]
-
 @app.route("/projects/consulting")
 def projects_consulting():
     return render_template("projects_consulting.html", projects=consulting_projects)
@@ -347,7 +341,7 @@ def project_video(slug):
     if not v: abort(404)
     return render_template("project_video.html", title=v["title"], authors=v.get("authors"), desc=v.get("desc"), video=v)
 
-# Public‑Service Analytics
+# Public‑Service Analytics (按年聚合)
 surveys = [
     {"title": "Service Request Mgmt. System – Request-Tracking Dashboard", "role": "Lead Analyst", "period": "2024-ongoing"},
     {"title": "Qualitative Insights for HR Policy Team", "role": "Analyst", "period": "2024-ongoing"},
@@ -379,17 +373,13 @@ def projects_public_service():
                            survey_groups=_group_by_year(surveys),
                            consult_groups=_group_by_year(consults))
 
-# Azure Architecture demo
+# Azure Architecture demo（供 /projects/ai 卡片使用）
 @app.route("/projects/azure-architecture")
 @app.route("/projects/ai/azure-architecture")
 def projects_azure_arch():
     return render_template("projects_azure_arch.html")
 
-@app.route("/projects/azure-architecture/stepper", endpoint="projects_azure_stepper")
-def projects_azure_stepper():
-    return render_template("projects_azure_stepper.html")
-
-# Foundations & Engagements（保持 endpoint 名，供 url_for('foundations_engagements') 使用）
+# Foundations & Engagements
 @app.route("/projects/foundations", endpoint="foundations_engagements")
 def foundations_engagements_page():
     page = {
@@ -402,16 +392,15 @@ def foundations_engagements_page():
     bridge = ("These foundations inform current Public‑Service Data & AI work—from privacy‑first data engineering to applied NLP/ML.")
     return render_template("foundations_engagements.html", page=page, research=research, advisory=advisory, bridge=bridge)
 
-# ---------------- Utilities ----------------
+# ----------------------------- Utilities -----------------------------
 @app.route("/__routes")
 def __routes():
     lines = []
     for rule in app.url_map.iter_rules():
-        methods = ",".join(sorted(m for m in rule.methods if m in {"GET", "POST"}))
-        lines.append(f"{rule.rule:40s} -> {rule.endpoint} [{methods}]")
+        methods = ", ".join(sorted(m for m in rule.methods if m in {"GET", "POST"}))
+        lines.append(f"{rule.rule:40s}  ->  {rule.endpoint}  [{methods}]")
     return "<pre>" + "\n".join(sorted(lines)) + "</pre>"
 
-# 入口
 if __name__ == "__main__":
+    # 本地调试启动
     app.run(debug=True)
-
