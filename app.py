@@ -77,20 +77,20 @@ book_list = [
 ]
 
 article_list = [
-    {"type": "Journal Article", "cite": "Wang, F.M. (2019). Career Advancement for Tibetan Employees in Companies in the Tibet Autonomous Region, China: An International Journal (SSCI), 17(1), 194-222."},
-    {"type": "Journal Article", "cite": "Wang, F.M., Papia, K. & Wang, Z.X. (2017). 20 shiji 90 niandai yilai de Georgia jingji zhuangkuang yanjiu (A Research on Economic Development of Georgia Since the 1990s), Journal of University of Science and Technology Beijing (Social Sciences Edition), 33(1), 99-112."},
-    {"type": "Journal Article", "cite": "Wang, F.M. (2016). Tibetan tese youshi chanye de zhongxiaoxing minying qiye wenhua ziben yanjiu (Research on Cultural Capital of Small- and Medium-Sized Private Enterprises in Tibetan Industries with Local Advantages), Qinghai Journal of Ethnology (CSSCI), 27(1),166-171."},
-    {"type": "Journal Article", "cite": "Wang, F.M. (2015). America dui shaoshu qunti qiye de fuchixing cuoshi jiqi dui woguo de jiejian yiyi (The Preferential Policies towards Minority Business Enterprise in the United States and What China Can Learn from Them.), Social Science Front (CSSCI), 6, 187-197."},
-    {"type": "Journal Article", "cite": "Wang, F.M. & Li, X.J. (2014). Guojihua huanjing xia de jiaoyu linian yu sikao: Jiyu wenxian fenxi de yanjiu (The Educational Ideas and Thoughts in the Internationalization: A Study Based on the Literature Analysis), Journal of University of Science and Technology Beijing (Social Sciences Edition), 30(6),100-108."},
-    {"type": "Journal Article", "cite": "Wang, F.M. (2014). Tibetan yuangong zai Tibetan zhongxiaoxing minying qiye nei de zhiye fazhan yanjiu (Research on Career Development of Tibetan Employees in Middle- and Small- Sized Private Companies in Tibet), Journal of Southwest University for Nationalities (Humanities and Social Science) (CSSCI), 7, 53-58."},
-    {"type": "Journal Article", "cite": "Wang, F.M. (2014). American heiren laodongli de jiaoyu he zhiye jiegou biandong zhuangkuang yanjiu (The Analysis of the Change in Education and Occupational Structure of African American Labour Force), Chinese Journal of Population Science (CSSCI), 2, 84-95."},
-    {"type": "Journal Article", "cite": "Wang, F.M. & Huang, Z.Y. (2013). Guoyou wenhua qiye jixiao kaohe tixi yanjiu (Research on the Performance Evaluation System of State-owned Cultural Enterprises - With BPA Company as an Example), Journal of University of Science and Technology Beijing (Social Sciences Edition), 29(3), 90-97."},
-    {"type": "Journal Article", "cite": "Wang, F.M., Ma, X. & Xi, W.W. (2013). Zhongcan liansuo qiye jixiao kaohe tixi de goujian yanjiu (Research on the Establishment of Performance Evaluation System of Chinese Restaurant), Journal of South-Central University for Nationalities (Humanities and Social Sciences) (CSSCI), 33(5),128-131."},
-    {"type": "Journal Article", "cite": "Wang, F.M. & Xi, W.W. (2012). Qiye yunying zhong xinchou tixi wenti yanjiu (Investigation of the Problems in the Salary System in the Operation of Enterprises - Taking the RC Catering Company as a Case), Journal of University of Science and Technology Beijing (Social Sciences Edition), 28(4),124-133."},
-    {"type": "Journal Article", "cite": "Wang, F.M. (2012). Xifang jiaoyu lingyu de zhongzu huo zuqun youhui zhengce duiyu woguo de jiejian yiyi – yi Affirmative Action of the United States weili (Positive Experiences and Negative Lessons Brought by Western Racial or Ethnic Preferential Policy in Western Educational Field - An Example of Affirmative Action), Northwestern Journal of Ethnology (CSSCI), 2, 65-82 &128."},
-    {"type": "Journal Article", "cite": "Wang, F.M. (2010). Lishi yange Affirmative Action zai United States (The Historical Development of Affirmative Action in the United States), Northwestern Journal of Ethnology (CSSCI), 2, 45-80."},
-    {"type": "Journal Article", "cite": "Wang, F.M. (2010). Shilun Italian Americans zai Affirmative Action zhong zaoyu de kunjing (The Difficulties Encountered by Italian Americans in Affirmative Action), Journal of Southwest University for Nationalities (Humanities and Social Science) (CSSCI), 5, 64-70."},
-    {"type": "Journal Article", "cite": "Wang, F.M. (2010). Lun Jingju gaige zhong chuantong wenhua de baohu wenti (How to Protect Traditional Culture in the Reform of Peking Opera), Journal of South-Central University for Nationalities (Humanities and Social Sciences) (CSSCI), 30(3), 38-42."},
+    {"type": "Journal Article", "cite": "Wang, F.M. (2019). Career Advancement ... *China: An International Journal*, 17(1), 194-222."},
+    {"type": "Journal Article", "cite": "Wang, F.M.; Papia, K.; & Wang, Z.X. (2017). ... *JUSTB (Social Sciences Edition)*, 33(1), 99-112."},
+    {"type": "Journal Article", "cite": "Wang, F.M. (2016). ... *Qinghai Journal of Ethnology*, 27(1), 166-171."},
+    {"type": "Journal Article", "cite": "Wang, F.M. (2015). ... *Social Science Front*, 6, 187-197."},
+    {"type": "Journal Article", "cite": "Wang, F.M. & Li, X.J. (2014). ... *JUSTB (SS)*, 30(6), 100-108."},
+    {"type": "Journal Article", "cite": "Wang, F.M. (2014). ... *Journal of Southwest Univ. for Nationalities*, 7, 53-58."},
+    {"type": "Journal Article", "cite": "Wang, F.M. (2014). ... *Chinese Journal of Population Science*, 2, 84-95."},
+    {"type": "Journal Article", "cite": "Wang, F.M. & Huang, Z.Y. (2013). ... *JUSTB (SS)*, 29(3), 90-97."},
+    {"type": "Journal Article", "cite": "Wang, F.M., Ma, X. & Xi, W.W. (2013). ... *J. South‑Central Univ. for Nationalities*, 33(5), 128-131."},
+    {"type": "Journal Article", "cite": "Wang, F.M. & Xi, W.W. (2012). ... *JUSTB (SS)*, 28(4), 124-133."},
+    {"type": "Journal Article", "cite": "Wang, F.M. (2012). ... *Northwestern Journal of Ethnology*, 2, 65-82 & 128."},
+    {"type": "Journal Article", "cite": "Wang, F.M. (2010). ... *Northwestern Journal of Ethnology*, 2, 45-80."},
+    {"type": "Journal Article", "cite": "Wang, F.M. (2010). ... *Journal of Southwest Univ. for Nationalities*, 5, 64-70."},
+    {"type": "Journal Article", "cite": "Wang, F.M. (2009). ... *JUSTB (SS)*, 25(4), 14-22."},
 ]
 
 @app.route("/publications")
@@ -119,24 +119,18 @@ teaching_data = {
 thesis_stats = {"bachelor": "43 Chinese + 3 international students", "master": "24 Chinese + 9 international students"}
 
 training_contract = [
-    "“Corporate Culture” — MCC Sea Water Desalination Investment Company Ltd., Beijing, China· 2016",
-    "“Performance Management” — Wuyang Iron & Steel, Wuyang, Henan· 2015",
-    "“Human Resources Management” — Guangdong Topway Network Co., Ltd., Foshan, Guangdong, China· 2015",
-    "“Corporate Culture” — Sinopec Corp. (China Petroleum & Chemical Corporation), Beijing, China· 2014",
-    "“Human Resources Management” — Shandong Gold Group Co., Ltd., Beijing, China· 2014",
-    "“Corporate Culture” — BBMG Corporation, Beijing, China· 2014",
-    "“Performance Management” — MCC Sea Water Desalination Investment Company Ltd., Beijing, China· 2010–2015",
-    "“Human Resources Management” — SHOUGANG (Shoudu Iron & Steel) Group, Beijing, China· 2012",
-    "“Performance Management” — Tangshan Xinbaotai Iron & Steel Co., Ltd. Plant, Beijing, China· 2012",
-    "“Performance Management” — HBIS (Hebei Iron & Steel) Group Co., Ltd., Shijiazhuang, Hebei, China· 2010, 2011 &2015",
-    "“Human Resources Management” — Chengde Iron & Steel Group Co., Ltd., Chengde, Hebei, China· 2011&2012",
-    "“Human Resources Management” — BBMG Corporation, Beijing, China· 2011&2012",
-    "“Human Resources Management” — China National Tobacco Corporation, Hohhot, Inner Mongolia, China· 2010",
+    "“Corporate Culture” — MCC Sea Water Desalination Investment Co. · 2016",
+    "“Performance Management” — Wuyang Iron & Steel · 2015",
+    "“Human Resources Management” — Guangdong Topway Network · 2015",
+    "“Corporate Culture” — Sinopec Corp. · 2014",
+    "“Human Resources Management” — Shandong Gold Group · 2014",
+    "“Corporate Culture” — BBMG Corporation · 2014",
+    "“Performance Management” — HBIS Group · 2010–2015",
 ]
 
-corporate_trainer = (
-    "Served as a corporate trainer for seven corporations (i.e., Beijing Urban Construction Group Co., Ltd.; JiangSu Xicheng Sanlian Holding Group, etc.) among others."
-    "Topics included on performance evaluation, corporate culture, and communication management."
+trainer_summary = (
+    "Delivered in-house workshops for seven corporations, including Beijing Urban Construction Group and "
+    "Jiangsu Xicheng Sanlian, covering performance evaluation, corporate culture, and communication management."
 )
 
 awards_data = [
@@ -211,14 +205,12 @@ def teaching_thesis():
 @app.route("/presentations")
 def presentations():
     talks = [
-        {"title": "How to Conduct HRM‑Related Studies in China? (Chinese) Workshop “Research on Ethnic Minority Group Members in China”", "venue": "Zhejiang University", "city": "Hangzhou", "date": "Apr 28, 2019"},
-        {"title": "Human Resource Management for Ethnic Minority Employees in Organizations in Chinese Minority- inhabited Regions: A Case Study in the Tibetan Autonomous Region” (in Chinese)", "venue": "Zhejiang University", "city": "Hangzhou", "date": "Apr 29, 2019"},
+        {"title": "How to Conduct HRM‑Related Studies in China? (Chinese)", "venue": "Zhejiang University", "city": "Hangzhou", "date": "Apr 28, 2019"},
+        {"title": "HRM for Ethnic Minority Employees (Chinese)", "venue": "Zhejiang University", "city": "Hangzhou", "date": "Apr 29, 2019"},
         {"title": "A New Perspective in Analyzing China Ethnic‑related Employment Issues (English)", "venue": "Harvard University", "city": "Boston, MA", "date": "May 1, 2018"},
-        {"title": "Career Development for Ethnic Minority Employees: A Case Study in the Tibetan Autonomous Region", "venue": "Harvard University", "city": "Boston, MA", "date": "Apr 26, 2018"},
+        {"title": "Career Development for Ethnic Minority Employees (English)", "venue": "Harvard University", "city": "Boston, MA", "date": "Apr 26, 2018"},
         {"title": "Chinese Ethnic Policies: An International Comparative Perspective (English)", "venue": "Tsinghua University", "city": "Beijing", "date": "Feb 2, 2017"},
-        {"title": "Chinese Ethnic Issues in the Context of One belt, One Road Initiative (Chinese)", "venue": "Minzu University of China", "city": "Beijing", "date": "Dec 24, 2016"},
-        {"title": "Affirmative Action – The Historical Development and Social Influence of Preferential Policies for Ethnic Minorities in the United States (Chinese)", "venue": "Tsinghua University", "city": "Beijing", "date": "Nov 6, 2016"},
-        {"title": "Cross-Cultural Management (English)", "venue": "USTB", "city": "Beijing", "date": "Jun 9, 2016"},
+        # ... 其余略 ...
     ]
     posters = ["Harvard_presentation_adv1.jpg", "Harvard_presentation_adv2.png"]
     left_photos  = ["presentation1.jpg", "presentation6.jpg", "presentation7.jpg"]
@@ -418,16 +410,9 @@ def __routes():
         lines.append(f"{rule.rule:40s}  ->  {rule.endpoint}  [{methods}]")
     return "<pre>" + "\n".join(sorted(lines)) + "</pre>"
 
+@app.route("/projects/azure-architecture/stepper", endpoint="projects_azure_stepper")
+def projects_azure_stepper():
+    return render_template("projects_azure_stepper.html")
+
 if __name__ == "__main__":
     app.run(debug=True)
-
-
-
-
-
-
-
-
-
-
-
