@@ -1,10 +1,85 @@
-# app.py (clean merged)
-from flask import Flask, render_template, url_for, abort, request, jsonify
+# app.py — clean merged, single OpenAI chat endpoint
+
+from flask import Flask, render_template, url_for, abort, request, jsonify, Response
 import os, json, re, difflib
+from openai import OpenAI
 
 app = Flask(__name__)
 
-# ---------------- Home / About ----------------
+# ------------------------------
+# OpenAI client (lazy + graceful)
+# ------------------------------
+MODEL_NAME = "gpt-4o-mini"
+
+def get_openai_client():
+    """
+    延迟创建，兼容本地/Render。
+    若未设置 OPENAI_API_KEY，返回 None（由调用方优雅提示）。
+    """
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        return None
+    return OpenAI(api_key=api_key)
+
+# ========== Chat API（唯一入口；endpoint 保持为 api_chat） ==========
+_ALLOWED = [
+    "about", "education", "teaching", "projects", "publications",
+    "azure", "azure architecture", "contact", "presentations",
+    "public-service", "foundations", "engagements"
+]
+
+def _is_allowed(q: str) -> bool:
+    ql = (q or "").lower()
+    return any(k in ql for k in _ALLOWED)
+
+@app.route("/api/chat", methods=["POST"], endpoint="api_chat")
+def api_chat():
+    data = request.get_json(silent=True) or {}
+    # 兼容前端传参名 q / message
+    q = (data.get("q") or data.get("message") or "").strip()
+    if not q:
+        return jsonify({"reply": "Please type a question about this site. / 请输入与本站内容相关的问题。"}), 400
+
+    # 非站内话题，礼貌拒答
+    if not _is_allowed(q):
+        refused = ("I can answer questions about this site only: "
+                   "About · Education · Teaching · Projects (incl. Azure) · Publications · Presentations · Contact. "
+                   "我只能回答与本站相关的问题。")
+        return jsonify({"reply": refused})
+
+    client = get_openai_client()
+    if client is None:
+        # 避免抛异常：给出清晰提示
+        return jsonify({"reply": "The AI service is not configured (missing OPENAI_API_KEY). "
+                                 "聊天服务未配置（缺少 OPENAI_API_KEY）。"}), 503
+
+    system = (
+        "You are the assistant for Fanmei Wang’s personal site. "
+        "Answer briefly (<=150 words) and helpfully about these sections only: "
+        "About, Education, Teaching, Projects (including Azure Data & AI architecture), "
+        "Publications, Presentations, and how to contact her. "
+        "Reply in English first, then provide a concise Chinese translation."
+    )
+
+    try:
+        resp = client.chat.completions.create(
+            model=MODEL_NAME,
+            temperature=0.3,
+            max_tokens=350,
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": q},
+            ],
+        )
+        reply = (resp.choices[0].message.content or "").strip()
+        return jsonify({"reply": reply or "…"})
+    except Exception as e:
+        # 不把内部异常暴露给前端
+        print("OpenAI error:", repr(e))
+        return jsonify({"reply": "The AI service hit an issue. Please try again shortly. / 服务临时异常，请稍后重试。"}), 502
+
+
+# ========== Home / About ==========
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -13,7 +88,8 @@ def home():
 def about():
     return render_template("about.html")
 
-# ---------------- Education ----------------
+
+# ========== Education ==========
 education_data = [
     {
         "school": "Georgian College",
@@ -56,7 +132,8 @@ hrpa = {
 def education():
     return render_template("education.html", edu_list=education_data, hrpa=hrpa)
 
-# ---------------- Publications ----------------
+
+# ========== Publications ==========
 book_list = [
     {
         "title": "Affirmative Action – Historical Development and Social Influence ...",
@@ -97,7 +174,8 @@ article_list = [
 def publications():
     return render_template("publications.html", books=book_list, articles=article_list)
 
-# ---------------- Teaching ----------------
+
+# ========== Teaching ==========
 teaching_data = {
     "Undergraduate Courses": [
         {"course": "Human Resources Management", "level": "USTB · 2012 – 2017"},
@@ -115,9 +193,7 @@ teaching_data = {
         {"course": "Research Methods & Thesis Writing (English)", "level": "Intl. students · USTB · 2010 – 2012"},
     ],
 }
-
 thesis_stats = {"bachelor": "43 Chinese + 3 international students", "master": "24 Chinese + 9 international students"}
-
 training_contract = [
     "“Corporate Culture” — MCC Sea Water Desalination Investment Co. · 2016",
     "“Performance Management” — Wuyang Iron & Steel · 2015",
@@ -127,12 +203,10 @@ training_contract = [
     "“Corporate Culture” — BBMG Corporation · 2014",
     "“Performance Management” — HBIS Group · 2010–2015",
 ]
-
 trainer_summary = (
     "Delivered in-house workshops for seven corporations, including Beijing Urban Construction Group and "
     "Jiangsu Xicheng Sanlian, covering performance evaluation, corporate culture, and communication management."
 )
-
 awards_data = [
     {"award": "Excellence in Teaching Award", "institution": "University of Science and Technology Beijing", "year": "2021",
      "desc": "Top university-wide teaching distinction presented annually."},
@@ -201,7 +275,8 @@ def teaching_thesis():
     pg = data.get("graduate") or data.get("grad") or []
     return render_template("teaching_thesis.html", ug_theses=ug, grad_theses=pg)
 
-# ---------------- Presentations（只保留一份） ----------------
+
+# ========== Presentations ==========
 @app.route("/presentations")
 def presentations():
     talks = [
@@ -210,14 +285,14 @@ def presentations():
         {"title": "A New Perspective in Analyzing China Ethnic‑related Employment Issues (English)", "venue": "Harvard University", "city": "Boston, MA", "date": "May 1, 2018"},
         {"title": "Career Development for Ethnic Minority Employees (English)", "venue": "Harvard University", "city": "Boston, MA", "date": "Apr 26, 2018"},
         {"title": "Chinese Ethnic Policies: An International Comparative Perspective (English)", "venue": "Tsinghua University", "city": "Beijing", "date": "Feb 2, 2017"},
-        # ... 其余略 ...
     ]
     posters = ["Harvard_presentation_adv1.jpg", "Harvard_presentation_adv2.png"]
     left_photos  = ["presentation1.jpg", "presentation6.jpg", "presentation7.jpg"]
     right_photos = ["Harvard_presentation1.jpg", "Harvard_presentation2.jpg", "Harvard_presentation3.jpg"]
     return render_template("presentations.html", talks=talks, posters=posters, left_photos=left_photos, right_photos=right_photos)
 
-# ---------------- Projects ----------------
+
+# ========== Projects ==========
 @app.route("/projects")
 def projects():
     return render_template("projects.html")
@@ -272,54 +347,22 @@ def projects_ai():
     ]
     return render_template("projects_cards.html", page_title="AI Projects", projects=cards)
 
-from flask import abort  # 顶部如已导入可忽略
-
 @app.route("/projects/ai/<slug>")
 def project_video(slug):
     videos = {
         "presentation": {
-            "title": "Classifying Canadian Immigration Topics on Reddit with DistilBERT",
-            "subtitle": "Policy‑aware topic trends around the May 31, 2023 reform",
-
-            "authors": (
-                "Team project (postgraduate). Fanmei Wang & Hongan Lai. "
-                "Small team project (postgraduate). I built the end‑to‑end pipeline on 10k+ Reddit submissions, "
-                " designed 8 topic labels, curated ~1.1k human‑verified samples, and fine‑tuned DistilBERT (test accuracy ≈ 78.6%). "
-                "Hongan supported text cleaning, contributed to manual verification, prepared several baseline models, implemented a small Flask demo, and recorded the video."
-                "The classifier is used to examine topic shifts on Reddit before and after the May 31, 2023 policy.Flask demo, and recorded the presentation."
-            ),
-
+            "title": "AIDI1003 – Final Presentation",
+            "authors": "Fanmei Wang",
             "file": "video/Presentation_web.mp4",
             "poster": "img/covers/presentation_poster.jpg",
-
-            "desc": (
-                # English
-                "I built an end‑to‑end pipeline on 10k+ Reddit submissions (Mar–Aug 2023) "
-                "from r/ImmigrationCanada and r/CanadaImmigrant to examine topic shifts after "
-                "the May 31, 2023 policy. I handled data ingestion/cleaning, designed 8 topic "
-                "labels, curated ~1.1k human‑verified samples, and fine‑tuned DistilBERT "
-                "(test accuracy ≈ 78.6%). Hongan supported text cleaning, contributed to the "
-                "manual verification, prepared baseline models, implemented the Flask demo, "
-                "and recorded the video. This is a small team project from my postgraduate studies. "
-                ":contentReference[oaicite:0]{index=0}\n\n"                
-            )
+            "desc": "Course project overview and demo."
         }
     }
     v = videos.get(slug)
-    if not v:
-        abort(404)
-    return render_template(
-        "project_video.html",
-        title=v["title"],
-        subtitle=v.get("subtitle"),
-        authors=v.get("authors"),
-        desc=v.get("desc"),
-        video=v
-    )
+    if not v: abort(404)
+    return render_template("project_video.html", title=v["title"], authors=v.get("authors"), desc=v.get("desc"), video=v)
 
-
-
-# Public‑Service Analytics (按年聚合)
+# Public‑Service Analytics (year groups)
 surveys = [
     {"title": "Service Request Mgmt. System – Request-Tracking Dashboard", "role": "Lead Analyst", "period": "2024-ongoing"},
     {"title": "Qualitative Insights for HR Policy Team", "role": "Analyst", "period": "2024-ongoing"},
@@ -351,13 +394,13 @@ def projects_public_service():
                            survey_groups=_group_by_year(surveys),
                            consult_groups=_group_by_year(consults))
 
-# Azure Architecture demo（给 /projects/ai 里的卡片使用）
+# Azure Architecture demo（两条 URL 入口）
 @app.route("/projects/azure-architecture")
 @app.route("/projects/ai/azure-architecture")
 def projects_azure_arch():
     return render_template("projects_azure_arch.html")
 
-# Foundations & Engagements（保持一个 endpoint）
+# Foundations & Engagements（保持 endpoint 名称以兼容 url_for('foundations_engagements')）
 @app.route("/projects/foundations", endpoint="foundations_engagements")
 def foundations_engagements_page():
     page = {
@@ -370,7 +413,7 @@ def foundations_engagements_page():
     bridge = ("These foundations inform current Public‑Service Data & AI work—from privacy‑first data engineering to applied NLP/ML.")
     return render_template("foundations_engagements.html", page=page, research=research, advisory=advisory, bridge=bridge)
 
-# ---------------- 站内聊天：只保留一个 /api/ask ----------------
+# ========== 简易站内知识库 Q&A（保留，不与 /api/chat 冲突） ==========
 def _norm(s: str) -> str:
     s = (s or "").lower()
     s = re.sub(r"[^a-z0-9\s\-/]+", " ", s)
@@ -392,7 +435,6 @@ ALIASES = {
     "publications": ["publication", "publications", "paper", "papers", "book", "books", "article", "articles"],
     "contact":      ["contact", "email", "reach", "get in touch"],
 }
-
 QA_KB = [
     {"tag":"about", "patterns":["who is fanmei wang", "tell me about fanmei", "about fanmei", "简介", "自我介绍"],
      "answer":"I’m Fanmei Wang. See the About page for a short profile.", "endpoint":"about"},
@@ -433,22 +475,20 @@ def api_ask():
                                "(incl. Azure Architecture), Publications, and how to contact Fanmei. "
                                "Try the quick buttons above.")})
 
-# ---------------- Utilities ----------------
+# ========== Utilities ==========
 @app.route("/__routes")
 def __routes():
     lines = []
     for rule in app.url_map.iter_rules():
-        methods = ",".join(sorted(m for m in rule.methods if m in {"GET","POST"}))
+        methods = ","".join(sorted(m for m in rule.methods if m in {"GET","POST"}))
         lines.append(f"{rule.rule:40s}  ->  {rule.endpoint}  [{methods}]")
     return "<pre>" + "\n".join(sorted(lines)) + "</pre>"
 
+# Azure stepper (if you have this template)
 @app.route("/projects/azure-architecture/stepper", endpoint="projects_azure_stepper")
 def projects_azure_stepper():
     return render_template("projects_azure_stepper.html")
 
+
 if __name__ == "__main__":
     app.run(debug=True)
-
-
-
-
