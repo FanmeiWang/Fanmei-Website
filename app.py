@@ -1,85 +1,77 @@
-# app.py — clean merged, single OpenAI chat endpoint
-
-from flask import Flask, render_template, url_for, abort, request, jsonify, Response
+# app.py — clean merged
 import os, json, re, difflib
-from openai import OpenAI
+from flask import Flask, render_template, url_for, abort, request, jsonify, Response
 
 app = Flask(__name__)
 
-# ------------------------------
-# OpenAI client (lazy + graceful)
-# ------------------------------
-MODEL_NAME = "gpt-4o-mini"
-
-def get_openai_client():
+# ---------- OpenAI client helper ----------
+def _get_openai_client():
     """
-    延迟创建，兼容本地/Render。
-    若未设置 OPENAI_API_KEY，返回 None（由调用方优雅提示）。
+    尝试读取 OPENAI_API_KEY 并返回 OpenAI 客户端；没配就返回 None（本地不崩）。
     """
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
+    key = os.getenv("OPENAI_API_KEY")
+    if not key:
         return None
-    return OpenAI(api_key=api_key)
+    try:
+        from openai import OpenAI
+        return OpenAI(api_key=key)
+    except Exception as e:
+        print("OpenAI import/init error:", repr(e))
+        return None
 
-# ========== Chat API（唯一入口；endpoint 保持为 api_chat） ==========
-_ALLOWED = [
-    "about", "education", "teaching", "projects", "publications",
-    "azure", "azure architecture", "contact", "presentations",
-    "public-service", "foundations", "engagements"
-]
-
-def _is_allowed(q: str) -> bool:
-    ql = (q or "").lower()
-    return any(k in ql for k in _ALLOWED)
-
+# ---------- Chat API（供前端小窗使用） ----------
 @app.route("/api/chat", methods=["POST"], endpoint="api_chat")
 def api_chat():
+    """
+    与前端 _chat_widget.html 一致：POST JSON {q: "..."} 或 {message: "..."}
+    只回答站内内容；没配置 OPENAI_API_KEY 时返回温和提示，避免本地崩溃。
+    """
     data = request.get_json(silent=True) or {}
-    # 兼容前端传参名 q / message
     q = (data.get("q") or data.get("message") or "").strip()
     if not q:
-        return jsonify({"reply": "Please type a question about this site. / 请输入与本站内容相关的问题。"}), 400
+        return jsonify({"reply": "Please type a question about this site."}), 400
 
-    # 非站内话题，礼貌拒答
-    if not _is_allowed(q):
-        refused = ("I can answer questions about this site only: "
-                   "About · Education · Teaching · Projects (incl. Azure) · Publications · Presentations · Contact. "
-                   "我只能回答与本站相关的问题。")
-        return jsonify({"reply": refused})
+    # 允许的话题关键词（只接站内）
+    allowed = [
+        "about", "education", "teaching", "projects", "publications",
+        "presentations", "contact", "azure", "azure architecture"
+    ]
+    if not any(k in q.lower() for k in allowed):
+        return jsonify({"reply": (
+            "I can answer questions about this site only: "
+            "About • Education • Teaching • Projects (incl. Azure Architecture) • "
+            "Publications • Presentations • Contact."
+        )})
 
-    client = get_openai_client()
-    if client is None:
-        # 避免抛异常：给出清晰提示
-        return jsonify({"reply": "The AI service is not configured (missing OPENAI_API_KEY). "
-                                 "聊天服务未配置（缺少 OPENAI_API_KEY）。"}), 503
+    client = _get_openai_client()
+    if not client:
+        return jsonify({"reply": "(Dev) OpenAI key not configured. "
+                                 "Add OPENAI_API_KEY on Render and redeploy."}), 503
 
     system = (
-        "You are the assistant for Fanmei Wang’s personal site. "
-        "Answer briefly (<=150 words) and helpfully about these sections only: "
-        "About, Education, Teaching, Projects (including Azure Data & AI architecture), "
-        "Publications, Presentations, and how to contact her. "
-        "Reply in English first, then provide a concise Chinese translation."
+        "You are the assistant for Fanmei Wang’s personal website. "
+        "Answer briefly and helpfully about these sections only: "
+        "About, Education, Teaching, Projects (including the Azure Data & AI architecture demo), "
+        "Publications, Presentations, and Contact. If asked anything else, politely steer back."
     )
-
     try:
+        # 轻量模型，成本低
         resp = client.chat.completions.create(
-            model=MODEL_NAME,
-            temperature=0.3,
+            model="gpt-4o-mini",
+            temperature=0.2,
             max_tokens=350,
             messages=[
                 {"role": "system", "content": system},
-                {"role": "user", "content": q},
+                {"role": "user",   "content": q},
             ],
         )
         reply = (resp.choices[0].message.content or "").strip()
         return jsonify({"reply": reply or "…"})
     except Exception as e:
-        # 不把内部异常暴露给前端
         print("OpenAI error:", repr(e))
-        return jsonify({"reply": "The AI service hit an issue. Please try again shortly. / 服务临时异常，请稍后重试。"}), 502
+        return jsonify({"reply": "The chat service is temporarily unavailable."}), 502
 
-
-# ========== Home / About ==========
+# ---------------- Home / About ----------------
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -88,8 +80,7 @@ def home():
 def about():
     return render_template("about.html")
 
-
-# ========== Education ==========
+# ---------------- Education ----------------
 education_data = [
     {
         "school": "Georgian College",
@@ -132,8 +123,7 @@ hrpa = {
 def education():
     return render_template("education.html", edu_list=education_data, hrpa=hrpa)
 
-
-# ========== Publications ==========
+# ---------------- Publications ----------------
 book_list = [
     {
         "title": "Affirmative Action – Historical Development and Social Influence ...",
@@ -152,7 +142,6 @@ book_list = [
         "cite": ("Pruitt, D.G. & Carnevale, P.J. (2021). Social Conflict (3rd ed.). Chinese translation by Fanmei Wang."),
     },
 ]
-
 article_list = [
     {"type": "Journal Article", "cite": "Wang, F.M. (2019). Career Advancement ... *China: An International Journal*, 17(1), 194-222."},
     {"type": "Journal Article", "cite": "Wang, F.M.; Papia, K.; & Wang, Z.X. (2017). ... *JUSTB (Social Sciences Edition)*, 33(1), 99-112."},
@@ -167,15 +156,13 @@ article_list = [
     {"type": "Journal Article", "cite": "Wang, F.M. (2012). ... *Northwestern Journal of Ethnology*, 2, 65-82 & 128."},
     {"type": "Journal Article", "cite": "Wang, F.M. (2010). ... *Northwestern Journal of Ethnology*, 2, 45-80."},
     {"type": "Journal Article", "cite": "Wang, F.M. (2010). ... *Journal of Southwest Univ. for Nationalities*, 5, 64-70."},
-    {"type": "Journal Article", "cite": "Wang, F.M. (2009). ... *JUSTB (SS)*, 25(4), 14-22."},
 ]
 
 @app.route("/publications")
 def publications():
     return render_template("publications.html", books=book_list, articles=article_list)
 
-
-# ========== Teaching ==========
+# ---------------- Teaching ----------------
 teaching_data = {
     "Undergraduate Courses": [
         {"course": "Human Resources Management", "level": "USTB · 2012 – 2017"},
@@ -275,8 +262,7 @@ def teaching_thesis():
     pg = data.get("graduate") or data.get("grad") or []
     return render_template("teaching_thesis.html", ug_theses=ug, grad_theses=pg)
 
-
-# ========== Presentations ==========
+# ---------------- Presentations ----------------
 @app.route("/presentations")
 def presentations():
     talks = [
@@ -291,8 +277,7 @@ def presentations():
     right_photos = ["Harvard_presentation1.jpg", "Harvard_presentation2.jpg", "Harvard_presentation3.jpg"]
     return render_template("presentations.html", talks=talks, posters=posters, left_photos=left_photos, right_photos=right_photos)
 
-
-# ========== Projects ==========
+# ---------------- Projects ----------------
 @app.route("/projects")
 def projects():
     return render_template("projects.html")
@@ -362,7 +347,7 @@ def project_video(slug):
     if not v: abort(404)
     return render_template("project_video.html", title=v["title"], authors=v.get("authors"), desc=v.get("desc"), video=v)
 
-# Public‑Service Analytics (year groups)
+# Public‑Service Analytics
 surveys = [
     {"title": "Service Request Mgmt. System – Request-Tracking Dashboard", "role": "Lead Analyst", "period": "2024-ongoing"},
     {"title": "Qualitative Insights for HR Policy Team", "role": "Analyst", "period": "2024-ongoing"},
@@ -394,13 +379,17 @@ def projects_public_service():
                            survey_groups=_group_by_year(surveys),
                            consult_groups=_group_by_year(consults))
 
-# Azure Architecture demo（两条 URL 入口）
+# Azure Architecture demo
 @app.route("/projects/azure-architecture")
 @app.route("/projects/ai/azure-architecture")
 def projects_azure_arch():
     return render_template("projects_azure_arch.html")
 
-# Foundations & Engagements（保持 endpoint 名称以兼容 url_for('foundations_engagements')）
+@app.route("/projects/azure-architecture/stepper", endpoint="projects_azure_stepper")
+def projects_azure_stepper():
+    return render_template("projects_azure_stepper.html")
+
+# Foundations & Engagements（保持 endpoint 名，供 url_for('foundations_engagements') 使用）
 @app.route("/projects/foundations", endpoint="foundations_engagements")
 def foundations_engagements_page():
     page = {
@@ -413,82 +402,16 @@ def foundations_engagements_page():
     bridge = ("These foundations inform current Public‑Service Data & AI work—from privacy‑first data engineering to applied NLP/ML.")
     return render_template("foundations_engagements.html", page=page, research=research, advisory=advisory, bridge=bridge)
 
-# ========== 简易站内知识库 Q&A（保留，不与 /api/chat 冲突） ==========
-def _norm(s: str) -> str:
-    s = (s or "").lower()
-    s = re.sub(r"[^a-z0-9\s\-/]+", " ", s)
-    return re.sub(r"\s+", " ", s).strip()
-
-def _sim(a: str, b: str) -> float:
-    a, b = _norm(a), _norm(b)
-    r = difflib.SequenceMatcher(None, a, b).ratio()
-    ta, tb = set(a.split()), set(b.split())
-    if ta and tb:
-        r += 0.25 * (len(ta & tb) / max(len(ta), len(tb)))
-    return r
-
-ALIASES = {
-    "about":        ["about", "who is fanmei", "profile", "bio", "fanmei wang"],
-    "education":    ["education", "degree", "degrees", "diploma", "georgian", "phd", "m.a.", "ustb"],
-    "teaching":     ["teaching", "course", "courses", "class", "mba", "emba", "supervision", "thesis"],
-    "ai":           ["ai", "ai project", "demo", "azure architecture", "architecture demo", "animated"],
-    "publications": ["publication", "publications", "paper", "papers", "book", "books", "article", "articles"],
-    "contact":      ["contact", "email", "reach", "get in touch"],
-}
-QA_KB = [
-    {"tag":"about", "patterns":["who is fanmei wang", "tell me about fanmei", "about fanmei", "简介", "自我介绍"],
-     "answer":"I’m Fanmei Wang. See the About page for a short profile.", "endpoint":"about"},
-    {"tag":"education", "patterns":["what degrees does fanmei hold","education background","degree","degrees","diploma","where did fanmei study"],
-     "answer":"My programs and degrees are listed on the Education page.", "endpoint":"education"},
-    {"tag":"teaching", "patterns":["what courses does fanmei teach","teaching","courses taught","mba","emba","thesis supervision"],
-     "answer":"See Teaching & Training for academic courses, corporate training, awards, and thesis supervision.", "endpoint":"teaching_overview"},
-    {"tag":"ai", "patterns":["ai projects","show me ai demos","azure architecture","animated architecture demo","where is the azure data & ai architecture demo"],
-     "answer":"AI demos are in Projects → AI. The animated Azure Architecture demo is also under Projects.", "endpoint":"projects"},
-    {"tag":"publications", "patterns":["publications","papers","book list","articles","著作","论文"],
-     "answer":"Selected books and articles are on the Publications page.", "endpoint":"publications"},
-    {"tag":"contact", "patterns":["contact","how can i contact you","email","get in touch","联系方式"],
-     "answer":"Contact information is on the About page.", "endpoint":"about"},
-]
-
-def _best_kb_match(user_text: str):
-    text = _norm(user_text)
-    best, best_score = None, 0.0
-    for item in QA_KB:
-        alias_hits = sum(1 for w in ALIASES.get(item["tag"], []) if w in text)
-        score = 0.15 * alias_hits
-        pat_scores = [_sim(text, _norm(p)) for p in item["patterns"]]
-        score += max(pat_scores or [0.0])
-        if score > best_score:
-            best, best_score = item, score
-    return best, best_score
-
-@app.post("/api/ask")
-def api_ask():
-    payload = request.get_json(silent=True) or {}
-    q = (payload.get("q") or "").strip()
-    if not q:
-        return jsonify({"answer":"Ask about: About, Education, Teaching, Projects (incl. Azure Architecture), Publications, or how to contact Fanmei."})
-    item, score = _best_kb_match(q)
-    if item and score >= 0.55:
-        return jsonify({"answer": item["answer"], "link": url_for(item["endpoint"]), "link_label":"Open →"})
-    return jsonify({"answer": ("I can answer questions about this site: About, Education, Teaching, Projects "
-                               "(incl. Azure Architecture), Publications, and how to contact Fanmei. "
-                               "Try the quick buttons above.")})
-
-# ========== Utilities ==========
+# ---------------- Utilities ----------------
 @app.route("/__routes")
 def __routes():
     lines = []
     for rule in app.url_map.iter_rules():
-        methods = ","".join(sorted(m for m in rule.methods if m in {"GET","POST"}))
-        lines.append(f"{rule.rule:40s}  ->  {rule.endpoint}  [{methods}]")
+        methods = ",".join(sorted(m for m in rule.methods if m in {"GET", "POST"}))
+        lines.append(f"{rule.rule:40s} -> {rule.endpoint} [{methods}]")
     return "<pre>" + "\n".join(sorted(lines)) + "</pre>"
 
-# Azure stepper (if you have this template)
-@app.route("/projects/azure-architecture/stepper", endpoint="projects_azure_stepper")
-def projects_azure_stepper():
-    return render_template("projects_azure_stepper.html")
-
-
+# 入口
 if __name__ == "__main__":
     app.run(debug=True)
+
