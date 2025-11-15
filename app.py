@@ -286,7 +286,7 @@ def project_video(slug):
         "presentation": {
             "title": "AIDI1003 – Final Presentation",
             "authors": "Fanmei Wang",
-            "file": "video/Presentation_1.mp4",
+            "file": "video/Presentation_web.mp4",
             "poster": "img/covers/presentation_poster.jpg",
             "desc": "Course project overview and demo."
         }
@@ -420,6 +420,7 @@ def __routes():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
