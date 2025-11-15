@@ -272,20 +272,51 @@ def projects_ai():
     ]
     return render_template("projects_cards.html", page_title="AI Projects", projects=cards)
 
+from flask import abort  # 顶部如已导入可忽略
+
 @app.route("/projects/ai/<slug>")
 def project_video(slug):
     videos = {
         "presentation": {
-            "title": "AIDI1003 – Final Presentation",
-            "authors": "Fanmei Wang & Hongan Lai",
+            "title": "Classifying Canadian Immigration Topics on Reddit with DistilBERT",
+            "subtitle": "Policy‑aware topic trends around the May 31, 2023 reform",
+
+            "authors": (
+                "Team project (postgraduate). Lead & end‑to‑end: Fanmei Wang. "
+                "Collaborator: Hongan — supported text cleaning, contributed to manual"
+                " verification, prepared several baseline models, implemented the "
+                "Flask demo, and recorded the presentation."
+            ),
+
             "file": "video/Presentation_web.mp4",
             "poster": "img/covers/presentation_poster.jpg",
-            "desc": "Course project overview and demo."
+
+            "desc": (
+                # English
+                "I built an end‑to‑end pipeline on 10k+ Reddit submissions (Mar–Aug 2023) "
+                "from r/ImmigrationCanada and r/CanadaImmigrant to examine topic shifts after "
+                "the May 31, 2023 policy. I handled data ingestion/cleaning, designed 8 topic "
+                "labels, curated ~1.1k human‑verified samples, and fine‑tuned DistilBERT "
+                "(test accuracy ≈ 78.6%). Hongan supported text cleaning, contributed to the "
+                "manual verification, prepared baseline models, implemented the Flask demo, "
+                "and recorded the video. This is a small team project from my postgraduate studies. "
+                ":contentReference[oaicite:0]{index=0}\n\n"                
+            )
         }
     }
     v = videos.get(slug)
-    if not v: abort(404)
-    return render_template("project_video.html", title=v["title"], authors=v.get("authors"), desc=v.get("desc"), video=v)
+    if not v:
+        abort(404)
+    return render_template(
+        "project_video.html",
+        title=v["title"],
+        subtitle=v.get("subtitle"),
+        authors=v.get("authors"),
+        desc=v.get("desc"),
+        video=v
+    )
+
+
 
 # Public‑Service Analytics (按年聚合)
 surveys = [
@@ -416,4 +447,5 @@ def projects_azure_stepper():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
