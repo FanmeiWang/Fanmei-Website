@@ -283,9 +283,10 @@ def project_video(slug):
 
             "authors": (
                 "Team project (postgraduate). Lead & end‑to‑end: Fanmei Wang. "
-                "Collaborator: Hongan — supported text cleaning, contributed to manual"
-                " verification, prepared several baseline models, implemented the "
-                "Flask demo, and recorded the presentation."
+                "Small team project (postgraduate). I built the end‑to‑end pipeline on 10k+ Reddit submissions, "
+                " designed 8 topic labels, curated ~1.1k human‑verified samples, and fine‑tuned DistilBERT (test accuracy ≈ 78.6%). "
+                "Hongan supported text cleaning, contributed to manual verification, prepared several baseline models, implemented a small Flask demo, and recorded the video."
+                "The classifier is used to examine topic shifts on Reddit before and after the May 31, 2023 policy.Flask demo, and recorded the presentation."
             ),
 
             "file": "video/Presentation_web.mp4",
@@ -447,5 +448,6 @@ def projects_azure_stepper():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
