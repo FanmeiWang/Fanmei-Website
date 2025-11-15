@@ -23,9 +23,8 @@ video{ width:100%; height:auto; border-radius:10px; background:#111; }
     <video controls preload="metadata"
        poster="{{ url_for('static', filename=video.poster) if video.get('poster') else '' }}"
        style="max-width:960px;width:100%;border-radius:12px;">
-  <source src="{{ url_for('static', filename=video.file) }}" type="video/mp4">
-  <a href="{{ url_for('static', filename=video.file) }}">点击下载</a>
-</video>
+  <source src="{{ url_for('static', filename=video.file, v='2') }}" type="video/mp4">
+<a href="{{ url_for('static', filename=video.file, v='2') }}">点击下载</a>
 
     {% if desc %}<p class="desc">{{ desc }}</p>{% endif %}
   </div>
