@@ -180,7 +180,7 @@ article_list = [
     {"type": "Journal Article", "cite": "Wang, F.M. (2012). Positive Experiences and Negative Lessons Brought by Western Racial or Ethnic Preferential Policy in Western Educational Field - An Example of Affirmative Action. *Northwestern Journal of Ethnology*, 2, 65-82 & 128."},
     {"type": "Journal Article", "cite": "Wang, F.M. (2010). The Historical Development of Affirmative Action in the United States), Northwestern Journal of Ethnology. *Northwestern Journal of Ethnology*, 2, 45-80."},
     {"type": "Journal Article", "cite": "Wang, F.M. (2010). The Difficulties Encountered by Italian Americans in Affirmative Action. *Journal of Southwest University for Nationalities (Humanities and Social Science) *, 5, 64-70."},
-    {"type": "Journal Article", "cite": "Wang, F.M. (2009). How to Protect Traditional Culture in the Reform of Peking Opera *Journal of Southwest University for Nationalities (Humanities and Social Science) *, 30(3), 38-42."},
+    {"type": "Journal Article", "cite": "Wang, F.M. (2010). How to Protect Traditional Culture in the Reform of Peking Opera *Journal of Southwest University for Nationalities (Humanities and Social Science) *, 30(3), 38-42."},
     {"type": "Journal Article", "cite": "Wang, F.M. (2009). Power Analysis for Campaigns Related to Genetically Modified Technology. *Journal of University of Science and Technology Beijing (Social Sciences Edition) *, 25(4), 14-22."},
 ]
 @app.route("/publications")
@@ -490,6 +490,7 @@ def projects_ai_translator():
 if __name__ == "__main__":
     # 本地调试启动
     app.run(debug=True)
+
 
 
 
