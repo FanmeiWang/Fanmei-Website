@@ -1,0 +1,124 @@
+<!-- templates/_chat_widget.html -->
+<div id="fw-chat" class="fwc">
+  <button class="fwc-toggle" aria-expanded="false" aria-controls="fwc-panel" title="Chat with Fanmei's site">💬</button>
+
+  <section id="fwc-panel" class="fwc-panel" aria-live="polite" hidden>
+    <header class="fwc-head">
+      <strong>Ask about this site</strong>
+      <span class="fwc-sub">About · Education · Teaching · Projects (Azure) · Publications · Contact</span>
+    </header>
+
+    <div class="fwc-body" id="fwc-body">
+      <div class="fwc-msg bot">
+        Hi! I can answer <strong>only</strong> questions about Fanmei’s background, education, teaching,
+        projects (incl. Azure Data &amp; AI architecture), publications, and how to contact her.
+      </div>
+      <div class="fwc-suggest">
+        <button data-q="Who is Fanmei Wang?">Who is Fanmei Wang?</button>
+        <button data-q="Show me AI projects.">Show me AI projects.</button>
+        <button data-q="Where is the Azure Architecture demo?">Where is the Azure Architecture demo?</button>
+        <button data-q="How can I contact you?">How can I contact you?</button>
+      </div>
+    </div>
+
+    <form class="fwc-form" id="fwc-form">
+      <input id="fwc-input" type="text" maxlength="300" required
+             placeholder="Ask about About / Education / Teaching / Projects / Publications / Contact…" />
+      <button type="submit">Send</button>
+    </form>
+  </section>
+</div>
+
+<style>
+  .fwc{position:fixed; right:18px; bottom:18px; z-index:9999;
+       font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;}
+  .fwc-toggle{
+    width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;
+    background:linear-gradient(180deg,#004F59,#0a6a76);color:#fff;
+    box-shadow:0 10px 24px rgba(0,0,0,.18);
+  }
+  .fwc-panel{
+    position:absolute; right:0; bottom:68px; width:min(380px,92vw);
+    background:#fff;border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.18);
+    overflow:hidden; display:flex;flex-direction:column; max-height:min(70vh,560px);
+  }
+  .fwc-head{padding:.8rem .9rem .6rem;border-bottom:1px solid #eef2f6;}
+  .fwc-head strong{color:#0c3e44}
+  .fwc-sub{display:block;font-size:.86rem;color:#5a6a6f}
+
+  .fwc-body{padding:.7rem .7rem 0;overflow:auto;max-height:56vh}
+  .fwc-msg{background:#f4fafb;color:#0f3940;border:1px solid #e6f1f3;
+           padding:.55rem .7rem;border-radius:10px;margin:.4rem 0;max-width:92%}
+  .fwc-msg.bot{align-self:flex-start}
+  .fwc-msg.me{align-self:flex-end;background:#fff7e6;border-color:#f1e0b8}
+  .fwc-suggest{display:flex;flex-wrap:wrap;gap:.4rem;margin:.25rem 0 .45rem}
+  .fwc-suggest button{
+    border:1px solid #e6e6e6;background:#fff;border-radius:999px;
+    padding:.2rem .6rem;cursor:pointer;
+  }
+
+  .fwc-form{display:flex;gap:.45rem;padding:.6rem;border-top:1px solid #eef2f6;}
+  .fwc-form input{flex:1 1 auto;border:1px solid #dfe7ea;border-radius:10px;padding:.55rem .6rem;}
+  .fwc-form button{border:0;border-radius:10px;padding:.5rem .8rem;cursor:pointer;
+    background:linear-gradient(180deg,#FFF6DE,#FBE9BB);color:#0c3e44;font-weight:800}
+</style>
+
+<script>
+(function(){
+  const qs = (s, r=document)=>r.querySelector(s);
+  const toggle = qs('.fwc-toggle');
+  const panel  = qs('#fwc-panel');
+  const form   = qs('#fwc-form');
+  const input  = qs('#fwc-input');
+  const body   = qs('#fwc-body');
+
+  function openPanel(){
+    panel.hidden = false;
+    toggle.setAttribute('aria-expanded','true');
+    input.focus();
+  }
+  function closePanel(){
+    panel.hidden = true;
+    toggle.setAttribute('aria-expanded','false');
+  }
+  toggle.addEventListener('click', ()=> panel.hidden ? openPanel() : closePanel());
+
+  // 建议问题：点击即提问
+  document.querySelectorAll('.fwc-suggest button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      input.value = b.dataset.q || b.textContent;
+      form.requestSubmit();
+    });
+  });
+
+  function addMsg(text, who='bot'){
+    const div = document.createElement('div');
+    div.className = 'fwc-msg ' + who;
+    // 简单转义，防止 XSS
+    div.innerHTML = (text || '').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const q = (input.value || '').trim();
+    if(!q) return;
+    addMsg(q, 'me');
+    input.value = '';
+
+    try{
+      const r = await fetch('{{ url_for("api_chat") }}', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ q })
+      });
+      const j = await r.json();
+      addMsg(j.reply || j.answer || '(no answer)');
+    }catch(err){
+      console.error(err);
+      addMsg('Sorry, I cannot reach the assistant right now.');
+    }
+  });
+})();
+</script>
