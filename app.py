@@ -352,7 +352,7 @@ def projects_ai():
             "badge": "Video"
         },
     ]
-    return render_template("projects_cards.html", page_title="AI Projects", projects=cards)
+    return render_template("projects_cards.html", page_title="My AI & Education Product Lab", projects=cards)
 
 @app.route("/projects/ai/<slug>")
 def project_video(slug):
@@ -432,6 +432,7 @@ def __routes():
 if __name__ == "__main__":
     # 本地调试启动
     app.run(debug=True)
+
 
 
 
