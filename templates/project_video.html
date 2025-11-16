@@ -3,31 +3,40 @@
 
 {% block extra_css %}
 <style>
-.wrap{ max-width:1000px; margin:0 auto; padding:0 1rem 64px; }
-.h1{ margin:46px 0 14px; color:#004F59; }
-.meta{ color:#5e6a6f; margin:.2rem 0 1rem; }
-.player{
-  background:#fff; border-radius:14px; box-shadow:0 10px 24px rgba(0,0,0,.10);
-  padding:1rem;
-}
-video{ width:100%; height:auto; border-radius:10px; background:#111; }
-.desc{ margin:1rem 0 0; }
+  .wrap{ max-width:1000px; margin:0 auto; padding:0 1rem 64px; }
+  .h1{ margin:46px 0 14px; color:#004F59; }
+  .meta{ color:#5e6a6f; margin:.2rem 0 1rem; }
+  .player{ background:#fff; border-radius:14px; box-shadow:0 10px 24px rgba(0,0,0,.10); padding:1rem; }
+  video{ width:100%; height:auto; border-radius:10px; background:#111; }
+  .desc{ margin:1rem 0 0; }
+  .actions{ margin-top:.55rem; }
+  .btn{ display:inline-block; padding:.5rem .9rem; border-radius:10px; text-decoration:none; background:#004F59; color:#fff; }
+  .btn.ghost{ background:#fff; color:#004F59; border:1px solid rgba(0,0,0,.12); }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="wrap">
   <h1 class="h1">{{ title }}</h1>
-  <p class="meta"><strong>Authors:</strong> {{ authors }}</p>
+  {% if authors %}<p class="meta"><strong>Authors:</strong> {{ authors }}</p>{% endif %}
+
   <div class="player">
-    <video controls preload="metadata"
-       poster="{{ url_for('static', filename=video.poster) if video.get('poster') else '' }}"
-       style="max-width:960px;width:100%;border-radius:12px;">
-  <source src="{{ url_for('static', filename=video.file, v='2') }}" type="video/mp4">
-<a href="{{ url_for('static', filename=video.file, v='2') }}">点击下载</a>
+    <video controls preload="metadata" playsinline
+           poster="{{ video.poster and url_for('static', filename=video.poster) or '' }}"
+           style="max-width:960px;width:100%;border-radius:12px;">
+      <source src="{{ url_for('static', filename=video.file, v='2') }}" type="video/mp4">
+      Your browser does not support HTML5 video.
+      <a href="{{ url_for('static', filename=video.file, v='2') }}">Download the MP4</a>
+    </video>
+
+    <div class="actions">
+      <a class="btn" href="{{ url_for('static', filename=video.file, v='2') }}" download>Download MP4</a>
+      {% if video.get('poster') %}
+      <a class="btn ghost" href="{{ url_for('static', filename=video.poster) }}" target="_blank">Poster</a>
+      {% endif %}
+    </div>
 
     {% if desc %}<p class="desc">{{ desc | e | replace('\n', '<br>') | safe }}</p>{% endif %}
   </div>
 </div>
 {% endblock %}
-
