@@ -370,11 +370,11 @@ def projects_ai():
 def project_video(slug):
     videos = {
         "presentation": {
-            "title": "AIDI1003 – Final Presentation",
-            "authors": "Fanmei Wang",
+            "title": "Classifying Canadian Immigration Topics on Reddit with DistilBERT",
+            "authors": "Fanmei Wang & Hongan Lai",
             "file": "video/Presentation_web.mp4",
             "poster": "img/covers/presentation_poster.jpg",
-            "desc": "Course project overview and demo."
+            "desc": "Small team project (postgraduate). I built the end‑to‑end pipeline on 10k+ Reddit submissions, designed 8 topic labels, curated ~1.1k human‑verified samples, and fine‑tuned DistilBERT (test accuracy ≈ 78.6%). Hongan supported text cleaning, contributed to manual verification, prepared several baseline models, implemented a small Flask demo, and recorded the video. The classifier is used to examine topic shifts on Reddit before and after the May 31, 2023 policy."
         },
         "translator-demo": {
             "title": "AI Translator (Azure) – screen demo",
@@ -487,6 +487,7 @@ def projects_ai_translator():
 if __name__ == "__main__":
     # 本地调试启动
     app.run(debug=True)
+
 
 
 
