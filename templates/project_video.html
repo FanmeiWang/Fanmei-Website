@@ -21,13 +21,25 @@
   {% if authors %}<p class="meta"><strong>Authors:</strong> {{ authors }}</p>{% endif %}
 
   <div class="player">
-    <video controls preload="metadata" playsinline
-           poster="{{ video.poster and url_for('static', filename=video.poster) or '' }}"
-           style="max-width:960px;width:100%;border-radius:12px;">
-      <source src="{{ url_for('static', filename=video.file, v='2') }}" type="video/mp4">
-      Your browser does not support HTML5 video.
-      <a href="{{ url_for('static', filename=video.file, v='2') }}">Download the MP4</a>
-    </video>
+  <video
+    controls
+    preload="metadata"
+    playsinline
+    poster="{{ url_for('static', filename=video.poster) if video.get('poster') else '' }}"
+    style="max-width:960px;width:100%;border-radius:12px">
+    <source src="{{ url_for('static', filename=video.file, v='2') }}" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <p class="desc">
+    {% if desc %}{{ desc | e | replace('\n', '<br>') | safe }}{% endif %}
+    {% if video_size_mb %}
+      <br><small>File size: ~{{ "%.1f"|format(video_size_mb) }} MB</small>
+    {% endif %}
+    <br><a href="{{ url_for('static', filename=video.file, v='2') }}" download>Download video</a>
+  </p>
+</div>
+
 
     <div class="actions">
       <a class="btn" href="{{ url_for('static', filename=video.file, v='2') }}" download>Download MP4</a>
@@ -40,3 +52,4 @@
   </div>
 </div>
 {% endblock %}
+
