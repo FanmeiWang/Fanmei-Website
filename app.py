@@ -150,7 +150,7 @@ def education():
 # ----------------------------- Publications -----------------------------
 book_list = [
     {
-        "title": "Affirmative Action – Historical Development and Social Influence ...",
+        "title": "Affirmative Action - The Historical Development and Social Influence of Preferential Policies for Ethnic Minorities in the United States",
         "role": "Book (Authored)",
         "cover": "affirmative-action.jpg",
         "cite": (
@@ -167,12 +167,12 @@ book_list = [
     },
 ]
 article_list = [
-    {"type": "Journal Article", "cite": "Wang, F.M. (2019). Career Advancement ... *China: An International Journal*, 17(1), 194-222."},
-    {"type": "Journal Article", "cite": "Wang, F.M.; Papia, K.; & Wang, Z.X. (2017). ... *JUSTB (Social Sciences Edition)*, 33(1), 99-112."},
-    {"type": "Journal Article", "cite": "Wang, F.M. (2016). ... *Qinghai Journal of Ethnology*, 27(1), 166-171."},
-    {"type": "Journal Article", "cite": "Wang, F.M. (2015). ... *Social Science Front*, 6, 187-197."},
-    {"type": "Journal Article", "cite": "Wang, F.M. & Li, X.J. (2014). ... *JUSTB (SS)*, 30(6), 100-108."},
-    {"type": "Journal Article", "cite": "Wang, F.M. (2014). ... *Journal of Southwest Univ. for Nationalities*, 7, 53-58."},
+    {"type": "Journal Article", "cite": "Wang, F.M. (2019). Career Advancement for Tibetan Employees in Companies in the Tibet Autonomous Region. *China: An International Journal*, 17(1), 194-222."},
+    {"type": "Journal Article", "cite": "Wang, F.M.; Papia, K.; & Wang, Z.X. (2017). A Research on Economic Development of Georgia Since the 1990s. *JUSTB (Social Sciences Edition)*, 33(1), 99-112."},
+    {"type": "Journal Article", "cite": "Wang, F.M. (2016). Research on Cultural Capital of Small- and Medium-Sized Private Enterprises in Tibetan Industries with Local Advantages. *Qinghai Journal of Ethnology*, 27(1), 166-171."},
+    {"type": "Journal Article", "cite": "Wang, F.M. (2015). The Preferential Policies towards Minority Business Enterprise in the United States and What China Can Learn from Them. *Social Science Front*, 6, 187-197."},
+    {"type": "Journal Article", "cite": "Wang, F.M. & Li, X.J. (2014). The Educational Ideas and Thoughts in the Internationalization: A Study Based on the Literature Analysis. *JUSTB (SS)*, 30(6), 100-108."},
+    {"type": "Journal Article", "cite": "Wang, F.M. (2014). Research on Career Development of Tibetan Employees in Middle- and Small- Sized Private Companies in Tibet. *Journal of Southwest Univ. for Nationalities*, 7, 53-58."},
     {"type": "Journal Article", "cite": "Wang, F.M. (2014). ... *Chinese Journal of Population Science*, 2, 84-95."},
     {"type": "Journal Article", "cite": "Wang, F.M. & Huang, Z.Y. (2013). ... *JUSTB (SS)*, 29(3), 90-97."},
     {"type": "Journal Article", "cite": "Wang, F.M., Ma, X. & Xi, W.W. (2013). ... *J. South‑Central Univ. for Nationalities*, 33(5), 128-131."},
@@ -487,6 +487,7 @@ def projects_ai_translator():
 if __name__ == "__main__":
     # 本地调试启动
     app.run(debug=True)
+
 
 
 
