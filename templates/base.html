@@ -153,8 +153,7 @@
         if (data.link){
           addMsg(`<a href="${data.link}" target="_self" rel="noopener">Open →</a>`, 'bot');
         }
-        // 回答后 N 秒自动收起（需要常开请删除此 setTimeout）
-        setTimeout(()=>{ if(root.classList.contains('open')) closeChat(); }, 12000);
+        setTimeout(()=>{ if(root.classList.contains('open')) closeChat(); }, 360000);
       }catch(e){
         addMsg('Sorry, I cannot reach the assistant right now.', 'bot');
       }
@@ -170,4 +169,5 @@
 
 </body>
 </html>
+
 
