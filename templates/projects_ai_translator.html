@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}{{ page.title }} — Fanmei Wang{% endblock %}
+
+{% block extra_css %}
+<style>
+.wrap{max-width:1100px;margin:0 auto;padding:0 1rem 64px}
+.h1{margin:46px 0 10px;color:#004F59}
+.lead{margin:0 0 18px;color:#42565a}
+.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:1rem}
+@media(max-width:900px){ .grid{grid-template-columns:1fr} }
+.card{background:#fff;border-radius:14px;box-shadow:0 10px 24px rgba(0,0,0,.10);padding:1.1rem 1.2rem}
+.card h3{margin:.2rem 0 .6rem;color:#0f3a42}
+.badge{display:inline-block;font-weight:800;font-size:.75rem;color:#fff;background:#216571;border-radius:999px;padding:.18rem .5rem;margin-right:.35rem}
+.kv{margin:.35rem 0 0;padding:0;list-style:none}
+.kv li{margin:.35rem 0}
+.btn{display:inline-block;margin:.4rem .4rem 0 0;padding:.55rem .85rem;border-radius:10px;text-decoration:none;
+     background:linear-gradient(180deg,#FFF6DE,#FBE4B4);color:#0b666f;font-weight:800}
+.note{font-size:.95rem;color:#5d6c70}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="wrap">
+  <h1 class="h1">{{ page.title }}</h1>
+  <p class="lead">{{ page.desc }}</p>
+
+  <section class="grid">
+    <!-- Left: Features & CTAs -->
+    <article class="card">
+      <span class="badge">Demo</span>
+      <span class="badge">Azure Translator</span>
+      <span class="badge">Optional OpenAI</span>
+      <h3>What it does</h3>
+      <ul class="kv">
+        {% for f in features %}<li>• {{ f }}</li>{% endfor %}
+      </ul>
+
+      {% if links and links|length %}
+        <div style="margin-top:.6rem">
+          {% for l in links %}
+            <a class="btn" href="{{ l.href }}" target="_blank" rel="noopener">{{ l.text }} →</a>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </article>
+
+    <!-- Right: Architecture & safety -->
+    <article class="card">
+      <h3>Architecture & guardrails</h3>
+      <ul class="kv">
+        {% for a in arch %}<li>• {{ a }}</li>{% endfor %}
+      </ul>
+      <p class="note" style="margin-top:.8rem">
+        Secrets go in <code>.env</code> (never commit). Commit only <code>.env.example</code>.
+        Rotate leaked keys in Azure before pushing.
+      </p>
+    </article>
+  </section>
+</div>
+{% endblock %}
