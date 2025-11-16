@@ -296,6 +296,8 @@ def presentations():
         {"title": "A New Perspective in Analyzing China Ethnic‑related Employment Issues (English)", "venue": "Fairbank Center for Chinese Studies, Harvard University", "city": "Boston, MA", "date": "May 1, 2018"},
         {"title": "Career Development for Ethnic Minority Employees: A Case Study in the Tibetan Autonomous Region (English)", "venue": "Fairbank Center for Chinese Studies, Harvard University", "city": "Boston, MA", "date": "Apr 26, 2018"},
         {"title": "Chinese Ethnic Policies: An International Comparative Perspective (English)", "venue": "Schwarzman College, Tsinghua University", "city": "Beijing", "date": "Feb 2, 2017"},
+        {"title": "Chinese Ethnic Issues in the Context of One belt, One Road Initiative (Chinese)", "venue": "Central Minzu University of China", "city": "Beijing", "date": "Dec 24, 2016"},
+        {"title": "Cross-Cultural Management (English)", "venue": "School of Economics and Management, University of Science and Technology Beijing", "city": "Beijing", "date": "Jun 9, 2016"},
     ]
     posters = ["Harvard_presentation_adv1.jpg", "Harvard_presentation_adv2.png"]
     left_photos  = ["presentation1.jpg", "presentation6.jpg", "presentation7.jpg"]
@@ -488,6 +490,7 @@ def projects_ai_translator():
 if __name__ == "__main__":
     # 本地调试启动
     app.run(debug=True)
+
 
 
 
