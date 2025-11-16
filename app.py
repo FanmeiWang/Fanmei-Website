@@ -67,6 +67,11 @@ def api_chat():
         # 控制台打印便于排查；对前端只给通用提示
         print("OpenAI error:", repr(e))
         return jsonify({"reply": "Sorry, the chat service is temporarily unavailable."}), 500
+@app.post("/api/ask")
+def api_ask_compat():
+    # 兼容老的前端：直接复用 /api/chat 的逻辑
+    return api_chat()
+
 
 # ----------------------------- Home / About -----------------------------
 @app.route("/")
