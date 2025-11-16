@@ -57,7 +57,7 @@ def api_chat():
         resp = client.chat.completions.create(
             model="gpt-4o-mini",
             temperature=0.25,
-            max_tokens=4000,
+            max_tokens=400,
             messages=[{"role":"system","content":system},
                       {"role":"user","content":q}]
         )
@@ -409,4 +409,5 @@ def __routes():
 if __name__ == "__main__":
     # 本地调试启动
     app.run(debug=True)
+
 
