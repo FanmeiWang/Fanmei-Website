@@ -33,12 +33,7 @@ def api_chat():
     data = request.get_json(silent=True) or {}
     q = (data.get("q") or data.get("message") or "").strip()
     if not q:
-        return jsonify({"reply": "Please type a question about this site."}), 400
-
-    if not _is_allowed(q):
-        reply = ("I can only answer questions about Fanmei’s site: "
-                 "About · Education · Teaching · Projects (incl. Azure) · Publications · Contact.")
-        return jsonify({"reply": reply})
+        return jsonify({"reply": "Please type a question about this site."}), 400    
 
     client = get_openai_client()
     if client is None:
@@ -409,5 +404,6 @@ def __routes():
 if __name__ == "__main__":
     # 本地调试启动
     app.run(debug=True)
+
 
 
