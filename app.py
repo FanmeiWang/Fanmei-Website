@@ -24,21 +24,47 @@ def _is_allowed(q: str) -> bool:
     ql = (q or "").lower()
     return any(k in ql for k in _ALLOWED)
 
+import re
+
+PROFILE_FACTS_EN = (
+    "Fanmei Wang holds a Ph.D. in Sociology from Peking University, "
+    "an M.A. in Sociology from Laurentian University, and a B.Eng in Business Administration "
+    "from the University of Science and Technology Beijing. "
+    "She is currently completing a postgraduate AI certificate at Georgian College."
+)
+
+PROFILE_KEYWORDS = [
+    "who is fanmei", "who is fanmei wang",
+    "who are you", "tell me about yourself",
+    "about fanmei", "your bio", "your profile",
+    "education", "education background", "background",
+    "degree", "degrees", "what did you study",
+    "what is your major", "your major",
+    "cv", "resume",
+    "where did you study", "which university",
+    "学位", "学历", "教育背景", "读的什么", "在哪读书"
+]
+
+def _looks_like_profile_question(q: str) -> bool:
+    """Return True if the question is about Fanmei's identity / degrees / background."""
+    q_norm = re.sub(r"\s+", " ", (q or "").lower()).strip()
+    return any(key in q_norm for key in PROFILE_KEYWORDS)
+    
 @app.post("/api/chat")
 def api_chat():
-    """
-    站内助手：仅回答站点相关的问题。
-    前端小浮窗会向这个路由发请求（见 _chat_widget.html）。  :contentReference[oaicite:1]{index=1}
-    """
     data = request.get_json(silent=True) or {}
     q = (data.get("q") or data.get("message") or "").strip()
     if not q:
-        return jsonify({"reply": "Please type a question about this site."}), 400    
+        return jsonify({"reply": "Please type a question about this site."}), 400
 
+    # ① 简历/学历类问题：直接返回固定英文简介（不走 OpenAI）
+    if _looks_like_profile_question(q):
+        return jsonify({"reply": PROFILE_FACTS_EN})
+
+    # ② 其他问题，再走 OpenAI：
     client = get_openai_client()
     if client is None:
-        # 本地没设置 OPENAI_API_KEY 或 Render 环境变量未生效时的兜底
-        return jsonify({"reply": "The assistant is not available yet (missing API key)."}), 503
+        return jsonify({"reply": "Assistant is not configured (missing OPENAI_API_KEY)."}), 503
 
     system = (
         "You are the assistant for Fanmei Wang’s personal site. "
@@ -53,15 +79,17 @@ def api_chat():
             model="gpt-4o-mini",
             temperature=0.25,
             max_tokens=400,
-            messages=[{"role":"system","content":system},
-                      {"role":"user","content":q}]
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": q},
+            ],
         )
-        reply = (resp.choices[0].message.content or "").strip() or "…"
-        return jsonify({"reply": reply})
+        reply = (resp.choices[0].message.content or "").strip()
+        return jsonify({"reply": reply or "…"})
     except Exception as e:
-        # 控制台打印便于排查；对前端只给通用提示
         print("OpenAI error:", repr(e))
-        return jsonify({"reply": "Sorry, the chat service is temporarily unavailable."}), 500
+        return jsonify({"reply": "Sorry, I cannot reach the assistant right now."}), 502
+
 @app.post("/api/ask")
 def api_ask_compat():
     # 兼容老的前端：直接复用 /api/chat 的逻辑
@@ -404,6 +432,7 @@ def __routes():
 if __name__ == "__main__":
     # 本地调试启动
     app.run(debug=True)
+
 
 
 
