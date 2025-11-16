@@ -292,10 +292,10 @@ def teaching_thesis():
 def presentations():
     talks = [
         {"title": "How to Conduct HRM‑Related Studies in China? (Chinese)", "venue": "Zhejiang University", "city": "Hangzhou", "date": "Apr 28, 2019"},
-        {"title": "HRM for Ethnic Minority Employees (Chinese)", "venue": "Zhejiang University", "city": "Hangzhou", "date": "Apr 29, 2019"},
-        {"title": "A New Perspective in Analyzing China Ethnic‑related Employment Issues (English)", "venue": "Harvard University", "city": "Boston, MA", "date": "May 1, 2018"},
-        {"title": "Career Development for Ethnic Minority Employees (English)", "venue": "Harvard University", "city": "Boston, MA", "date": "Apr 26, 2018"},
-        {"title": "Chinese Ethnic Policies: An International Comparative Perspective (English)", "venue": "Tsinghua University", "city": "Beijing", "date": "Feb 2, 2017"},
+        {"title": "Human Resource Management for Ethnic Minority Employees in Organizations in Chinese Minority- inhabited Regions: A Case Study in the Tibetan Autonomous Region (Chinese)", "venue": "Zhejiang University", "city": "Hangzhou", "date": "Apr 29, 2019"},
+        {"title": "A New Perspective in Analyzing China Ethnic‑related Employment Issues (English)", "venue": "Fairbank Center for Chinese Studies, Harvard University", "city": "Boston, MA", "date": "May 1, 2018"},
+        {"title": "Career Development for Ethnic Minority Employees: A Case Study in the Tibetan Autonomous Region (English)", "venue": "Fairbank Center for Chinese Studies, Harvard University", "city": "Boston, MA", "date": "Apr 26, 2018"},
+        {"title": "Chinese Ethnic Policies: An International Comparative Perspective (English)", "venue": "Schwarzman College, Tsinghua University", "city": "Beijing", "date": "Feb 2, 2017"},
     ]
     posters = ["Harvard_presentation_adv1.jpg", "Harvard_presentation_adv2.png"]
     left_photos  = ["presentation1.jpg", "presentation6.jpg", "presentation7.jpg"]
@@ -488,6 +488,7 @@ def projects_ai_translator():
 if __name__ == "__main__":
     # 本地调试启动
     app.run(debug=True)
+
 
 
 
