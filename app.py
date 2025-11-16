@@ -351,6 +351,18 @@ def projects_ai():
             "href": url_for("project_video", slug="presentation"),
             "badge": "Video"
         },
+        {
+    "title": "AI Translation Tool (Azure) – Accessible Demo",
+    "summary": (
+        "Video demo of a non-production AI translation tool built on Azure Translator, "
+        "showing visual accessibility choices such as dark mode, high-contrast theme, "
+        "adjustable font and line spacing, and a screen-reader friendly status message."
+    ),
+    "cover": "img/covers/translator_demo_poster.jpg",
+    "href": url_for("project_video", slug="translator-demo"),
+    "badge": "Video"
+},
+
     ]
     return render_template("projects_cards.html", page_title="My AI & Education Product Lab", projects=cards)
 
@@ -363,11 +375,25 @@ def project_video(slug):
             "file": "video/Presentation_web.mp4",
             "poster": "img/covers/presentation_poster.jpg",
             "desc": "Course project overview and demo."
-        }
+        },
+        "translator-demo": {
+            "title": "AI Translator (Azure) – screen demo",
+            "authors": "Fanmei Wang",
+            "file": "video/translator_demo.mp4",          # <— 对应你刚放进去的文件
+            "poster": "img/covers/translator_demo_poster.jpg",  # 没有海报可以先去掉本行
+            "desc": "Screen-recorded walkthrough of a Streamlit MVP built on Azure Translator."
+        },
     }
     v = videos.get(slug)
-    if not v: abort(404)
-    return render_template("project_video.html", title=v["title"], authors=v.get("authors"), desc=v.get("desc"), video=v)
+    if not v:
+        abort(404)
+    return render_template(
+        "project_video.html",
+        title=v["title"],
+        authors=v.get("authors"),
+        desc=v.get("desc"),
+        video=v,
+    )
 
 # Public‑Service Analytics (按年聚合)
 surveys = [
@@ -428,6 +454,35 @@ def __routes():
         methods = ", ".join(sorted(m for m in rule.methods if m in {"GET", "POST"}))
         lines.append(f"{rule.rule:40s}  ->  {rule.endpoint}  [{methods}]")
     return "<pre>" + "\n".join(sorted(lines)) + "</pre>"
+
+# NEW ▸ Detail page for the Translator demo
+@app.route("/projects/ai/translator")
+def projects_ai_translator():
+    page = {
+        "title": "AI Translator (Azure)",
+        "desc": "Lightweight Flask demo using Azure Translator for EN↔ZH, built for bilingual learning with privacy guardrails. OpenAI can be enabled optionally for rewriting or tone.",
+    }
+    features = [
+        "EN↔ZH translation, optional glossary / term‑highlighting",
+        "Safe defaults: client‑side truncation, input length hints, PII caution banner",
+        "Tone & style toggles (formal / plain), quick rewrite presets (optional via OpenAI)",
+        "No prompt logging; secrets only via environment (.env)"
+    ]
+    arch = [
+        "Browser → Flask route (/projects/ai/translator) → Azure Translator (REST)",
+        "Optional: Flask → OpenAI (chat completions) for rewrite/tone",
+        "Config via .env (.env.example committed; real .env kept local/host‑only)",
+        "No keys in repo; .env is git‑ignored"
+    ]
+    links = [
+        # 没有线上地址就先删掉或注释
+        # {"text": "Open live demo", "href": "https://<your-demo-url>"},
+        # {"text": "View source on GitHub", "href": "https://github.com/<you>/<repo>/tree/main/apps/translator"},
+    ]
+    return render_template(
+        "projects_ai_translator.html",
+        page=page, features=features, arch=arch, links=links
+    )
 
 if __name__ == "__main__":
     # 本地调试启动
