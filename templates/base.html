@@ -148,7 +148,8 @@
 
       try{
         const data = await askBackend(t);
-        addMsg(data.answer || '(no answer)', 'bot');
+        addMsg(data.answer || data.reply || '(no answer)', 'bot');
+
         if (data.link){
           addMsg(`<a href="${data.link}" target="_self" rel="noopener">Open →</a>`, 'bot');
         }
@@ -169,3 +170,4 @@
 
 </body>
 </html>
+
