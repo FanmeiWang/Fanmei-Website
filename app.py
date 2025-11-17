@@ -359,7 +359,7 @@ def projects_ai():
     "summary": (
         "Video demo of a non-production AI translation tool built on Azure Translator, "
         "showing visual accessibility choices such as dark mode, high-contrast theme, "
-        "adjustable font and line spacing, and a screen-reader friendly status message."
+        "adjustable font and line spacing, and a screen-reader friendly status message.@Fanmei Wang"
     ),
     "cover": "img/covers/translator_demo_poster.jpg",
     "href": url_for("project_video", slug="translator-demo"),
@@ -494,6 +494,7 @@ def inject_now():
 if __name__ == "__main__":
     # 本地调试启动
     app.run(debug=True)
+
 
 
 
