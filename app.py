@@ -486,10 +486,15 @@ def projects_ai_translator():
         "projects_ai_translator.html",
         page=page, features=features, arch=arch, links=links
     )
+@app.context_processor
+def inject_now():
+    from datetime import datetime
+    return {"current_year": datetime.utcnow().year}
 
 if __name__ == "__main__":
     # 本地调试启动
     app.run(debug=True)
+
 
 
 
