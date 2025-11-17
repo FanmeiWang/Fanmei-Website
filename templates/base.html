@@ -2,41 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>{% block title %}Fanmei Wang, PhD{% endblock %}</title>
 
-  <!-- 你原来的全站样式（保持不变） -->
+  <!-- Global styles -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
   {% block extra_css %}{% endblock %}
-</head>
-<body>
-
-  {% include "navbar.html" %}
-
-  {% block content %}{% endblock %}
-
-  <footer>© {{ current_year }} Fanmei Wang, 2025</footer>
-
-  <!-- === Chatbot: 仅添加一个组件；所有样式均作用于 .fw-chat 命名空间，避免影响全站 === -->
   <style>
+    /* ---- Site meta (About this site) ---- */
+    .site-meta{
+      max-width:1000px;margin:18px auto 0;padding:0 1rem;
+      color:#4e5a5f;font-size:.95rem;
+    }
+    .site-meta a{color:#0b7285;text-decoration:underline;}
+    .site-meta small{opacity:.9}
+
+    /* ---- Footer ---- */
+    footer.site-footer{
+      margin:24px 0 48px; padding-top:16px;
+      border-top:1px solid rgba(0,0,0,.08);
+      color:#5b666b; font-size:.95rem; text-align:center;
+    }
+
+    /* ---- Chat widget (scoped to .fw-chat) ---- */
     :root{
-      /* 仅聊天组件内部使用 */
       --fwc-teal:#0b7285; --fwc-bg:#fff; --fwc-text:#173c3f;
       --fwc-head:#e6f2f4; --fwc-border:#e4f1f3;
     }
-    .fw-chat{position:fixed;right:18px;bottom:18px;z-index:9999;font-family:system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;}
-    /* 启动按钮（更大+脉冲吸引） */
+    .fw-chat{position:fixed;right:18px;bottom:18px;z-index:9999;
+             font-family:system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;}
     .fw-chat__launcher{
       width:68px;height:68px;border-radius:50%;border:0;cursor:pointer;
       background:var(--fwc-teal);color:#fff;font-size:28px;line-height:1;
       box-shadow:0 12px 26px rgba(0,0,0,.20); position:relative;
       animation:fw_float 6s ease-in-out infinite;
     }
-    .fw-chat__launcher::after{ /* 脉冲环 */
+    .fw-chat__launcher:focus{outline:3px solid #22c55e;outline-offset:3px;}
+    .fw-chat__launcher::after{
       content:""; position:absolute; inset:-6px; border-radius:50%;
       border:3px solid rgba(11,114,133,.28); animation:fw_pulse 1.6s ease-in-out infinite;
     }
-    @keyframes fw_pulse{0%{transform:scale(1);opacity:1} 70%{transform:scale(1.15);opacity:.25} 100%{transform:scale(1.25);opacity:0}}
+    @keyframes fw_pulse{0%{transform:scale(1);opacity:1}70%{transform:scale(1.15);opacity:.25}100%{transform:scale(1.25);opacity:0}}
     @keyframes fw_float{0%{transform:translateY(0)}50%{transform:translateY(-2px)}100%{transform:translateY(0)}}
 
     .fw-chat__panel{
@@ -52,12 +61,12 @@
       padding:10px 12px; border-bottom:1px solid #dbe9ed;
     }
     .fw-chat__head button{background:transparent;border:0;font-size:18px;cursor:pointer;color:#33565c}
-    /* 固定滚动容器：回答再多也不会“顶走”内容 */
     .fw-chat__body{padding:10px 12px;overflow-y:auto;max-height:52vh}
     .fw-chat__foot{display:flex;gap:8px;align-items:center;padding:10px;border-top:1px solid #eef3f5;background:#fff}
     .fw-chat__foot input{
       flex:1;padding:9px 10px;border:1px solid #d9e6e8;border-radius:10px;outline:none
     }
+    .fw-chat__foot input:focus{outline:3px solid #22c55e;outline-offset:2px}
     .fw-chat__foot button{
       background:var(--fwc-teal);color:#fff;border:0;border-radius:10px;
       padding:9px 14px;font-weight:700;cursor:pointer
@@ -67,10 +76,36 @@
     .fw-msg.me{background:var(--fwc-teal);color:#fff;margin-left:auto}
     .fw-quick{display:inline-flex;padding:7px 10px;border-radius:20px;border:1px solid #dce9eb;
               cursor:pointer;margin:4px 6px 0 0;background:#fff;font-size:.9rem}
-    /* 仅聊天面板内部覆盖链接颜色（避免全站链接样式影响可读性） */
     .fw-chat a{color:#0b7285 !important;text-decoration:underline;font-weight:700}
   </style>
+</head>
+<body>
 
+  <a href="#main" class="sr-only">Skip to content</a>
+
+  {% include "navbar.html" %}
+
+  <main id="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    © {{ current_year }} Fanmei Wang
+  </footer>
+
+  <!-- About this site / tech note -->
+  <div class="site-meta" role="note" aria-label="About this site">
+    <small>
+      <strong>About this site.</strong>
+      Built with <b>Python + Flask</b>. The chat assistant uses the <b>OpenAI API</b> and is limited
+      to answering questions about this site. No chat logs are stored on the server; API keys are kept
+      off-repo via environment variables. For details, see
+      <a href="{{ url_for('about') if 'about' in globals() else '#' }}">About</a>.
+    </small>
+  </div>
+
+  <!-- === Chatbot (scoped styles; no global side effects) === -->
   <div class="fw-chat" id="fwChat" aria-live="polite">
     <button class="fw-chat__launcher" id="fwLaunch" aria-label="Open chat">💬</button>
 
@@ -82,8 +117,7 @@
 
       <div class="fw-chat__body" id="fwBody">
         <div class="fw-msg bot">
-          Hi! I can answer questions <b>only</b> about this site (About, Education,
-          Teaching, Projects including Azure Architecture, Publications, and how to contact Fanmei).
+          Hi! I can answer <b>only</b> about this site (About, Education, Teaching, Projects — including Azure Architecture — Publications, and how to contact Fanmei).
         </div>
         <div id="fwQuick"></div>
       </div>
@@ -96,6 +130,10 @@
     </div>
   </div>
 
+  <noscript>
+    <div class="site-meta"><small>JavaScript is disabled. The chat assistant requires JS to work.</small></div>
+  </noscript>
+
   <script>
   (function(){
     const $ = id => document.getElementById(id);
@@ -106,7 +144,7 @@
     $('fwLaunch').addEventListener('click', openChat);
     $('fwClose').addEventListener('click', closeChat);
 
-    // 常见问题（点击发送）
+    // Quick suggestions (click to send)
     const suggestions = [
       'Show me AI projects',
       'Where is the Azure Architecture demo?',
@@ -126,10 +164,9 @@
       d.className='fw-msg '+who;
       d.innerHTML=html;
       body.appendChild(d);
-      body.scrollTop = body.scrollHeight;           // 回答出现后自动滚动到底
+      body.scrollTop = body.scrollHeight;
     }
 
-    // 前端只管把问题发到 /api/ask；是否用 LLM/或纯规则由后端决定
     async function askBackend(text){
       const r = await fetch('/api/ask', {
         method:'POST',
@@ -153,6 +190,7 @@
         if (data.link){
           addMsg(`<a href="${data.link}" target="_self" rel="noopener">Open →</a>`, 'bot');
         }
+        // auto-close after 6 minutes of inactivity
         setTimeout(()=>{ if(root.classList.contains('open')) closeChat(); }, 360000);
       }catch(e){
         addMsg('Sorry, I cannot reach the assistant right now.', 'bot');
@@ -166,8 +204,5 @@
   })();
   </script>
   <!-- === /Chatbot === -->
-
 </body>
 </html>
-
-
