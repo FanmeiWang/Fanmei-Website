@@ -342,7 +342,7 @@ def projects_ai():
     cards = [
         {
             "title": "Azure Data & AI Architecture",
-            "summary": "12‑step lakehouse flow on Azure (sources → ADF/Synapse Link → Delta Lake → Databricks → Serverless SQL/Power BI/ML).",
+            "summary": "12‑step lakehouse flow on Azure (sources → ADF/Synapse Link → Delta Lake → Databricks → Serverless SQL/Power BI/ML @Fanmei Wang).",
             "cover": "img/covers/Azure_Architecture.png",
             "href": url_for("projects_azure_arch"),
             "badge": "Azure"
@@ -494,6 +494,7 @@ def inject_now():
 if __name__ == "__main__":
     # 本地调试启动
     app.run(debug=True)
+
 
 
 
