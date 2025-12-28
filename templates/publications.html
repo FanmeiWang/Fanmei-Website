@@ -2,53 +2,232 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Publications — Fanmei Wang, PhD</title>
+  <title>Publications &amp; Research Notebook — Fanmei Wang, PhD</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
-    /* ───────── 仅本页：移除顶部淡蓝横幅 ───────── */
-    /* 若站点其它页面用到不同类名，这里一并兜底隐藏 */
+    /* Hide any inherited hero section */
     .pub-hero,
     .page-hero, .hero-cover, .page-cover, .masthead, .header-sky {
       display: none !important;
     }
 
-    /* ───────── 双栏布局（左：Books；右：Journal Articles）───────── */
-    .pub-grid{
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 24px 16px;
+    /* Page title */
+    .pub-header{
+      max-width: 1320px;
+      margin: 18px auto 6px;
+      padding: 0 16px;
+      text-align: center;
+    }
+    .pub-header h1{
+      margin: 0;
+      font-size: 2.1rem;
+      color: #0c3e44;
+    }
+
+    /* Two-column grid */
+    .pub-page{
+      max-width: 1500px;
+      margin: 0 auto 40px;
+      padding: 5px 16px 40px;
       display: grid;
-      grid-template-columns: 1fr 1.3fr;   /* 右边稍宽一些 */
-      gap: 28px;
-      align-items: start;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.05fr);
+      column-gap: 50px;
+      row-gap: 24px;
+      align-items: stretch; /* important for equal column heights */
     }
 
-    /* 右侧这一列设置为独立滚动容器（pub-grid 的第 2 个 section） */
-    .pub-grid > section:nth-child(2){
-      /* 视口高度 - 导航/页边距的占位，按你站点大致高度微调 */
-      max-height: calc(100vh - 160px);
+    /* Column containers */
+    .pub-col{
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      height: 100%;
+      min-height: 0;     /* important for flex + scroll areas */
+      align-self: stretch;
+    }
+
+    /* Cards */
+    .pub-card{
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 14px 34px rgba(0,0,0,.10);
+      padding: 18px 20px 20px;
+    }
+    .pub-card h2.section-title{
+      margin: 0 0 .5rem;
+      font-size: 1.35rem;
+      color: #16323a;
+    }
+    .pub-card-intro{
+      margin: 0 0 .7rem;
+      color: #5a676f;
+      font-size: .95rem;
+    }
+
+    /* Reset italics inside cards (journal names will re-enable) */
+    .pub-card,
+    .pub-card *{
+      font-style: normal;
+    }
+
+    /* Left column scroll areas */
+    .book-list{
+      margin-top: .4rem;
+      max-height: 400px;
       overflow-y: auto;
-      padding-right: .4rem;             /* 给滚动条留一点空间 */
-      scrollbar-gutter: stable;          /* 避免出现滚动条时布局跳动 */
-      scroll-behavior: smooth;
-      /* FireFox 滚动条颜色 */
-      scrollbar-color: #c9d4d9 transparent;
-      scrollbar-width: thin;
+      padding-right: .3rem;
     }
-    /* WebKit 滚动条样式（Chrome/Edge/Safari） */
-    .pub-grid > section:nth-child(2)::-webkit-scrollbar{ width: 10px; }
-    .pub-grid > section:nth-child(2)::-webkit-scrollbar-thumb{
-      background: #c9d4d9; border-radius: 8px;
+    .pub-list--journals{
+      margin-top: .4rem;
+      max-height: 510px;
+      overflow-y: auto;
+      padding-right: .3rem;
     }
-    .pub-grid > section:nth-child(2)::-webkit-scrollbar-track{ background: transparent; }
 
-    /* 窄屏（单列）时，自动取消右侧独立滚动，避免双滚动体验 */
-    @media (max-width: 1000px){
-      .pub-grid{ grid-template-columns: 1fr; }
-      .pub-grid > section:nth-child(2){
-        max-height: none; overflow: visible; padding-right: 0;
+    .book-list::-webkit-scrollbar,
+    .pub-list--journals::-webkit-scrollbar,
+    .blog-list::-webkit-scrollbar{
+      width: 7px;
+    }
+    .book-list::-webkit-scrollbar-thumb,
+    .pub-list--journals::-webkit-scrollbar-thumb,
+    .blog-list::-webkit-scrollbar-thumb{
+      background: #c9d4d9;
+      border-radius: 8px;
+    }
+
+    /* Items */
+    .book-item,
+    .pub-item{
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: .5rem;
+      padding: 4px 0;
+    }
+    .book-item:last-child,
+    .pub-item:last-child{
+      margin-bottom: 0;
+    }
+
+    .book-cover{
+      width: 95px;
+      flex-shrink: 0;
+      border-radius: 6px;
+    }
+    .book-text{
+      font-size: .92rem;
+      color: #243337;
+    }
+    .book-role{
+      display: inline-block;
+      margin-bottom: .25rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #ffc727;
+      color: #5a3b00;
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: none;
+    }
+    .book-cite,
+    .pub-cite{
+      margin: 0;
+    }
+
+    /* Journal names italic */
+    .book-cite em,
+    .pub-cite em{
+      font-style: italic;
+    }
+
+    /* Right column list areas */
+    .blog-list{
+      margin-top: .4rem;
+      max-height: 240px; /* you can tweak this */
+      overflow-y: auto;
+      padding-right: .3rem;
+      min-height: 0;
+    }
+    .blog-item{
+      padding: .25rem 0 .55rem;
+      border-bottom: 1px solid #eceff1;
+    }
+    .blog-item:last-child{
+      border-bottom: none;
+    }
+    .blog-meta{
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: #8b959c;
+      margin-bottom: .1rem;
+    }
+    .blog-title{
+      font-weight: 700;
+      font-size: .98rem;
+      color: #16323a;
+      margin: 0 0 .15rem;
+    }
+    .blog-title a{
+      color: inherit;
+      text-decoration: none;
+    }
+    .blog-title a:hover{
+      text-decoration: underline;
+    }
+    .blog-teaser{
+      margin: 0;
+      font-size: .9rem;
+      color: #5a676f;
+    }
+
+    /* === Make the 3 right cards equal height === */
+.pub-col-right{
+  display: grid !important;
+  grid-template-rows: 1fr 1fr 1fr;  /* 3 equal rows */
+  gap: 24px;
+  height: 100%;
+  min-height: 0;
+  align-self: stretch;
+}
+
+/* Each card becomes a column flex container */
+.pub-col-right .pub-card{
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Let the list area fill remaining space and scroll if needed */
+.pub-col-right .blog-list{
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none !important;  /* override earlier 240px */
+  overflow: auto;
+}
+
+
+    /* Mobile: stack columns and remove internal scroll limits */
+    @media (max-width: 960px){
+      .pub-header{
+        margin-top: 14px;
+        margin-bottom: 4px;
+      }
+      .pub-page{
+        grid-template-columns: 1fr;
+        padding: 4px 14px 40px;
+      }
+      .book-list,
+      .pub-list--journals,
+      .blog-list{
+        max-height: none !important;
+        overflow: visible !important;
+      }
+      .pub-col-right .pub-card:last-child{
+        flex: initial;
       }
     }
   </style>
@@ -57,41 +236,88 @@
 <body>
   {% include "navbar.html" %}
 
-  <!-- 顶部横幅：本页已通过 CSS 隐藏 -->
-  <header class="pub-hero"></header>
+  <header class="pub-header">
+    <h1>Publications &amp; Research Notebook</h1>
+  </header>
 
-  <!-- 双栏网格 -->
-  <main class="pub-grid">
-    <!-- ── 左列：Books ───────────────── -->
-    <section>
-      <h2 class="section-title">Books</h2>
-      <div class="book-list">
-        {% for b in books %}
-        <article class="book-item" style="animation-delay: {{ loop.index0 * 0.08 }}s;">
-          <img class="book-cover"
-               src="{{ url_for('static', filename='img/books/' + b.cover) }}"
-               alt="{{ b.title }} cover">
-          <div class="book-text">
-            <span class="book-role">{{ b.role }}</span>
-            <p class="book-cite">{{ b.cite }}</p>
-          </div>
-        </article>
-        {% endfor %}
+  <main class="pub-page">
+
+    <!-- Left column -->
+    <section class="pub-col pub-col-left">
+
+      <div class="pub-card">
+        <h2 class="section-title">Books</h2>
+        <div class="book-list">
+          {% for b in books %}
+          <article class="book-item">
+            <img class="book-cover"
+                 src="{{ url_for('static', filename='img/books/' + b.cover) }}"
+                 alt="{{ b.title }} cover">
+            <div class="book-text">
+              <span class="book-role">{{ b.role }}</span>
+              <p class="book-cite">{{ b.cite|safe }}</p>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
       </div>
+
+      <div class="pub-card">
+        <h2 class="section-title">Journal Articles (peer-reviewed)</h2>
+        <div class="pub-list pub-list--journals">
+          {% for p in articles %}
+          <article class="pub-item">
+            <p class="pub-cite">{{ p.cite|safe }}</p>
+          </article>
+          {% endfor %}
+        </div>
+      </div>
+
     </section>
 
-    <!-- ── 右列：Journal Articles（独立滚动） ───────── -->
-    <section>
-      <h2 class="section-title">Journal Articles</h2>
-      <div class="pub-list">
-        {% for p in articles %}
-        <article class="pub-item" style="animation-delay: {{ loop.index0 * 0.08 }}s;">
-          <span class="pub-type">{{ p.type }}</span>
-          <p class="pub-cite">{{ p.cite }}</p>
-        </article>
-        {% endfor %}
+    <!-- Right column -->
+    <section class="pub-col pub-col-right">
+
+      <div class="pub-card">
+        <h2 class="section-title">Research Blog</h2>
+        <div class="blog-list">
+          <article class="blog-item">
+            <div class="blog-meta">2025 · Research blog</div>
+            <h3 class="blog-title">
+              <a href="{{ url_for('blog_reddit_data_collection') }}">
+                Course Project: Collecting Reddit Data on Canadian Immigration
+              </a>
+            </h3>
+            <p class="blog-teaser">
+              First research-blog entry documenting how I collected and prepared Reddit data
+              around the May 31 2023 Express Entry policy change.
+            </p>
+          </article>
+        </div>
       </div>
+
+      <div class="pub-card">
+        <h2 class="section-title">Reading Notes</h2>
+        <p class="pub-card-intro">
+          Short reflections while reading — what I notice, questions to follow up,
+          and how a piece might connect to HRM, organisations, and AI-related work.
+        </p>
+        <div class="coming-soon">COMING SOON<span class="dots">...</span></div>
+
+      </div>
+
+      <div class="pub-card">
+        <h2 class="section-title">Project Notes></h2>
+        <p class="pub-card-intro">
+          Light-weight write-ups of small projects and experiments. Some entries may link to GitHub
+          repos or demo videos.
+        </p>
+        <div class="coming-soon">COMING SOON<span class="dots">...</span></div>
+
+      </div>
+
     </section>
+
   </main>
 </body>
 </html>
