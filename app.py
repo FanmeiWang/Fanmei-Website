@@ -492,10 +492,15 @@ def projects_ai_translator():
 def inject_now():
     from datetime import datetime
     return {"current_year": datetime.now(timezone.utc).year}
+    
+@app.route("/blog/reddit-data-collection", endpoint="blog_reddit_data_collection")
+def blog_reddit_data_collection():
+    return render_template("blog_reddit_data_collection.html")
 
 if __name__ == "__main__":
     # 本地调试启动
     app.run(debug=True)
+
 
 
 
