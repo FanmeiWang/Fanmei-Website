@@ -151,9 +151,25 @@
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify({ q: text })
       });
-      if(!r.ok) throw new Error('HTTP '+r.status);
-      return r.json();
-    }
+      let data = {};
+      try {
+       data = await r.json();
+      } catch (e) {
+        const t = await r.text();
+        data = { reply: t };
+      }
+
+  // IMPORTANT: even when !r.ok, show backend message instead of a generic one
+  if (!r.ok) {
+    return {
+      reply: data.error || data.reply || `Request failed (${r.status})`,
+      link: data.link || ""
+    };
+  }
+
+  return { reply: data.reply || "", link: data.link || "" };
+}
+
 
     async function send(text){
       const t = (text || $('fwInput').value || '').trim();
