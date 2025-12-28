@@ -18,7 +18,31 @@ body {
   color: var(--brand-teal);
 }
 
+/* ────────────────── Nav bar ────────────────── */
+nav {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--brand-teal);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
+nav .brand       { font-weight: 700; font-size: 1.4rem; }
+nav .nav-links   { list-style:none; margin:0; padding:0; display:flex; gap:2rem; align-items:center; }
+nav .nav-links a{
+  font-size:1.25rem;
+  color:var(--c-accent);   /* 铜金文字 */
+  background:none;         /* 保证没有背景块 */
+  text-decoration:none;
+  transition:opacity .2s ease;
+}
+nav .nav-links a:hover{
+  opacity:.85;             /* 轻微亮度或加下划线随你 */
+  text-decoration:underline;
+}
 .hero {
   display: flex;
   flex-direction: column;
@@ -1165,11 +1189,13 @@ nav .nav-links a:focus-visible{
   animation:slideY 40s linear infinite;   /* 40 s 一圈，可自行调整 */
 }
 
+/* 关键帧：从顶部滚到 -100% 高度再循环 */
 @keyframes slideY{
   from{transform:translateY(0);}
   to  {transform:translateY(-100%);}
 }
 
+/* ─── ② 让主体离两侧留点空 ──────────────────────── */
 body{padding:0 130px;}             /* 120px rail + 10px 缓冲 */
 
 /* ─── ③ 让 2×2 卡片更大、居中、美化 ─────────────── */
@@ -1192,288 +1218,4 @@ body{padding:0 130px;}             /* 120px rail + 10px 缓冲 */
   box-shadow:0 12px 30px rgba(0,0,0,.12);
 }
 .mod-title{font-size:1.7rem;margin:0 0 .6rem}
-/* ─────────── 主题颜色 & 全局字体 ─────────── */
-:root{
-  --green:#004E4A;          /* 深墨绿 */
-  --gold:#CFAF2A;           /* 金色强调 */
-  --gold-light:#FFF7E0;     /* 金色渐变末端 */
-  --gray-bg:#F7F8F6;        /* 全页浅灰/米色背景 */
-  --shadow:0 4px 14px rgba(0,0,0,.06);  /* 统一阴影 */
-}
-
-body{
-  margin:0;
-  background:var(--gray-bg);
-  font-family:'Inter','Noto Sans SC',sans-serif;
-  color:#233;
-}
-h1,h2,h3{
-  font-family:'Merriweather','Noto Serif SC',serif;
-  color:var(--green);
-}
-
-/* ─────────── 默认容器 ─────────── */
-.container{
-  max-width:1280px;
-  margin:auto;
-  padding:0 1rem;
-}
-
-/* ─────────── 卡片栅格布局 ─────────── */
-.card-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:2rem;
-  padding-bottom:4rem;
-}
-.teach-card{
-  background:#fff;
-  border-radius:20px;
-  box-shadow:var(--shadow);
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-  transition:transform .25s;
-}
-.teach-card:hover{
-  transform:translateY(-4px);
-}
-
-/* ─────────── 顶部渐变条（图标区域） ─────────── */
-.card-banner{
-  height:120px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.card-banner svg{
-  width:60px;
-  height:60px;
-  fill:#fff;
-  opacity:.92;
-}
-/* odd / even 交替墨绿↔金色渐变 */
-.teach-card:nth-child(odd)  .card-banner{
-  background:linear-gradient(135deg,var(--green),var(--gold));
-}
-.teach-card:nth-child(even) .card-banner{
-  background:linear-gradient(135deg,var(--gold),var(--gold-light));
-}
-
-/* ─────────── 卡片正文 ─────────── */
-.card-body{
-  padding:1.6rem 1.8rem;
-  flex:1;
-  display:flex;
-  flex-direction:column;
-}
-.card-title{
-  margin:0 0 .6rem;
-  font-size:1.55rem;
-  line-height:1.2;
-}
-.card-desc{
-  margin:0 0 1.1rem;
-  font-size:.97rem;
-  line-height:1.45;
-  color:#445;
-}
-
-/* ─────────── details / summary 下拉 ─────────── */
-summary{
-  cursor:pointer;
-  list-style:none;
-  font-weight:600;
-  margin-bottom:.6rem;
-  color:var(--green);
-}
-summary::-webkit-details-marker{display:none;}
-
-/* 子弹列表 */
-ul.bullet{
-  padding:0;
-  margin:0;
-  list-style:none;
-  font-size:.9rem;
-  line-height:1.4;
-}
-ul.bullet li{
-  position:relative;
-  padding-left:.8rem;
-  margin:.2rem 0;
-}
-ul.bullet li::before{
-  content:'';
-  position:absolute;
-  left:0;
-  top:.55rem;
-  width:.42rem;
-  height:.42rem;
-  border-radius:50%;
-  background:var(--gold);
-}
-
-/* 时间线列表 */
-ul.timeline{
-  border-left:2px solid var(--green);
-  padding-left:1rem;
-  margin:0;
-  list-style:none;
-  font-size:.9rem;
-  line-height:1.4;
-}
-ul.timeline li{
-  position:relative;
-  margin:.4rem 0;
-}
-ul.timeline li::before{
-  content:'';
-  position:absolute;
-  left:-.87rem;
-  top:.45rem;
-  width:.5rem;
-  height:.5rem;
-  border-radius:50%;
-  background:var(--gold);
-}
-
-/* ─────────── 响应式微调 ─────────── */
-@media (max-width:600px){
-  h1{font-size:1.9rem;}
-  .card-title{font-size:1.35rem;}
-  .card-grid{gap:1.4rem;}
-}
-/* ───── Publications 双栏 & 卡片 ───── */
-.pub-grid{
-  display:grid;
-  gap:2.4rem;
-  max-width:1180px;
-  margin:60px auto 100px;
-  padding:0 1rem;
-}
-@media(min-width:960px){ .pub-grid{ grid-template-columns:1fr 1.3fr; } }
-
-/* 左列书籍卡片 */
-.book-card{
-  display:flex;
-  gap:1.2rem;
-  background:#fff;
-  border-radius:14px;
-  box-shadow:0 4px 14px rgba(0,0,0,.06);
-  padding:1.2rem 1.4rem;
-  opacity:0; transform:translateY(22px);
-  animation:fadeUp .6s ease forwards;
-}
-.book-cover{
-  width:120px;              /* 封面宽度可调 */
-  height:auto;
-  flex-shrink:0;
-  object-fit:cover;
-  border-radius:6px;
-  box-shadow:0 0 4px rgba(0,0,0,.12);
-}
-.book-cite{ margin:0; line-height:1.55; }
-
-/* 右列文章时间线 */
-.article-timeline{
-  position:relative;
-  margin:0; padding:0 0 0 1.4rem;
-  list-style:none;
-}
-.article-timeline::before{          /* 垂直线 */
-  content:'';
-  position:absolute;
-  left:.45rem; top:0; bottom:0;
-  width:2px; background:var(--brand-teal,#004F59);
-}
-
-/* time-dot + 卡片 */
-.article-timeline li{
-  position:relative;
-  margin-bottom:1.8rem;
-  opacity:0; transform:translateY(22px);
-  animation:fadeUp .6s ease forwards;
-}
-.article-timeline li::before{      /* 圆点 */
-  content:'';
-  position:absolute;
-  left:-.72rem; top:.65rem;
-  width:.7rem; height:.7rem;
-  border-radius:50%;
-  background:var(--brand-teal,#004F59);
-}
-
-.article-card{
-  background:#fff;
-  border-radius:14px;
-  box-shadow:0 4px 14px rgba(0,0,0,.06);
-  padding:1rem 1.2rem;
-}
-.article-tag{
-  display:inline-block;
-  background:var(--amber,#F4B400);
-  color:#fff;
-  font-size:.8rem;
-  font-weight:600;
-  border-radius:4px;
-  padding:2px 6px;
-  margin-bottom:.4rem;
-}
-.article-cite{ margin:0; line-height:1.55; }
-
-/* 小屏：改为单列时间线 */
-@media(max-width:959px){
-  .pub-grid{ grid-template-columns:1fr; }
-  .article-timeline{ padding-left:1.1rem; margin-top:2.5rem; }
-}
-/* === Projects landing – gradient cards === */
-.projects-wrapper{max-width:1100px;margin:60px auto 100px;padding:0 1rem;text-align:center}
-.projects-title{font-size:2.6rem;margin:0 0 2.5rem;color:var(--brand-teal,#004F59);font-family:"Merriweather","Noto Serif SC",serif}
-.proj-menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2rem;place-items:center}
-.proj-card{display:flex;align-items:center;justify-content:center;height:180px;padding:1.2rem;border-radius:18px;color:#fff;font-size:1.55rem;font-weight:600;line-height:1.25;text-decoration:none;text-align:center;box-shadow:0 6px 22px rgba(0,0,0,.08);transition:transform .25s,box-shadow .25s}
-.proj-card:hover{transform:translateY(-8px);box-shadow:0 12px 32px rgba(0,0,0,.12)}
-.card-ai{background:linear-gradient(135deg,#01c9b1 0%,#7dfec9 100%)}
-.card-public{background:linear-gradient(135deg,#4a90e2 0%,#8bd5ff 100%)}
-.card-academic{background:linear-gradient(135deg,#f5af19 0%,#fad961 100%)}
-.card-consult{background:linear-gradient(135deg,#ec008c 0%,#fc6767 100%)}
-@media(max-width:640px){.proj-card{height:140px;font-size:1.25rem}}
-
-/* === Calibri/Carlito 全站字体统一（放在 main.css 最后） === */
-:root{
-  --font-sans: Calibri, 'Carlito', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-}
-html, body,
-h1, h2, h3, h4, h5, h6,
-.page-title,
-.nav-links a,
-.brand,
-.edu-item, .edu-text h3, .edu-text p {
-  font-family: var(--font-sans) !important;
-}
-/* ---- Home hero tagline ---- */
-.hero{ 
-  text-align: center;
-  padding: 48px 0 28px;   /* 视情况微调上下留白 */
-}
-.hero .tagline-1{
-  font-weight: 850;
-  /* 自适应字号：小屏不挤，大屏不夸张 */
-  font-size: clamp(28px, 3.0vw, 44px);
-  letter-spacing: .2px;
-  color: #004F59;         /* 你的站点主色 */
-  margin: 6px 0 4px;
-}
-.hero .tagline-2{
-  font-weight: 600;
-  font-size: clamp(16px, 1.8vw, 22px);
-  color: #274c52;
-  opacity: .95;
-  margin: 4px 0 0;
-}
-.hero .avatar{
-  width: 96px; height: 96px; 
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 12px;    /* 头像与标语的间距 */
-}
 
